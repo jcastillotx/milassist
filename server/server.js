@@ -23,6 +23,7 @@ app.use('/messages', require('./routes/messages'));
 app.use('/tasks', require('./routes/tasks'));
 app.use('/forms', require('./routes/forms'));
 app.use('/resources', require('./routes/resources'));
+app.use('/time', require('./routes/time'));
 
 // Basic Route
 app.get('/', (req, res) => {

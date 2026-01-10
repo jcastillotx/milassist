@@ -25,6 +25,8 @@ import CommunicationCenter from './pages/client/CommunicationCenter';
 import Chat from './pages/client/Chat';
 import AssistantOverview from './pages/assistant/Overview';
 import Resources from './pages/assistant/Resources';
+import TimeLogs from './pages/assistant/TimeLogs';
+import Onboarding from './pages/assistant/Onboarding';
 
 import Login from './pages/Login';
 
@@ -75,7 +77,9 @@ function App() {
         <Route path="/assistant" element={<DashboardLayout role="assistant" />}>
           <Route index element={<AssistantOverview />} />
           <Route path="tasks" element={<TaskBoard role="assistant" />} />
+          <Route path="time" element={<TimeLogs />} />
           <Route path="resources" element={<Resources />} />
+          <Route path="onboarding" element={<Onboarding />} />
         </Route>
 
       </Routes>

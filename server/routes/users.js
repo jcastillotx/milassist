@@ -58,6 +58,31 @@ router.post('/skills', authenticateToken, async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+}
+});
+
+// Update Profile / Onboarding
+router.post('/onboarding', authenticateToken, async (req, res) => {
+    try {
+        const { bio, location, verificationData, phone } = req.body;
+        const user = await User.findByPk(req.user.id);
+
+        const updatedProfile = {
+            ...user.profile_data,
+            bio,
+            location,
+            phone,
+            verificationStatus: verificationData, // { verified: true, date: ... }
+            onboardingCompleted: true
+        };
+
+        user.profile_data = updatedProfile;
+        await user.save();
+
+        res.json({ message: 'Profile updated', user });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 module.exports = router;

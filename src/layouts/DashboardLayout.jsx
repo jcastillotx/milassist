@@ -1,7 +1,9 @@
 import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+
 import AIAssistant from '../components/AIAssistant';
+import Timer from '../components/Timer';
 
 const DashboardLayout = ({ role }) => {
     const navigate = useNavigate();
@@ -34,6 +36,7 @@ const DashboardLayout = ({ role }) => {
         assistant: [
             { label: 'My Profile', path: '/assistant' },
             { label: 'Tasks', path: '/assistant/tasks' },
+            { label: 'Time Logs', path: '/assistant/time' },
             { label: 'Academy', path: '/assistant/resources' },
             { label: 'Open Jobs', path: '/assistant/jobs' },
             { label: 'My Invoices', path: '/assistant/invoices' },
@@ -77,6 +80,9 @@ const DashboardLayout = ({ role }) => {
 
             {/* AI Assistant Widget */}
             <AIAssistant />
+
+            {/* Timer for Assistants */}
+            {role === 'assistant' && <Timer />}
         </div>
     );
 };

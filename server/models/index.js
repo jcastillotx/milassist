@@ -23,6 +23,7 @@ const Research = require('./Research');
 const Call = require('./Call');
 const RoutingRule = require('./RoutingRule');
 const Message = require('./Message');
+const TimeEntry = require('./TimeEntry');
 
 // Associations
 
@@ -71,6 +72,13 @@ User.hasMany(Message, { foreignKey: 'receiverId', as: 'receivedMessages' });
 Message.belongsTo(User, { as: 'sender', foreignKey: 'senderId' });
 Message.belongsTo(User, { as: 'receiver', foreignKey: 'receiverId' });
 
+// Time Entries
+User.hasMany(TimeEntry, { foreignKey: 'assistantId', as: 'timeEntries' });
+TimeEntry.belongsTo(User, { as: 'assistant', foreignKey: 'assistantId' });
+TimeEntry.belongsTo(User, { as: 'client', foreignKey: 'clientId' });
+Task.hasMany(TimeEntry, { foreignKey: 'taskId' });
+TimeEntry.belongsTo(Task, { foreignKey: 'taskId' });
+
 module.exports = {
     sequelize,
     User,
@@ -87,5 +95,6 @@ module.exports = {
     Research,
     Call,
     RoutingRule,
-    Message
+    Message,
+    TimeEntry
 };
