@@ -35,6 +35,7 @@ import PrivacyCenter from './pages/PrivacyCenter';
 import EmailSettings from './pages/client/EmailSettings';
 import CalendarView from './pages/client/CalendarView';
 import MeetingScheduler from './pages/client/MeetingScheduler';
+import SetupWizard from './pages/SetupWizard';
 
 import Login from './pages/Login';
 
@@ -54,6 +55,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/setup" element={<SetupWizard />} />
 
         {/* Admin Routes */}
         <Route path="/admin" element={<DashboardLayout role="admin" />}>

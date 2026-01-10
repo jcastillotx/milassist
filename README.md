@@ -103,6 +103,9 @@ MilAssist is a comprehensive virtual assistance and data services platform conne
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:3000
 
+6. **Initialize the Platform**
+   Go to `http://localhost:5173/setup` to run the Installation Setup Wizard. This will create your primary admin account and initialize platform settings.
+
 ---
 
 ## 📁 Project Structure
