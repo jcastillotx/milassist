@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User, Skill } = require('../models');
-const { secretKey } = require('../middleware/auth');
+const { secretKey, jwtExpiration } = require('../middleware/auth');
 
 // REGISTER
 router.post('/register', async (req, res) => {
@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => {
         const validPassword = await bcrypt.compare(password, user.password_hash);
         if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
 
-        const token = jwt.sign({ id: user.id, role: user.role }, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, role: user.role }, secretKey, { expiresIn: jwtExpiration });
         res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -63,7 +63,7 @@ const AssistantOverview = () => {
                         <li className="flex items-center gap-2 text-green-600">✓ Skills Assessment</li>
                         <li className="flex items-center gap-2 text-gray-400">○ Video Intro (Pending)</li>
                     </ul>
-                    <Button variant="secondary" className="w-full text-sm">Edit Profile</Button>
+                    <Button variant="secondary" className="w-full text-sm" onClick={() => window.location.href = '/assistant/onboarding'}>Complete Onboarding</Button>
                 </Card>
             </div>
         </div>

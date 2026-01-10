@@ -5,8 +5,16 @@ import Card from '../../components/Card';
 const ServiceRequest = () => {
     // Mock Templates
     const templates = [
-        { id: 1, title: 'Travel Booking' },
-        { id: 2, title: 'Research Project' },
+        { id: 1, title: 'Help with your to-do list' },
+        { id: 2, title: 'Expenses and receipts' },
+        { id: 3, title: 'Website updates' },
+        { id: 4, title: 'Schedule management' },
+        { id: 5, title: 'Inbox management' },
+        { id: 6, title: 'Data entry' },
+        { id: 7, title: 'Research' },
+        { id: 8, title: 'Social media' },
+        { id: 9, title: 'Format documents' },
+        { id: 10, title: 'Write content' },
     ];
 
     const [selectedTemplate, setSelectedTemplate] = useState('');

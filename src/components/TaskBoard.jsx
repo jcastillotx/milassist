@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import Card from './Card';
 import Button from './Button';
+import TaskHandoffModal from './TaskHandoffModal';
 
 const TaskBoard = ({ role }) => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [handoffTask, setHandoffTask] = useState(null);
 
     // Fetch tasks on mount
     React.useEffect(() => {
@@ -26,6 +28,21 @@ const TaskBoard = ({ role }) => {
         };
         fetchTasks();
     }, []);
+
+    const refreshTasks = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:3000/tasks', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setTasks(data);
+            }
+        } catch (err) {
+            console.error('Failed to fetch tasks', err);
+        }
+    };
 
     return (
         <div className="space-y-6">
@@ -54,16 +71,36 @@ const TaskBoard = ({ role }) => {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <span className={`px-2 py-1 rounded text-xs font-medium uppercase
-                 ${task.status === 'done' ? 'bg-gray-100 text-gray-600' :
+                                <span className={`text-xs px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-100 text-green-800' :
                                         task.status === 'in_progress' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'}`}>
                                     {task.status.replace('_', ' ')}
                                 </span>
-                                <Button variant="secondary" className="text-xs py-1 px-3">Details</Button>
+                                <div className="flex gap-2">
+                                    <Button variant="secondary" className="text-xs py-1 px-3">
+                                        Update Status
+                                    </Button>
+                                    {role === 'assistant' && (
+                                        <Button 
+                                            variant="secondary" 
+                                            className="text-xs py-1 px-3"
+                                            onClick={() => setHandoffTask(task)}
+                                        >
+                                            Hand Off
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         </Card>
                     ))}
                 </div>
+            )}
+
+            {handoffTask && (
+                <TaskHandoffModal
+                    task={handoffTask}
+                    onClose={() => setHandoffTask(null)}
+                    onSuccess={refreshTasks}
+                />
             )}
         </div>
     );

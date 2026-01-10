@@ -9,75 +9,122 @@ const DashboardLayout = ({ role }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // In real app: clear token
+        localStorage.removeItem('token');
         navigate('/');
     };
 
     const navItems = {
         admin: [
-            { label: 'Overview', path: '/admin' },
-            { label: 'Users', path: '/admin/users' },
-            { label: 'Invoices', path: '/admin/invoices' },
-            { label: 'Forms', path: '/admin/forms' },
-            { label: 'Page Builder', path: '/admin/pages' },
-            { label: 'Integrations', path: '/admin/integrations' },
+            { label: 'Overview', path: '/admin', icon: '📊' },
+            { label: 'Users', path: '/admin/users', icon: '👥' },
+            { label: 'Invoices', path: '/admin/invoices', icon: '💰' },
+            { label: 'Forms', path: '/admin/forms', icon: '📝' },
+            { label: 'Page Builder', path: '/admin/pages', icon: '🎨' },
+            { label: 'Integrations', path: '/admin/integrations', icon: '🔗' },
+            { label: 'Privacy', path: '/admin/privacy', icon: '🔒' },
+            { label: 'Legal Settings', path: '/admin/settings/nda', icon: '⚖️' },
         ],
         client: [
-            { label: 'My Assistant', path: '/client' },
-            { label: 'Tasks', path: '/client/tasks' },
-            { label: 'Travel', path: '/client/travel' },
-            { label: 'Documents', path: '/client/documents' },
-            { label: 'Communication center', path: '/client/communication' },
-            { label: 'Messages', path: '/client/messages' },
-            { label: 'Data & Research', path: '/client/research' },
-            { label: 'New Request', path: '/client/requests' },
-            { label: 'Invoices', path: '/client/invoices' },
+            { label: 'My Assistant', path: '/client', icon: '👤' },
+            { label: 'Tasks', path: '/client/tasks', icon: '✓' },
+            { label: 'Travel', path: '/client/travel', icon: '✈️' },
+            { label: 'Documents', path: '/client/documents', icon: '📄' },
+            { label: 'Communication', path: '/client/communication', icon: '📞' },
+            { label: 'Messages', path: '/client/messages', icon: '💬' },
+            { label: 'Research', path: '/client/research', icon: '🔍' },
+            { label: 'New Request', path: '/client/requests', icon: '➕' },
+            { label: 'Invoices', path: '/client/invoices', icon: '💳' },
+            { label: 'Calendar', path: '/client/calendar', icon: '📅' },
+            { label: 'Email', path: '/client/email', icon: '📧' },
+            { label: 'Privacy', path: '/client/privacy', icon: '🔐' },
         ],
         assistant: [
-            { label: 'My Profile', path: '/assistant' },
-            { label: 'Tasks', path: '/assistant/tasks' },
-            { label: 'Time Logs', path: '/assistant/time' },
-            { label: 'Academy', path: '/assistant/resources' },
-            { label: 'Open Jobs', path: '/assistant/jobs' },
-            { label: 'My Invoices', path: '/assistant/invoices' },
+            { label: 'My Profile', path: '/assistant', icon: '👤' },
+            { label: 'Tasks', path: '/assistant/tasks', icon: '✓' },
+            { label: 'Time Logs', path: '/assistant/time', icon: '⏱️' },
+            { label: 'Inbox Manager', path: '/assistant/inbox', icon: '📥' },
+            { label: 'Academy', path: '/assistant/resources', icon: '📚' },
+            { label: 'Open Jobs', path: '/assistant/jobs', icon: '💼' },
+            { label: 'My Invoices', path: '/assistant/invoices', icon: '💰' },
+            { label: 'Privacy', path: '/assistant/privacy', icon: '🔐' },
         ]
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fafafa' }}>
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-gray-200 hidden md:block">
-                <div className="p-6">
-                    <h1 className="text-xl font-bold" style={{ color: 'var(--color-primary)' }}>MilAssist</h1>
-                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">{role} View</span>
+            <aside style={{
+                width: '240px',
+                backgroundColor: '#ffffff',
+                borderRight: '1px solid var(--color-border)',
+                padding: '1.5rem 0',
+                display: 'flex',
+                flexDirection: 'column'
+            }}>
+                {/* Logo */}
+                <div style={{ padding: '0 1.5rem', marginBottom: '2rem' }}>
+                    <h1 style={{ 
+                        fontSize: '1.5rem', 
+                        fontWeight: '700',
+                        color: 'var(--color-primary)',
+                        margin: 0
+                    }}>
+                        MilAssist
+                    </h1>
+                    <p style={{ 
+                        fontSize: '0.75rem', 
+                        color: 'var(--color-text-muted)',
+                        marginTop: '0.25rem'
+                    }}>
+                        {role.charAt(0).toUpperCase() + role.slice(1)} Portal
+                    </p>
                 </div>
-                <nav className="mt-6 px-4 space-y-2">
-                    {navItems[role]?.map((item) => (
+
+                {/* Navigation */}
+                <nav style={{ flex: 1, padding: '0 0.75rem' }}>
+                    {navItems[role].map((item) => (
                         <Link
                             key={item.path}
                             to={item.path}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                padding: '0.625rem 0.75rem',
+                                marginBottom: '0.25rem',
+                                borderRadius: 'var(--radius-md)',
+                                textDecoration: 'none',
+                                color: 'var(--color-text)',
+                                fontSize: '0.875rem',
+                                fontWeight: '500',
+                                transition: 'all 0.15s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = 'var(--color-surface)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
                         >
-                            {item.label}
+                            <span style={{ fontSize: '1.125rem' }}>{item.icon}</span>
+                            <span>{item.label}</span>
                         </Link>
                     ))}
                 </nav>
-                <div className="absolute bottom-0 w-64 p-4 border-t border-gray-100">
-                    <Button variant="secondary" onClick={handleLogout} className="w-full text-sm">Log Out</Button>
+
+                {/* Logout Button */}
+                <div style={{ padding: '0 1.5rem', marginTop: 'auto' }}>
+                    <Button 
+                        onClick={handleLogout}
+                        variant="secondary"
+                        style={{ width: '100%', justifyContent: 'center' }}
+                    >
+                        Logout
+                    </Button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-8 overflow-y-auto">
-                <header className="flex justify-between items-center mb-8 md:hidden">
-                    <h1 className="text-xl font-bold">MilAssist</h1>
-                    <button onClick={handleLogout} className="text-sm text-gray-600">Log Out</button>
-                </header>
-                <div className="max-w-5xl mx-auto">
-                    <Outlet />
-                </div>
-            </main>
-
             {/* AI Assistant Widget */}
             <AIAssistant />
 

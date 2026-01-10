@@ -20,6 +20,28 @@ const Onboarding = () => {
     const [verified, setVerified] = useState(false);
     const [verificationLoading, setVerificationLoading] = useState(false);
 
+    // NDA State
+    const [ndaSigned, setNdaSigned] = useState(false);
+    const [ndaContent, setNdaContent] = useState('Loading agreement...');
+
+    useEffect(() => {
+        const fetchNDA = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('http://localhost:3000/settings/nda_content', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setNdaContent(data.value);
+                } else {
+                    setNdaContent('MUTUAL NON-DISCLOSURE AGREEMENT\n\n(Default content loaded due to error...)');
+                }
+            } catch (err) { console.error(err); }
+        };
+        if (step === 3) fetchNDA();
+    }, [step]);
+
     const handleVerifyParams = () => {
         setVerificationLoading(true);
         // Simulate SheerID API delay
@@ -33,6 +55,7 @@ const Onboarding = () => {
 
     const handleSubmit = async () => {
         if (!verified) return alert('Please complete military verification.');
+        if (!ndaSigned) return alert('Please sign the Non-Disclosure Agreement.');
 
         setLoading(true);
         try {
@@ -45,7 +68,8 @@ const Onboarding = () => {
                 },
                 body: JSON.stringify({
                     ...formData,
-                    verificationData: { verified: true, date: new Date(), provider: 'SheerID' }
+                    verificationData: { verified: true, date: new Date(), provider: 'SheerID' },
+                    ndaSigned: ndaSigned ? new Date() : null
                 })
             });
 
@@ -73,6 +97,7 @@ const Onboarding = () => {
                     <div className="flex gap-2 mb-8">
                         <div className={`h-2 flex-1 rounded ${step >= 1 ? 'bg-blue-600' : 'bg-gray-200'}`} />
                         <div className={`h-2 flex-1 rounded ${step >= 2 ? 'bg-blue-600' : 'bg-gray-200'}`} />
+                        <div className={`h-2 flex-1 rounded ${step >= 3 ? 'bg-blue-600' : 'bg-gray-200'}`} />
                     </div>
 
                     {step === 1 && (
@@ -134,7 +159,33 @@ const Onboarding = () => {
 
                             <div className="flex gap-4">
                                 <Button variant="secondary" onClick={() => setStep(1)} className="flex-1">Back</Button>
-                                <Button onClick={handleSubmit} disabled={!verified} className="flex-1">
+                                <Button onClick={() => setStep(3)} disabled={!verified} className="flex-1">
+                                    Next Step &rarr;
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    {step === 3 && (
+                        <div className="space-y-6">
+                            <h2 className="text-xl font-bold">Non-Disclosure Agreement</h2>
+                            <div className="h-64 overflow-y-auto border border-gray-200 p-4 rounded bg-gray-50 text-sm text-gray-700 whitespace-pre-wrap">
+                                {ndaContent}
+                            </div>
+
+                            <label className="flex items-center gap-3 p-4 border border-gray-200 rounded cursor-pointer hover:bg-gray-50 transition-colors">
+                                <input
+                                    type="checkbox"
+                                    checked={ndaSigned}
+                                    onChange={e => setNdaSigned(e.target.checked)}
+                                    className="w-5 h-5 text-blue-600"
+                                />
+                                <span className="text-sm font-medium">I have read and agree to the Non-Disclosure Agreement.</span>
+                            </label>
+
+                            <div className="flex gap-4">
+                                <Button variant="secondary" onClick={() => setStep(2)} className="flex-1">Back</Button>
+                                <Button onClick={handleSubmit} disabled={!ndaSigned} className="flex-1">
                                     {loading ? 'Saving...' : 'Complete Profile'}
                                 </Button>
                             </div>

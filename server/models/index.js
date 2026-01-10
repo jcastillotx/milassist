@@ -1,12 +1,4 @@
-const { Sequelize } = require('sequelize');
-const path = require('path');
-
-// Initialize SQLite database
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: path.join(__dirname, '../database.sqlite'),
-    logging: false
-});
+const { sequelize } = require('./db');
 
 const User = require('./User');
 const Invoice = require('./Invoice');
@@ -24,6 +16,13 @@ const Call = require('./Call');
 const RoutingRule = require('./RoutingRule');
 const Message = require('./Message');
 const TimeEntry = require('./TimeEntry');
+const PrivacyRequest = require('./PrivacyRequest');
+const SystemSetting = require('./SystemSetting');
+const EmailConnection = require('./EmailConnection');
+const VideoIntegration = require('./VideoIntegration');
+const Meeting = require('./Meeting');
+const CalendarConnection = require('./CalendarConnection');
+const TaskHandoff = require('./TaskHandoff');
 
 // Associations
 
@@ -79,6 +78,36 @@ TimeEntry.belongsTo(User, { as: 'client', foreignKey: 'clientId' });
 Task.hasMany(TimeEntry, { foreignKey: 'taskId' });
 TimeEntry.belongsTo(Task, { foreignKey: 'taskId' });
 
+// Privacy Requests
+User.hasMany(PrivacyRequest, { foreignKey: 'userId', as: 'privacyRequests' });
+PrivacyRequest.belongsTo(User, { foreignKey: 'userId' });
+
+// Email Connections
+User.hasMany(EmailConnection, { foreignKey: 'userId', as: 'emailConnections' });
+EmailConnection.belongsTo(User, { foreignKey: 'userId' });
+
+// Video Integrations
+User.hasMany(VideoIntegration, { foreignKey: 'userId', as: 'videoIntegrations' });
+VideoIntegration.belongsTo(User, { foreignKey: 'userId' });
+
+// Meetings
+User.hasMany(Meeting, { foreignKey: 'clientId', as: 'clientMeetings' });
+User.hasMany(Meeting, { foreignKey: 'assistantId', as: 'assistantMeetings' });
+Meeting.belongsTo(User, { as: 'client', foreignKey: 'clientId' });
+Meeting.belongsTo(User, { as: 'assistant', foreignKey: 'assistantId' });
+
+// Calendar Connections
+User.hasMany(CalendarConnection, { foreignKey: 'userId', as: 'calendarConnections' });
+CalendarConnection.belongsTo(User, { foreignKey: 'userId' });
+
+// Task Handoffs
+Task.hasMany(TaskHandoff, { foreignKey: 'taskId', as: 'handoffs' });
+TaskHandoff.belongsTo(Task, { foreignKey: 'taskId' });
+User.hasMany(TaskHandoff, { foreignKey: 'fromAssistantId', as: 'handoffsGiven' });
+User.hasMany(TaskHandoff, { foreignKey: 'toAssistantId', as: 'handoffsReceived' });
+TaskHandoff.belongsTo(User, { as: 'fromAssistant', foreignKey: 'fromAssistantId' });
+TaskHandoff.belongsTo(User, { as: 'toAssistant', foreignKey: 'toAssistantId' });
+
 module.exports = {
     sequelize,
     User,
@@ -96,5 +125,12 @@ module.exports = {
     Call,
     RoutingRule,
     Message,
-    TimeEntry
+    TimeEntry,
+    PrivacyRequest,
+    SystemSetting,
+    EmailConnection,
+    VideoIntegration,
+    Meeting,
+    CalendarConnection,
+    TaskHandoff
 };

@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-const secretKey = 'milassist_secret_key_dev'; // In prod, use environment variable
+const secretKey = process.env.JWT_SECRET || 'milassist_secret_key_dev_CHANGE_IN_PRODUCTION';
+const jwtExpiration = process.env.JWT_EXPIRATION || '24h';
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -15,4 +17,4 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-module.exports = { authenticateToken, secretKey };
+module.exports = { authenticateToken, secretKey, jwtExpiration };
