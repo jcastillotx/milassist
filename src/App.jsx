@@ -6,6 +6,7 @@ import Problem from './components/sections/Problem';
 import Solution from './components/sections/Solution';
 import Footer from './components/sections/Footer';
 import DashboardLayout from './layouts/DashboardLayout';
+import PortalLayout from './layouts/PortalLayout';
 import TaskBoard from './components/TaskBoard';
 
 // Pages
@@ -37,6 +38,16 @@ import CalendarView from './pages/client/CalendarView';
 import MeetingScheduler from './pages/client/MeetingScheduler';
 import SetupWizard from './pages/SetupWizard';
 
+// Portal Pages
+import PortalHome from './pages/portal/Home';
+import PortalAbout from './pages/portal/About';
+import PortalServices from './pages/portal/Services';
+import PortalContact from './pages/portal/Contact';
+import PortalPrivacy from './pages/portal/Privacy';
+import PortalDataProtection from './pages/portal/DataProtection';
+import PortalLogin from './pages/portal/Login';
+import PortalForgotPassword from './pages/portal/ForgotPassword';
+
 import Login from './pages/Login';
 
 const LandingPage = () => (
@@ -56,6 +67,18 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/setup" element={<SetupWizard />} />
+
+        {/* Portal Routes */}
+        <Route path="/portal" element={<PortalLayout />}>
+          <Route index element={<PortalHome />} />
+          <Route path="about" element={<PortalAbout />} />
+          <Route path="services" element={<PortalServices />} />
+          <Route path="contact" element={<PortalContact />} />
+          <Route path="privacy" element={<PortalPrivacy />} />
+          <Route path="data-protection" element={<PortalDataProtection />} />
+        </Route>
+        <Route path="/portal/login" element={<PortalLogin />} />
+        <Route path="/portal/forgot-password" element={<PortalForgotPassword />} />
 
         {/* Admin Routes */}
         <Route path="/admin" element={<DashboardLayout role="admin" />}>
