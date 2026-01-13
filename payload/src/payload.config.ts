@@ -1,5 +1,5 @@
 import { buildConfig } from 'payload'
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
@@ -82,10 +82,10 @@ export default buildConfig({
     Settings,
   ],
 
-  // Database adapter (SQLite for development)
-  db: sqliteAdapter({
-    client: {
-      url: 'file:./payload.db',
+  // Database adapter - PostgreSQL for Supabase
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI,
     },
   }),
 
