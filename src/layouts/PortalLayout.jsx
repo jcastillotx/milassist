@@ -18,28 +18,28 @@ const PortalLayout = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    navigate('/portal/login');
+    navigate('/login');
   };
 
   const publicNavItems = [
-    { path: '/portal', icon: '🏠', label: 'Home', exact: true },
-    { path: '/portal/about', icon: '📖', label: 'About' },
-    { path: '/portal/services', icon: '⚡', label: 'Services' },
-    { path: '/portal/contact', icon: '💬', label: 'Contact' },
+    { path: '/', icon: '🏠', label: 'Home', exact: true },
+    { path: '/about', icon: '📖', label: 'About' },
+    { path: '/services', icon: '⚡', label: 'Services' },
+    { path: '/contact', icon: '💬', label: 'Contact' },
   ];
 
   const legalNavItems = [
-    { path: '/portal/privacy', icon: '🔒', label: 'Privacy' },
-    { path: '/portal/data-protection', icon: '🛡️', label: 'Data Protection' },
+    { path: '/privacy', icon: '🔒', label: 'Privacy' },
+    { path: '/data-protection', icon: '🛡️', label: 'Data Protection' },
   ];
 
   const authNavItems = user ? [
     { action: handleLogout, icon: '🚪', label: 'Logout' },
   ] : [
-    { path: '/portal/login', icon: '🔑', label: 'Login' },
+    { path: '/login', icon: '🔑', label: 'Login' },
   ];
 
-  const isHomePage = location.pathname === '/portal' || location.pathname === '/portal/';
+  const isHomePage = location.pathname === '/' || location.pathname === '';
 
   return (
     <div className="portal-layout">

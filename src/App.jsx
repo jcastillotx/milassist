@@ -64,12 +64,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/setup" element={<SetupWizard />} />
-
-        {/* Portal Routes */}
-        <Route path="/portal" element={<PortalLayout />}>
+        {/* Main Portal Routes (New Design) */}
+        <Route path="/" element={<PortalLayout />}>
           <Route index element={<PortalHome />} />
           <Route path="about" element={<PortalAbout />} />
           <Route path="services" element={<PortalServices />} />
@@ -77,8 +73,13 @@ function App() {
           <Route path="privacy" element={<PortalPrivacy />} />
           <Route path="data-protection" element={<PortalDataProtection />} />
         </Route>
-        <Route path="/portal/login" element={<PortalLogin />} />
-        <Route path="/portal/forgot-password" element={<PortalForgotPassword />} />
+        <Route path="/login" element={<PortalLogin />} />
+        <Route path="/forgot-password" element={<PortalForgotPassword />} />
+
+        {/* Legacy Landing Page */}
+        <Route path="/landing" element={<LandingPage />} />
+        <Route path="/legacy-login" element={<Login />} />
+        <Route path="/setup" element={<SetupWizard />} />
 
         {/* Admin Routes */}
         <Route path="/admin" element={<DashboardLayout role="admin" />}>

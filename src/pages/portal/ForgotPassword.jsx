@@ -35,7 +35,7 @@ const ForgotPassword = () => {
       <div className="portal-auth-container portal-auth-single">
         <div className="portal-auth-form-section portal-auth-form-centered">
           <div className="portal-auth-form-wrapper">
-            <Link to="/portal" className="portal-back-link">
+            <Link to="/" className="portal-back-link">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
@@ -121,7 +121,7 @@ const ForgotPassword = () => {
 
             <p className="portal-auth-footer">
               Remember your password?{' '}
-              <Link to="/portal/login">Back to Sign In</Link>
+              <Link to="/login">Back to Sign In</Link>
             </p>
           </div>
         </div>

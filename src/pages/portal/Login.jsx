@@ -30,7 +30,7 @@ const Login = () => {
         if (data.user.role === 'admin') navigate('/admin');
         else if (data.user.role === 'client') navigate('/client');
         else if (data.user.role === 'assistant') navigate('/assistant');
-        else navigate('/portal');
+        else navigate('/');
       } else {
         setError(data.error || 'Login failed');
       }
@@ -105,7 +105,7 @@ const Login = () => {
               <div className="portal-form-group">
                 <div className="portal-form-label-row">
                   <label htmlFor="password">Password</label>
-                  <Link to="/portal/forgot-password" className="portal-forgot-link">
+                  <Link to="/forgot-password" className="portal-forgot-link">
                     Forgot password?
                   </Link>
                 </div>
@@ -175,7 +175,7 @@ const Login = () => {
 
             <p className="portal-auth-footer">
               Don't have an account?{' '}
-              <Link to="/portal/contact">Contact us to get started</Link>
+              <Link to="/contact">Contact us to get started</Link>
             </p>
           </div>
         </div>
