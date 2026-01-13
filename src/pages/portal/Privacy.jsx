@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Icon from '../../components/Icon';
 
 const Privacy = () => {
   const lastUpdated = 'January 1, 2025';
@@ -129,14 +130,14 @@ const Privacy = () => {
       <div className="portal-content-section">
         <div className="portal-legal-links">
           <Link to="/portal/data-protection" className="portal-legal-link card">
-            <span>🛡️</span>
+            <Icon name="shield" size={24} />
             <div>
               <h4>Data Protection</h4>
               <p>Learn about how we protect your data</p>
             </div>
           </Link>
           <Link to="/portal/contact" className="portal-legal-link card">
-            <span>💬</span>
+            <Icon name="chat" size={24} />
             <div>
               <h4>Contact Us</h4>
               <p>Have questions? Get in touch</p>

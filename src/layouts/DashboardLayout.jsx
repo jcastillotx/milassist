@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import Icon from '../components/Icon';
 
 import AIAssistant from '../components/AIAssistant';
 import Timer from '../components/Timer';
@@ -15,38 +16,38 @@ const DashboardLayout = ({ role }) => {
 
     const navItems = {
         admin: [
-            { label: 'Overview', path: '/admin', icon: '📊' },
-            { label: 'Users', path: '/admin/users', icon: '👥' },
-            { label: 'Invoices', path: '/admin/invoices', icon: '💰' },
-            { label: 'Forms', path: '/admin/forms', icon: '📝' },
-            { label: 'Page Builder', path: '/admin/pages', icon: '🎨' },
-            { label: 'Integrations', path: '/admin/integrations', icon: '🔗' },
-            { label: 'Privacy', path: '/admin/privacy', icon: '🔒' },
-            { label: 'Legal Settings', path: '/admin/settings/nda', icon: '⚖️' },
+            { label: 'Overview', path: '/admin', icon: 'overview' },
+            { label: 'Users', path: '/admin/users', icon: 'users' },
+            { label: 'Invoices', path: '/admin/invoices', icon: 'money' },
+            { label: 'Forms', path: '/admin/forms', icon: 'form' },
+            { label: 'Page Builder', path: '/admin/pages', icon: 'template' },
+            { label: 'Integrations', path: '/admin/integrations', icon: 'integration' },
+            { label: 'Privacy', path: '/admin/privacy', icon: 'lock' },
+            { label: 'Legal Settings', path: '/admin/settings/nda', icon: 'scale' },
         ],
         client: [
-            { label: 'My Assistant', path: '/client', icon: '👤' },
-            { label: 'Tasks', path: '/client/tasks', icon: '✓' },
-            { label: 'Travel', path: '/client/travel', icon: '✈️' },
-            { label: 'Documents', path: '/client/documents', icon: '📄' },
-            { label: 'Communication', path: '/client/communication', icon: '📞' },
-            { label: 'Messages', path: '/client/messages', icon: '💬' },
-            { label: 'Research', path: '/client/research', icon: '🔍' },
-            { label: 'New Request', path: '/client/requests', icon: '➕' },
-            { label: 'Invoices', path: '/client/invoices', icon: '💳' },
-            { label: 'Calendar', path: '/client/calendar', icon: '📅' },
-            { label: 'Email', path: '/client/email', icon: '📧' },
-            { label: 'Privacy', path: '/client/privacy', icon: '🔐' },
+            { label: 'My Assistant', path: '/client', icon: 'user' },
+            { label: 'Tasks', path: '/client/tasks', icon: 'tasks' },
+            { label: 'Travel', path: '/client/travel', icon: 'plane' },
+            { label: 'Documents', path: '/client/documents', icon: 'document' },
+            { label: 'Communication', path: '/client/communication', icon: 'phone' },
+            { label: 'Messages', path: '/client/messages', icon: 'message' },
+            { label: 'Research', path: '/client/research', icon: 'search' },
+            { label: 'New Request', path: '/client/requests', icon: 'plus' },
+            { label: 'Invoices', path: '/client/invoices', icon: 'creditCard' },
+            { label: 'Calendar', path: '/client/calendar', icon: 'calendar' },
+            { label: 'Email', path: '/client/email', icon: 'email' },
+            { label: 'Privacy', path: '/client/privacy', icon: 'lock' },
         ],
         assistant: [
-            { label: 'My Profile', path: '/assistant', icon: '👤' },
-            { label: 'Tasks', path: '/assistant/tasks', icon: '✓' },
-            { label: 'Time Logs', path: '/assistant/time', icon: '⏱️' },
-            { label: 'Inbox Manager', path: '/assistant/inbox', icon: '📥' },
-            { label: 'Academy', path: '/assistant/resources', icon: '📚' },
-            { label: 'Open Jobs', path: '/assistant/jobs', icon: '💼' },
-            { label: 'My Invoices', path: '/assistant/invoices', icon: '💰' },
-            { label: 'Privacy', path: '/assistant/privacy', icon: '🔐' },
+            { label: 'My Profile', path: '/assistant', icon: 'user' },
+            { label: 'Tasks', path: '/assistant/tasks', icon: 'tasks' },
+            { label: 'Time Logs', path: '/assistant/time', icon: 'clock' },
+            { label: 'Inbox Manager', path: '/assistant/inbox', icon: 'inbox' },
+            { label: 'Academy', path: '/assistant/resources', icon: 'book' },
+            { label: 'Open Jobs', path: '/assistant/jobs', icon: 'briefcase' },
+            { label: 'My Invoices', path: '/assistant/invoices', icon: 'money' },
+            { label: 'Privacy', path: '/assistant/privacy', icon: 'lock' },
         ]
     };
 
@@ -106,7 +107,7 @@ const DashboardLayout = ({ role }) => {
                                 e.currentTarget.style.backgroundColor = 'transparent';
                             }}
                         >
-                            <span style={{ fontSize: '1.125rem' }}>{item.icon}</span>
+                            <Icon name={item.icon} size={18} />
                             <span>{item.label}</span>
                         </Link>
                     ))}

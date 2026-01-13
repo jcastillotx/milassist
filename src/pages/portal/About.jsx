@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Icon from '../../components/Icon';
 
 const About = () => {
   const teamMembers = [
@@ -46,7 +47,7 @@ const About = () => {
       <div className="portal-content-section">
         <div className="portal-feature-grid">
           <div className="portal-feature-card card">
-            <span className="portal-feature-icon">🎯</span>
+            <span className="portal-feature-icon"><Icon name="target" size={28} /></span>
             <h3>Our Mission</h3>
             <p>
               To provide comprehensive, compassionate support that empowers military families
@@ -54,7 +55,7 @@ const About = () => {
             </p>
           </div>
           <div className="portal-feature-card card">
-            <span className="portal-feature-icon">👁️</span>
+            <span className="portal-feature-icon"><Icon name="eye" size={28} /></span>
             <h3>Our Vision</h3>
             <p>
               A world where every military family has access to personalized assistance,
@@ -62,7 +63,7 @@ const About = () => {
             </p>
           </div>
           <div className="portal-feature-card card">
-            <span className="portal-feature-icon">💜</span>
+            <span className="portal-feature-icon"><Icon name="heart" size={28} /></span>
             <h3>Our Values</h3>
             <p>
               Integrity, dedication, and understanding guide everything we do.
