@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "payload/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/admin(.*)",
+      "dest": "payload/$1"
+    },
+    {
+      "src": "/api(.*)",
+      "dest": "payload/api$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "payload/$1"
+    }
+  ],
+  "env": {
+    "PAYLOAD_SECRET": "@payload-secret",
+    "DATABASE_URI": "@database-uri",
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--no-deprecation"
+    }
+  }
+}
