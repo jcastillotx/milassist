@@ -49,7 +49,6 @@ export default buildConfig({
   // Collections
   collections: [
     Users,
-    Media,
     Tasks,
     Messages,
     Invoices,
@@ -70,6 +69,7 @@ export default buildConfig({
     CalendarConnections,
     TaskHandoffs,
     Integrations,
+    Skills,
     AssistantOnboarding,
     TrainingModules,
     Assessments,
