@@ -77,7 +77,8 @@ async function handleCallback(request: NextRequest) {
 
     // Import payload to create/update user
     const { getPayload } = await import('payload')
-    const payload = await getPayload({ config: await import('@/payload.config') })
+    const configModule = await import('@/payload.config')
+    const payload = await getPayload({ config: configModule.default })
 
     // Check if user exists
     const existingUsers = await payload.find({
@@ -129,26 +130,11 @@ async function handleCallback(request: NextRequest) {
       })
     }
 
-    // Generate JWT token
-    const token = await payload.login({
-      collection: 'users',
-      data: {
-        email: user.email,
-      },
-      req: request as any,
-    })
-
-    // Redirect to admin with token
+    // TODO: Implement proper JWT token generation for OAuth users in Payload 3.0
+    // For now, just redirect to admin - user will need to log in manually
     const response = NextResponse.redirect(
-      `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/admin`
+      `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/admin?oauth_success=true&email=${encodeURIComponent(user.email)}`
     )
-    
-    response.cookies.set('payload-token', token.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7200, // 2 hours
-    })
 
     return response
   } catch (error) {

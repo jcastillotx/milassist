@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import config from '../payload.config'
-import aiService from './aiService'
+import { aiService } from './aiService'
 
 class ChatService {
   private payload: any

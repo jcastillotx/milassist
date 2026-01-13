@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload';
 
 const OnCallAssistants: CollectionConfig = {
   slug: 'on-call-assistants',
@@ -67,7 +67,8 @@ const OnCallAssistants: CollectionConfig = {
           name: 'startTime',
           type: 'text', // HH:MM format
           required: true,
-          validate: (value: string) => {
+          validate: (value: any) => {
+            if (typeof value !== 'string') return 'Must be a string';
             const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
             return timeRegex.test(value) || 'Must be in HH:MM format';
           },
@@ -76,7 +77,8 @@ const OnCallAssistants: CollectionConfig = {
           name: 'endTime',
           type: 'text', // HH:MM format
           required: true,
-          validate: (value: string) => {
+          validate: (value: any) => {
+            if (typeof value !== 'string') return 'Must be a string';
             const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
             return timeRegex.test(value) || 'Must be in HH:MM format';
           },
