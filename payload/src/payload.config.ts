@@ -11,23 +11,23 @@ import { Tasks } from './collections/Tasks'
 import { Messages } from './collections/Messages'
 import { Invoices } from './collections/Invoices'
 import { Documents } from './collections/Documents'
-import { Trips } from './collections/Trips'
-import { TimeEntries } from './collections/TimeEntries'
-import { Meetings } from './collections/Meetings'
-import { FormTemplates } from './collections/FormTemplates'
-import { ServiceRequests } from './collections/ServiceRequests'
-import { Pages } from './collections/Pages'
-import { Resources } from './collections/Resources'
-import { Research } from './collections/Research'
-import { Calls } from './collections/Calls'
-import { RoutingRules } from './collections/RoutingRules'
-import { PrivacyRequests } from './collections/PrivacyRequests'
-import { EmailConnections } from './collections/EmailConnections'
-import { VideoIntegrations } from './collections/VideoIntegrations'
-import { CalendarConnections } from './collections/CalendarConnections'
-import { TaskHandoffs } from './collections/TaskHandoffs'
-import { Integrations } from './collections/Integrations'
-import { Skills } from './collections/Skills'
+import { Media } from './collections/Media'
+import Trips from './collections/Trips'
+import TimeEntries from './collections/TimeEntries'
+import Meetings from './collections/Meetings'
+import FormTemplates from './collections/FormTemplates'
+import ServiceRequests from './collections/ServiceRequests'
+import Pages from './collections/Pages'
+import Resources from './collections/Resources'
+import Research from './collections/Research'
+import Calls from './collections/Calls'
+import RoutingRules from './collections/RoutingRules'
+import PrivacyRequests from './collections/PrivacyRequests'
+import EmailConnections from './collections/EmailConnections'
+import VideoIntegrations from './collections/VideoIntegrations'
+import CalendarConnections from './collections/CalendarConnections'
+import TaskHandoffs from './collections/TaskHandoffs'
+import Integrations from './collections/Integrations'
 import AssistantOnboarding from './collections/AssistantOnboarding'
 import TrainingModules from './collections/TrainingModules'
 import Assessments from './collections/Assessments'
@@ -49,6 +49,27 @@ export default buildConfig({
   // Collections
   collections: [
     Users,
+    Media,
+    Tasks,
+    Messages,
+    Invoices,
+    Documents,
+    Trips,
+    TimeEntries,
+    Meetings,
+    FormTemplates,
+    ServiceRequests,
+    Pages,
+    Resources,
+    Research,
+    Calls,
+    RoutingRules,
+    PrivacyRequests,
+    EmailConnections,
+    VideoIntegrations,
+    CalendarConnections,
+    TaskHandoffs,
+    Integrations,
     AssistantOnboarding,
     TrainingModules,
     Assessments,
@@ -58,7 +79,7 @@ export default buildConfig({
 
   // Global settings
   globals: [
-    // Settings
+    Settings,
   ],
 
   // Database adapter (SQLite for development)

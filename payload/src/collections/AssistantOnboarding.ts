@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload';
 
 const AssistantOnboarding: CollectionConfig = {
   slug: 'assistant-onboarding',

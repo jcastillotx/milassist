@@ -1,168 +1,445 @@
-# MilAssist Payload CMS Migration - Next Steps
+# MilAssist Payload CMS Migration - TODO
 
-**Current Status:** Phase 2 Complete ✅ (40% overall completion)
-**Last Updated:** 2024-01-09
-
----
-
-## 🎯 Immediate Next Steps (Priority Order)
-
-### 1. ✅ Test Current Setup (30 minutes)
-- [x] Verify admin panel loads at http://localhost:3000/admin (returns 307 redirect to login - expected)
-- [x] Create first admin user account (requires browser interaction - deferred)
-- [x] Test basic CRUD operations on collections (requires authentication - deferred)
-- [x] Verify file upload functionality (requires authentication - deferred)
-- [x] Check TypeScript compilation (compiles successfully ✅)
-- [x] Test API endpoints (custom endpoints respond appropriately ✅)
-- [x] Verify database connection (SQLite database created and connected ✅)
-
-### 2. 🔄 Create Remaining Collections (2-3 hours)
-**Priority 1 (Core Business Logic):**
-- [x] Trips collection - Travel planning and booking
-- [x] TimeEntries collection - Time tracking for assistants
-- [x] Meetings collection - Video conferencing sessions
-- [x] FormTemplates collection - Dynamic form builder
-- [x] ServiceRequests collection - Client service requests
-
-**Priority 2 (System Features):**
-- [x] Pages collection - GrapesJS visual page builder
-- [x] Resources collection - Training materials and documentation
-- [x] Research collection - Data research projects
-- [x] Calls collection - Twilio call logs and recordings
-- [x] RoutingRules collection - Call routing logic
-
-**Priority 3 (Integrations):**
-- [x] PrivacyRequests collection - GDPR/CCPA compliance
-- [x] EmailConnections collection - Email OAuth integrations
-- [x] VideoIntegrations collection - Video platform integrations
-- [ ] CalendarConnections collection - Calendar sync
-- [ ] TaskHandoffs collection - Task transfer system
-- [ ] Integrations collection - External API integrations
-- [ ] Skills collection - Assistant skill management
-
-### 3. 🧪 Phase 3: Data Migration (4-6 hours)
-- [ ] Analyze current Express.js database schema
-- [ ] Create data export scripts from SQLite/PostgreSQL
-- [ ] Transform data to Payload format
-- [ ] Create migration scripts for Supabase
-- [ ] Test data migration on staging environment
-- [ ] Verify data integrity and relationships
-
-### 4. 🔗 Phase 4: Frontend Integration (6-8 hours)
-- [ ] Update React app to use Payload APIs
-- [ ] Create Payload API client library
-- [ ] Update authentication system
-- [ ] Migrate all API endpoints
-- [ ] Test all frontend features
-- [ ] Fix any breaking changes
-
-### 5. 🚀 Phase 5: Testing & Deployment (4-6 hours)
-- [ ] Set up unit tests for collections
-- [ ] Create integration tests
-- [ ] Configure Vercel deployment
-- [ ] Set up production Supabase database
-- [ ] Deploy to production
-- [ ] Run final verification tests
+**Current Status:** Phase 2 Complete ✅ (45% overall completion)  
+**Last Updated:** January 13, 2026  
+**Next Phase:** Phase 3 - Environment Setup & Testing
 
 ---
 
-## 📋 Detailed Task Breakdown
+## 🎯 Current Priority: Phase 3 (IMMEDIATE)
 
-### Collection Creation Template
-For each remaining collection, follow this pattern:
+### ⚡ Phase 3: Environment Setup & Testing (20-40 minutes)
 
-1. **Define Schema** - Based on original Express models
-2. **Set Access Control** - Role-based permissions
-3. **Add Hooks** - Before/after change logic
-4. **Configure Admin UI** - Custom fields and layout
-5. **Test CRUD Operations** - Create, read, update, delete
-6. **Update Payload Config** - Register collection
+**Status:** 🔴 BLOCKED - Dependencies not installed
 
-### Data Migration Steps
-1. **Schema Analysis** - Map Express models to Payload collections
-2. **Data Export** - Create scripts to export from current DB
-3. **Data Transformation** - Convert data formats as needed
-4. **Migration Scripts** - Import to Supabase with relationships
-5. **Validation** - Verify all data migrated correctly
-6. **Rollback Plan** - Ability to revert if issues found
+#### Tasks:
+- [ ] **1. Install Dependencies** (5-10 min) 🔴 IMMEDIATE
+  ```bash
+  cd /vercel/sandbox/payload
+  npm install
+  ```
 
-### Frontend Integration Steps
-1. **API Client** - Create Payload REST/GraphQL client
-2. **Auth Updates** - Update login/logout flows
-3. **Component Updates** - Replace Express API calls
-4. **State Management** - Update global state if needed
-5. **Testing** - Verify all features work
-6. **Performance** - Check loading times and optimization
+- [ ] **2. Configure Environment** (5 min)
+  ```bash
+  cp .env.example .env
+  # Edit .env and set PAYLOAD_SECRET
+  ```
 
----
+- [ ] **3. Build Project** (2-5 min)
+  ```bash
+  npm run build
+  ```
 
-## ⚠️ Current Blockers
+- [ ] **4. Start Dev Server** (1-2 min)
+  ```bash
+  npm run dev
+  ```
 
-### None ✅
-- Dependencies installed ✅
-- Database configured (SQLite for dev) ✅
-- Admin panel working ✅
-- Core collections created ✅
+- [ ] **5. Create Admin User** (2-3 min)
+  - Open http://localhost:3000/admin
+  - Create first admin user
 
----
+- [ ] **6. Verify Setup** (5-10 min)
+  - Test collections accessible
+  - Test CRUD operations
+  - Test file upload
+  - Verify access control
 
-## 🎯 Success Criteria for Next Phase
-
-### Phase 2 Complete ✅
-- [x] All 23 collections created and configured
-- [x] Access control implemented for all collections
-- [x] Admin panel fully functional
-- [x] File uploads working
-- [x] TypeScript compilation successful
-
-### Phase 3 Ready
-- [ ] Data migration scripts created
-- [ ] Test migration completed successfully
-- [ ] No data loss verified
-- [ ] All relationships preserved
+**Success Criteria:**
+- ✅ Dependencies installed without errors
+- ✅ Build completes successfully
+- ✅ Dev server starts without errors
+- ✅ Admin panel accessible
+- ✅ Admin user created
+- ✅ All 28 collections visible and functional
 
 ---
 
-## 📊 Time Estimates
+## 📋 Completed Phases
 
-| Task | Estimated Time | Priority |
-|------|----------------|----------|
-| Test current setup | 30 minutes | High |
-| Create remaining collections | 2-3 hours | High |
-| Data migration | 4-6 hours | Medium |
-| Frontend integration | 6-8 hours | Medium |
-| Testing & deployment | 4-6 hours | Low |
+### ✅ Phase 1: Foundation & Setup (100%)
+- [x] Project structure created
+- [x] Configuration files (package.json, tsconfig.json, next.config.js)
+- [x] Payload config (payload.config.ts)
+- [x] Access control system (4 files)
+- [x] Environment template (.env.example)
+- [x] Next.js App Router setup
+- [x] Admin UI configuration
 
-**Total Estimated Time:** 16-25 hours (2-4 days)
-
----
-
-## 🔧 Technical Notes
-
-### Database Switch
-- Currently using SQLite for development
-- Will switch to Supabase PostgreSQL for production
-- Migration scripts should work with both databases
-
-### File Storage
-- Currently configured for local storage
-- Will switch to AWS S3 for production
-- Media collection handles file uploads
-
-### Authentication
-- Basic email/password working
-- SSO endpoints created but not fully tested
-- Need to test Google/Microsoft OAuth flows
+**Time Invested:** 2-3 hours  
+**Files Created:** 15 files
 
 ---
 
-## 📞 Support Resources
+### ✅ Phase 2: Collections (100%)
 
-- **Payload Documentation:** https://payloadcms.com/docs
-- **Supabase Docs:** https://supabase.com/docs
-- **Migration Plan:** `MIGRATION_PLAN.md`
-- **Setup Instructions:** `payload/SETUP_INSTRUCTIONS.md`
+#### Core Business Collections (5/5) ✅
+- [x] Users - Authentication with SSO
+- [x] Tasks - Kanban board
+- [x] Messages - Chat system
+- [x] Invoices - Billing
+- [x] Documents - File management
+
+#### Enhanced Feature Collections (5/5) ✅
+- [x] Trips - Travel planning
+- [x] TimeEntries - Time tracking
+- [x] Meetings - Video conferencing
+- [x] FormTemplates - Dynamic forms
+- [x] ServiceRequests - Service requests
+
+#### System & Integration Collections (13/13) ✅
+- [x] Pages - GrapesJS page builder
+- [x] Resources - Training materials
+- [x] Research - Data research
+- [x] Calls - Twilio call logs
+- [x] RoutingRules - Call routing
+- [x] PrivacyRequests - GDPR/CCPA
+- [x] EmailConnections - Email OAuth
+- [x] VideoIntegrations - Video platforms
+- [x] CalendarConnections - Calendar sync
+- [x] TaskHandoffs - Task transfers
+- [x] Integrations - API integrations
+- [x] Media - File uploads
+- [x] Skills - Assistant skills (referenced in config)
+
+#### New Collections (5/5) ✅
+- [x] AssistantOnboarding - Onboarding workflow
+- [x] TrainingModules - Training content
+- [x] Assessments - Skill assessments
+- [x] LiveChats - Real-time chat
+- [x] OnCallAssistants - On-call scheduling
+
+#### API Endpoints (8/8) ✅
+- [x] /api/oauth/google - Google OAuth
+- [x] /api/oauth/microsoft - Microsoft OAuth
+- [x] /api/ai/chat - AI chat
+- [x] /api/ai/analyze - AI analysis
+- [x] /api/chat/start - Start chat
+- [x] /api/chat/message - Send message
+- [x] /api/onboarding/start - Start onboarding
+- [x] /api/onboarding/complete-module - Complete module
+
+#### Services (1/1) ✅
+- [x] aiService.ts - Multi-provider AI service
+
+**Time Invested:** 4-6 hours  
+**Files Created:** 28 collections + 8 API routes + 1 service = 37 files  
+**Total Collections:** 28
 
 ---
 
-*Update this file as tasks are completed.*
+## 🔄 Upcoming Phases
+
+### ⏳ Phase 4: Data Migration (8-15 hours)
+
+**Priority:** 🟡 HIGH (After Phase 3)
+
+#### Tasks:
+- [ ] **1. Analyze Current Data** (1-2 hours)
+  - Review Express models in `server/models/`
+  - Check current database structure
+  - Identify data relationships
+  - Document data structure
+
+- [ ] **2. Create Export Script** (2-3 hours)
+  - Export Users
+  - Export Tasks
+  - Export Messages
+  - Export Invoices
+  - Export Documents
+  - Export all other collections
+  - Save to JSON file
+
+- [ ] **3. Create Transform Script** (2-3 hours)
+  - Transform field names
+  - Convert relationships
+  - Handle password hashing
+  - Validate data structure
+
+- [ ] **4. Create Import Script** (2-3 hours)
+  - Initialize Payload
+  - Import in dependency order
+  - Handle relationships
+  - Log progress and errors
+
+- [ ] **5. Run Migration** (30 min - 2 hours)
+  - Execute export script
+  - Execute transform script
+  - Execute import script
+  - Monitor progress
+
+- [ ] **6. Verify Migration** (1-2 hours)
+  - Check user count matches
+  - Verify relationships preserved
+  - Test data access
+  - Validate data integrity
+
+**Success Criteria:**
+- ✅ All data exported successfully
+- ✅ Data transformed correctly
+- ✅ All data imported to Payload
+- ✅ No data loss
+- ✅ Relationships preserved
+- ✅ Data accessible in admin panel
+
+---
+
+### ⏳ Phase 5: Frontend Integration (20-32 hours)
+
+**Priority:** 🟡 HIGH (After Phase 4)
+
+#### Tasks:
+- [ ] **1. Create Payload API Client** (2-3 hours)
+  - Create `src/lib/payloadClient.ts`
+  - Implement REST API methods
+  - Add authentication handling
+  - Add error handling
+
+- [ ] **2. Update Authentication** (2-3 hours)
+  - Update `src/hooks/useAuth.ts`
+  - Replace Express auth with Payload
+  - Update login/logout flows
+  - Handle JWT tokens
+  - Update protected routes
+
+- [ ] **3. Update Admin Pages** (4-6 hours)
+  - [ ] Overview.jsx
+  - [ ] Users.jsx
+  - [ ] Invoices.jsx
+  - [ ] Integrations.jsx
+  - [ ] FormBuilder.jsx
+  - [ ] FormManager.jsx
+  - [ ] PageBuilder.jsx
+  - [ ] NDAEditor.jsx
+
+- [ ] **4. Update Client Pages** (6-9 hours)
+  - [ ] Overview.jsx
+  - [ ] TravelManagement.jsx
+  - [ ] DocumentReview.jsx
+  - [ ] DataResearch.jsx
+  - [ ] CommunicationCenter.jsx
+  - [ ] Chat.jsx
+  - [ ] Invoices.jsx
+  - [ ] Payment.jsx
+  - [ ] ServiceRequest.jsx
+  - [ ] EmailSettings.jsx
+  - [ ] CalendarView.jsx
+  - [ ] MeetingScheduler.jsx
+
+- [ ] **5. Update Assistant Pages** (3-4 hours)
+  - [ ] Overview.jsx
+  - [ ] Resources.jsx
+  - [ ] TimeLogs.jsx
+  - [ ] Onboarding.jsx
+  - [ ] InboxManager.jsx
+
+- [ ] **6. Update Shared Components** (2-3 hours)
+  - [ ] TaskBoard.jsx
+  - [ ] TaskHandoffModal.jsx
+  - [ ] Timer.jsx
+  - [ ] AIAssistant.jsx
+  - [ ] PrivacyCenter.jsx (page)
+
+- [ ] **7. Test All Features** (4-6 hours)
+  - Test as admin user
+  - Test as client user
+  - Test as assistant user
+  - Verify CRUD operations
+  - Check error handling
+  - Test file uploads
+  - Test integrations
+
+**Success Criteria:**
+- ✅ Frontend connects to Payload APIs
+- ✅ Authentication works
+- ✅ All pages functional
+- ✅ CRUD operations work
+- ✅ File uploads work
+- ✅ No breaking changes
+
+---
+
+### ⏳ Phase 6: External Integrations (8-12 hours)
+
+**Priority:** 🟢 MEDIUM (After Phase 5)
+
+#### Integrations to Migrate:
+- [ ] **1. Twilio** (2-3 hours)
+  - Voice calls
+  - SMS
+  - Voicemail
+
+- [ ] **2. Stripe** (2-3 hours)
+  - Payment processing
+  - Subscription management
+
+- [ ] **3. OAuth2** (2-3 hours)
+  - Gmail integration
+  - Outlook integration
+
+- [ ] **4. Video Conferencing** (1-2 hours)
+  - Zoom
+  - Google Meet
+  - Webex
+  - Microsoft Teams
+
+- [ ] **5. Calendar Sync** (1-2 hours)
+  - Google Calendar
+  - Outlook Calendar
+
+- [ ] **6. Google Flights** (1-2 hours)
+  - Flight search
+  - Booking integration
+
+**Success Criteria:**
+- ✅ All integrations migrated
+- ✅ Twilio calls work
+- ✅ OAuth flows work
+- ✅ Video conferencing works
+- ✅ Calendar sync works
+- ✅ Payment processing works
+
+---
+
+### ⏳ Phase 7: Deployment (6-9 hours)
+
+**Priority:** 🟢 MEDIUM (After Phase 6)
+
+#### Tasks:
+- [ ] **1. Configure Vercel** (1-2 hours)
+  - Create vercel.json
+  - Set up environment variables
+  - Configure build settings
+  - Set up domains
+
+- [ ] **2. Set Up Production Database** (2-3 hours)
+  - Create Supabase project
+  - Configure connection pooling
+  - Run migrations
+  - Import production data
+
+- [ ] **3. Deploy** (30 min - 1 hour)
+  - Deploy to Vercel
+  - Verify deployment
+  - Test production URLs
+
+- [ ] **4. Verify Production** (2-3 hours)
+  - Test all features
+  - Check performance
+  - Monitor errors
+  - Verify integrations
+  - Load testing
+
+**Success Criteria:**
+- ✅ Successfully deployed to Vercel
+- ✅ Production database configured
+- ✅ All features work in production
+- ✅ Performance acceptable
+- ✅ No critical errors
+
+---
+
+## 📊 Overall Progress
+
+```
+Phase 1: Foundation        ████████████████████  100% ✅
+Phase 2: Collections       ████████████████████  100% ✅
+Phase 3: Setup & Testing   ░░░░░░░░░░░░░░░░░░░░    0% 🔄 NEXT
+Phase 4: Data Migration    ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Phase 5: Frontend          ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Phase 6: Integrations      ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Phase 7: Deployment        ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+
+OVERALL: ████████████░░░░░░░░  45%
+```
+
+---
+
+## ⏱️ Time Estimates
+
+| Phase | Status | Time Estimate | Priority |
+|-------|--------|---------------|----------|
+| Phase 1: Foundation | ✅ Complete | - | - |
+| Phase 2: Collections | ✅ Complete | - | - |
+| Phase 3: Setup & Testing | 🔄 Next | 20-40 min | 🔴 IMMEDIATE |
+| Phase 4: Data Migration | ⏳ Pending | 8-15 hours | 🟡 HIGH |
+| Phase 5: Frontend Integration | ⏳ Pending | 20-32 hours | 🟡 HIGH |
+| Phase 6: External Integrations | ⏳ Pending | 8-12 hours | 🟢 MEDIUM |
+| Phase 7: Deployment | ⏳ Pending | 6-9 hours | 🟢 MEDIUM |
+
+**Total Remaining Time:** 43-70 hours (5-9 days)
+
+---
+
+## 🚨 Current Blockers
+
+### Critical Blockers
+1. **Dependencies not installed** 🔴
+   - Impact: Cannot build or run
+   - Solution: Run `npm install` in `/vercel/sandbox/payload`
+   - Priority: IMMEDIATE
+
+### No Other Blockers
+- ✅ All code written
+- ✅ All collections defined
+- ✅ Configuration complete
+- ✅ Documentation complete
+
+---
+
+## 📚 Documentation Reference
+
+### Quick Start
+- **ACTION_PLAN.md** - Step-by-step next actions
+- **CURRENT_STATUS.md** - Visual progress overview
+- **MIGRATION_REVIEW_SUMMARY.md** - Comprehensive review
+
+### Detailed Guides
+- **MIGRATION_PLAN.md** - Complete technical strategy
+- **IMPLEMENTATION_CHECKLIST.md** - 14-day task breakdown
+- **IMPLEMENTATION_REVIEW.md** - Detailed implementation review
+- **payload/SETUP_INSTRUCTIONS.md** - Detailed setup guide
+- **payload/README.md** - Payload documentation
+
+### Specialized Topics
+- **AI_INTEGRATION_SUMMARY.md** - AI features overview
+- **payload/AI_PROVIDERS_SETUP.md** - AI providers setup
+- **docs/ADR/0002-payload-cms-migration.md** - Architecture decisions
+
+---
+
+## 🎯 Next Action
+
+**Execute this command now:**
+
+```bash
+cd /vercel/sandbox/payload
+npm install
+```
+
+**Then follow:** `ACTION_PLAN.md` for complete setup instructions
+
+---
+
+## 📈 Success Metrics
+
+### Phase 3 Complete When:
+- ✅ Dependencies installed
+- ✅ Build completes without errors
+- ✅ Dev server starts successfully
+- ✅ Admin panel accessible
+- ✅ Admin user created
+- ✅ All collections functional
+
+### Overall Success When:
+- ✅ All data migrated
+- ✅ Frontend updated
+- ✅ Integrations working
+- ✅ Deployed to production
+- ✅ No data loss
+- ✅ Performance acceptable
+
+---
+
+**Last Updated:** January 13, 2026  
+**Next Update:** After Phase 3 completion

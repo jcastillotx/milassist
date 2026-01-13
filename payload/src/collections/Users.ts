@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
+import { isAdminField } from '../access/isAdminField'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -56,8 +57,8 @@ export const Users: CollectionConfig = {
         },
       ],
       access: {
-        create: isAdmin,
-        update: isAdmin,
+        create: isAdminField,
+        update: isAdminField,
       },
     },
     {
@@ -119,8 +120,8 @@ export const Users: CollectionConfig = {
       label: 'Active',
       defaultValue: true,
       access: {
-        create: isAdmin,
-        update: isAdmin,
+        create: isAdminField,
+        update: isAdminField,
       },
     },
     {

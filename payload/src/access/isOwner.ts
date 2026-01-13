@@ -1,4 +1,4 @@
-ologoimport type { Access } from 'payload'
+import type { Access, Where } from 'payload'
 
 export const isOwner: Access = ({ req: { user } }) => {
   // Allow if user owns the resource
@@ -7,23 +7,25 @@ export const isOwner: Access = ({ req: { user } }) => {
   }
 
   // Return a query constraint
-  return {
+  const query: Where = {
     or: [
       {
-        'client.id': {
+        client: {
           equals: user.id,
         },
-      },
+      } as Where,
       {
-        'assistant.id': {
+        assistant: {
           equals: user.id,
         },
-      },
+      } as Where,
       {
         user: {
           equals: user.id,
         },
-      },
+      } as Where,
     ],
   }
+  
+  return query
 }
