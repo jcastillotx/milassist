@@ -64,21 +64,37 @@ const DashboardLayout = ({ role }) => {
             }}>
                 {/* Logo */}
                 <div style={{ padding: '0 1.5rem', marginBottom: '2rem' }}>
-                    <h1 style={{ 
-                        fontSize: '1.5rem', 
-                        fontWeight: '700',
-                        color: 'var(--color-primary)',
-                        margin: 0
-                    }}>
-                        MilAssist
-                    </h1>
-                    <p style={{ 
-                        fontSize: '0.75rem', 
-                        color: 'var(--color-text-muted)',
-                        marginTop: '0.25rem'
-                    }}>
-                        {role.charAt(0).toUpperCase() + role.slice(1)} Portal
-                    </p>
+                    <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{
+                            width: '40px',
+                            height: '40px',
+                            background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Icon name="headset" size={22} color="#ffffff" />
+                        </div>
+                        <div>
+                            <h1 style={{
+                                fontSize: '1.25rem',
+                                fontWeight: '700',
+                                color: 'var(--color-text)',
+                                margin: 0,
+                                lineHeight: 1.2
+                            }}>
+                                MilAssist
+                            </h1>
+                            <p style={{
+                                fontSize: '0.7rem',
+                                color: 'var(--color-text-muted)',
+                                margin: 0
+                            }}>
+                                {role.charAt(0).toUpperCase() + role.slice(1)} Portal
+                            </p>
+                        </div>
+                    </Link>
                 </div>
 
                 {/* Navigation */}

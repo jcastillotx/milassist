@@ -73,9 +73,14 @@ const Login = () => {
         {/* Left Side - Dark Branding Panel */}
         <div className="portal-auth-branding">
           <div className="portal-auth-brand-content">
-            <div className="portal-auth-logo-text">
-              <span className="portal-auth-logo-mil">MIL</span>
-              <span className="portal-auth-logo-assist">ASSIST</span>
+            <div className="portal-auth-logo-container">
+              <div className="portal-auth-logo-icon">
+                <Icon name="headset" size={28} color="#ffffff" />
+              </div>
+              <div className="portal-auth-logo-text">
+                <span className="portal-auth-logo-mil">MIL</span>
+                <span className="portal-auth-logo-assist">ASSIST</span>
+              </div>
             </div>
 
             <h1 className="portal-auth-headline">

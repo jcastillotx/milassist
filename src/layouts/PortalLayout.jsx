@@ -47,11 +47,11 @@ const PortalLayout = () => {
       {/* Left Sidebar */}
       <aside className="portal-sidebar">
         <div className="portal-sidebar-header">
-          <div className="portal-logo">
+          <NavLink to="/" className="portal-logo">
             <div className="portal-logo-icon">
-              <Icon name="robot" size={24} />
+              <Icon name="headset" size={24} color="#ffffff" />
             </div>
-          </div>
+          </NavLink>
         </div>
 
         <nav className="portal-nav">

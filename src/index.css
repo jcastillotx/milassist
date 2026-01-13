@@ -2066,8 +2066,24 @@ td {
   z-index: 1;
 }
 
+.portal-auth-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.portal-auth-branding .portal-auth-logo-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .portal-auth-logo-text {
-  margin-bottom: 32px;
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -2627,6 +2643,38 @@ td {
   grid-template-columns: 1fr 1fr;
   gap: 64px;
   align-items: center;
+}
+
+.portal-hero-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.portal-hero-logo-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+}
+
+.portal-hero-logo-text {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.portal-hero-logo-mil {
+  color: var(--color-primary);
+}
+
+.portal-hero-logo-assist {
+  color: var(--color-text-muted);
 }
 
 .portal-hero-title {

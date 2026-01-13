@@ -255,6 +255,15 @@ const Home = () => {
       <section className="portal-hero">
         <div className="portal-hero-content">
           <div className="portal-hero-text">
+            <div className="portal-hero-logo">
+              <div className="portal-hero-logo-icon">
+                <Icon name="headset" size={32} color="#ffffff" />
+              </div>
+              <span className="portal-hero-logo-text">
+                <span className="portal-hero-logo-mil">MIL</span>
+                <span className="portal-hero-logo-assist">ASSIST</span>
+              </span>
+            </div>
             <h1 className="portal-hero-title">
               Reliable Virtual Support,<br />
               <span className="portal-hero-highlight">Powered by Military Spouses</span>
