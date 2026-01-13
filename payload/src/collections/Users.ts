@@ -73,12 +73,13 @@ export const Users: CollectionConfig = {
       type: 'text',
       label: 'Phone Number',
     },
-    {
-      name: 'avatar',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Profile Picture',
-    },
+    // TODO: Add avatar field when Media collection is implemented
+    // {
+    //   name: 'avatar',
+    //   type: 'upload',
+    //   relationTo: 'media',
+    //   label: 'Profile Picture',
+    // },
     {
       name: 'ssoProvider',
       type: 'select',
