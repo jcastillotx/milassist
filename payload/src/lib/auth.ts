@@ -1,8 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import type { User } from '@/payload-types'
 
-export async function verifyAuthToken(token: string): Promise<User | null> {
+export async function verifyAuthToken(token: string): Promise<any | null> {
   try {
     const payload = await getPayload({ config })
     
@@ -20,7 +19,7 @@ export async function verifyAuthToken(token: string): Promise<User | null> {
   }
 }
 
-export async function getUserFromRequest(request: Request): Promise<User | null> {
+export async function getUserFromRequest(request: Request): Promise<any | null> {
   try {
     const authHeader = request.headers.get('authorization')
     if (!authHeader?.startsWith('Bearer ')) {
