@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import config from '../payload.config'
-import aiService from './aiService'
+import { aiService } from './aiService'
 
 class ChatService {
   private payload: any
@@ -60,7 +60,12 @@ class ChatService {
       }
 
       // Generate AI response
-      const aiResponse = await aiService.generateChatResponse(message, context, clientId)
+      const messages = [
+        { role: 'system' as const, content: context || 'You are a helpful military assistant.' },
+        { role: 'user' as const, content: message }
+      ]
+      const aiResult = await aiService.chat(messages)
+      const aiResponse = aiResult.content
 
       // Check if AI suggests transfer
       if (aiResponse.toLowerCase().includes('transfer') ||
@@ -308,33 +313,33 @@ class ChatService {
 
       const stats = {
         totalChats: chats.docs.length,
-        resolvedChats: chats.docs.filter(c => c.status === 'resolved').length,
+        resolvedChats: chats.docs.filter((c: any) => c.status === 'resolved').length,
         averageResponseTime: 0,
         averageResolutionTime: 0,
         satisfactionScore: 0,
       }
 
       // Calculate averages
-      const chatsWithFirstResponse = chats.docs.filter(c => c.firstResponseAt)
-      const chatsWithResolution = chats.docs.filter(c => c.resolvedAt)
-      const chatsWithRating = chats.docs.filter(c => c.rating?.score)
+      const chatsWithFirstResponse = chats.docs.filter((c: any) => c.firstResponseAt)
+      const chatsWithResolution = chats.docs.filter((c: any) => c.resolvedAt)
+      const chatsWithRating = chats.docs.filter((c: any) => c.rating?.score)
 
       if (chatsWithFirstResponse.length > 0) {
-        const totalResponseTime = chatsWithFirstResponse.reduce((sum, c) => {
+        const totalResponseTime = chatsWithFirstResponse.reduce((sum: number, c: any) => {
           return sum + (new Date(c.firstResponseAt).getTime() - new Date(c.startedAt).getTime())
         }, 0)
         stats.averageResponseTime = totalResponseTime / chatsWithFirstResponse.length / 1000 / 60 // minutes
       }
 
       if (chatsWithResolution.length > 0) {
-        const totalResolutionTime = chatsWithResolution.reduce((sum, c) => {
+        const totalResolutionTime = chatsWithResolution.reduce((sum: number, c: any) => {
           return sum + (new Date(c.resolvedAt).getTime() - new Date(c.startedAt).getTime())
         }, 0)
         stats.averageResolutionTime = totalResolutionTime / chatsWithResolution.length / 1000 / 60 / 60 // hours
       }
 
       if (chatsWithRating.length > 0) {
-        const totalRating = chatsWithRating.reduce((sum, c) => sum + c.rating.score, 0)
+        const totalRating = chatsWithRating.reduce((sum: number, c: any) => sum + c.rating.score, 0)
         stats.satisfactionScore = totalRating / chatsWithRating.length
       }
 
