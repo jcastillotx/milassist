@@ -7,6 +7,7 @@ import Solution from './components/sections/Solution';
 import Footer from './components/sections/Footer';
 import DashboardLayout from './layouts/DashboardLayout';
 import PortalLayout from './layouts/PortalLayout';
+import LandingLayout from './layouts/LandingLayout';
 import TaskBoard from './components/TaskBoard';
 import LiveChatWidget from './components/LiveChatWidget';
 
@@ -66,8 +67,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Main Portal Routes (New Design) */}
-        <Route path="/" element={<PortalLayout />}>
+        {/* Main Public Routes (Landing Page Design) */}
+        <Route path="/" element={<LandingLayout />}>
           <Route index element={<PortalHome />} />
           <Route path="about" element={<PortalAbout />} />
           <Route path="services" element={<PortalServices />} />
