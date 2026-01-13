@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import Icon from '../../components/Icon';
 
 const Resources = () => {
     // Mock Data
@@ -11,12 +12,12 @@ const Resources = () => {
         { id: 4, title: 'Travel Booking Template', type: 'template', category: 'Travel' },
     ]);
 
-    const getIcon = (type) => {
+    const getIconName = (type) => {
         switch (type) {
-            case 'checklist': return '☑️';
-            case 'guide': return '📚';
-            case 'template': return '📄';
-            default: return '📌';
+            case 'checklist': return 'checklist';
+            case 'guide': return 'guide';
+            case 'template': return 'template';
+            default: return 'pin';
         }
     };
 
@@ -28,7 +29,7 @@ const Resources = () => {
                 {resources.map((res) => (
                     <Card key={res.id} className="hover:shadow-md transition-shadow cursor-pointer">
                         <div className="flex items-start justify-between mb-4">
-                            <span className="text-2xl">{getIcon(res.type)}</span>
+                            <Icon name={getIconName(res.type)} size={24} />
                             <span className="text-xs font-medium bg-gray-100 px-2 py-1 rounded text-gray-600 uppercase">
                                 {res.category}
                             </span>

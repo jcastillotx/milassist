@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import CalendarSidebar from '../components/CalendarSidebar';
+import Icon from '../components/Icon';
 
 const PortalLayout = () => {
   const navigate = useNavigate();
@@ -18,39 +19,39 @@ const PortalLayout = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    navigate('/portal/login');
+    navigate('/login');
   };
 
   const publicNavItems = [
-    { path: '/portal', icon: '🏠', label: 'Home', exact: true },
-    { path: '/portal/about', icon: '📖', label: 'About' },
-    { path: '/portal/services', icon: '⚡', label: 'Services' },
-    { path: '/portal/contact', icon: '💬', label: 'Contact' },
+    { path: '/', icon: 'home', label: 'Home', exact: true },
+    { path: '/about', icon: 'about', label: 'About' },
+    { path: '/services', icon: 'services', label: 'Services' },
+    { path: '/contact', icon: 'chat', label: 'Contact' },
   ];
 
   const legalNavItems = [
-    { path: '/portal/privacy', icon: '🔒', label: 'Privacy' },
-    { path: '/portal/data-protection', icon: '🛡️', label: 'Data Protection' },
+    { path: '/privacy', icon: 'lock', label: 'Privacy' },
+    { path: '/data-protection', icon: 'shield', label: 'Data Protection' },
   ];
 
   const authNavItems = user ? [
-    { action: handleLogout, icon: '🚪', label: 'Logout' },
+    { action: handleLogout, icon: 'logout', label: 'Logout' },
   ] : [
-    { path: '/portal/login', icon: '🔑', label: 'Login' },
+    { path: '/login', icon: 'key', label: 'Login' },
   ];
 
-  const isHomePage = location.pathname === '/portal' || location.pathname === '/portal/';
+  const isHomePage = location.pathname === '/' || location.pathname === '';
 
   return (
     <div className="portal-layout">
       {/* Left Sidebar */}
       <aside className="portal-sidebar">
         <div className="portal-sidebar-header">
-          <div className="portal-logo">
+          <NavLink to="/" className="portal-logo">
             <div className="portal-logo-icon">
-              <span>🤖</span>
+              <Icon name="headset" size={24} color="#ffffff" />
             </div>
-          </div>
+          </NavLink>
         </div>
 
         <nav className="portal-nav">
@@ -64,7 +65,7 @@ const PortalLayout = () => {
                   `portal-nav-item ${isActive ? 'active' : ''}`
                 }
               >
-                <span className="portal-nav-icon">{item.icon}</span>
+                <span className="portal-nav-icon"><Icon name={item.icon} size={18} /></span>
                 <span className="portal-nav-label">{item.label}</span>
               </NavLink>
             ))}
@@ -81,7 +82,7 @@ const PortalLayout = () => {
                   `portal-nav-item ${isActive ? 'active' : ''}`
                 }
               >
-                <span className="portal-nav-icon">{item.icon}</span>
+                <span className="portal-nav-icon"><Icon name={item.icon} size={18} /></span>
                 <span className="portal-nav-label">{item.label}</span>
               </NavLink>
             ))}
@@ -99,7 +100,7 @@ const PortalLayout = () => {
                     `portal-nav-item ${isActive ? 'active' : ''}`
                   }
                 >
-                  <span className="portal-nav-icon">{item.icon}</span>
+                  <span className="portal-nav-icon"><Icon name={item.icon} size={18} /></span>
                   <span className="portal-nav-label">{item.label}</span>
                 </NavLink>
               ) : (
@@ -108,7 +109,7 @@ const PortalLayout = () => {
                   onClick={item.action}
                   className="portal-nav-item portal-nav-button"
                 >
-                  <span className="portal-nav-icon">{item.icon}</span>
+                  <span className="portal-nav-icon"><Icon name={item.icon} size={18} /></span>
                   <span className="portal-nav-label">{item.label}</span>
                 </button>
               )
@@ -128,10 +129,10 @@ const PortalLayout = () => {
         {/* Settings Icon */}
         <div className="portal-sidebar-footer">
           <button className="portal-settings-btn" title="Settings">
-            ⚙️
+            <Icon name="settings" size={18} />
           </button>
           <button className="portal-help-btn" title="Help">
-            🎧
+            <Icon name="headphones" size={18} />
           </button>
         </div>
       </aside>
@@ -142,18 +143,10 @@ const PortalLayout = () => {
         <header className="portal-topbar">
           <div className="portal-topbar-left">
             <button className="portal-sidebar-toggle">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" />
-              </svg>
+              <Icon name="menu" size={20} />
             </button>
             <div className="portal-search">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" />
-              </svg>
+              <Icon name="search" size={16} />
               <input type="text" placeholder="Search" />
               <span className="portal-search-shortcut">⌘ K</span>
             </div>
@@ -164,28 +157,16 @@ const PortalLayout = () => {
                 className="portal-topbar-btn portal-right-sidebar-toggle"
                 onClick={() => setShowRightSidebar(!showRightSidebar)}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <path d="M15 3v18" />
-                </svg>
+                <Icon name="sidebar" size={16} />
                 Right Sidebar
               </button>
             )}
             <button className="portal-topbar-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
+              <Icon name="upload" size={16} />
               Import
             </button>
             <button className="portal-topbar-btn portal-topbar-btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
+              <Icon name="calendar" size={16} />
               New Meeting
             </button>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Icon from './Icon';
 
 const CalendarSidebar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -68,12 +69,7 @@ const CalendarSidebar = () => {
           <h3 className="calendar-month">{formatMonth(currentDate)}</h3>
         </div>
         <button className="calendar-select-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
+          <Icon name="calendar" size={16} />
           Select Date
         </button>
       </div>
@@ -84,9 +80,7 @@ const CalendarSidebar = () => {
           className="calendar-nav-btn"
           onClick={() => navigateWeek(-1)}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
+          <Icon name="arrowLeft" size={16} />
         </button>
 
         <div className="calendar-days">
@@ -106,9 +100,7 @@ const CalendarSidebar = () => {
           className="calendar-nav-btn"
           onClick={() => navigateWeek(1)}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
+          <Icon name="arrowRight" size={16} />
         </button>
       </div>
 
@@ -145,7 +137,7 @@ const CalendarSidebar = () => {
                     )}
                     {event.hasJoinButton && (
                       <button className="calendar-join-btn">
-                        <span className="calendar-join-icon">📅</span>
+                        <span className="calendar-join-icon"><Icon name="calendar" size={16} /></span>
                         Join Meeting
                       </button>
                     )}

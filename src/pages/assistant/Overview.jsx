@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import Icon from '../../components/Icon';
 
 const AssistantOverview = () => {
     return (
@@ -59,9 +60,9 @@ const AssistantOverview = () => {
                         <div className="bg-green-500 h-2 rounded-full" style={{ width: '85%' }}></div>
                     </div>
                     <ul className="text-sm space-y-2 text-gray-600 mb-6">
-                        <li className="flex items-center gap-2 text-green-600">✓ Identity Verified</li>
-                        <li className="flex items-center gap-2 text-green-600">✓ Skills Assessment</li>
-                        <li className="flex items-center gap-2 text-gray-400">○ Video Intro (Pending)</li>
+                        <li className="flex items-center gap-2 text-green-600"><Icon name="check" size={14} /> Identity Verified</li>
+                        <li className="flex items-center gap-2 text-green-600"><Icon name="check" size={14} /> Skills Assessment</li>
+                        <li className="flex items-center gap-2 text-gray-400"><Icon name="help" size={14} /> Video Intro (Pending)</li>
                     </ul>
                     <Button variant="secondary" className="w-full text-sm" onClick={() => window.location.href = '/assistant/onboarding'}>Complete Onboarding</Button>
                 </Card>
