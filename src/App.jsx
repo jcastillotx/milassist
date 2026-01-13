@@ -7,6 +7,7 @@ import Solution from './components/sections/Solution';
 import Footer from './components/sections/Footer';
 import DashboardLayout from './layouts/DashboardLayout';
 import TaskBoard from './components/TaskBoard';
+import LiveChatWidget from './components/LiveChatWidget';
 
 // Pages
 import AdminOverview from './pages/admin/Overview';
@@ -31,6 +32,7 @@ import Resources from './pages/assistant/Resources';
 import TimeLogs from './pages/assistant/TimeLogs';
 import Onboarding from './pages/assistant/Onboarding';
 import InboxManager from './pages/assistant/InboxManager';
+import LiveChatDashboard from './pages/assistant/LiveChatDashboard';
 import PrivacyCenter from './pages/PrivacyCenter';
 import EmailSettings from './pages/client/EmailSettings';
 import CalendarView from './pages/client/CalendarView';
@@ -99,9 +101,13 @@ function App() {
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="privacy" element={<PrivacyCenter />} />
           <Route path="inbox" element={<InboxManager />} />
+          <Route path="live-chat" element={<LiveChatDashboard />} />
         </Route>
 
       </Routes>
+
+      {/* Live Chat Widget - appears on all pages for authenticated clients */}
+      <LiveChatWidget />
     </BrowserRouter>
   )
 }

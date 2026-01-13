@@ -16,8 +16,8 @@ const Call = sequelize.define('Call', {
         defaultValue: 'inbound'
     },
     status: {
-        type: DataTypes.ENUM('completed', 'missed', 'voicemail', 'forwarded'),
-        defaultValue: 'completed'
+        type: DataTypes.ENUM('ringing', 'completed', 'missed', 'voicemail', 'forwarded'),
+        defaultValue: 'ringing'
     },
     duration_seconds: {
         type: DataTypes.INTEGER,
@@ -29,10 +29,18 @@ const Call = sequelize.define('Call', {
     transcription: {
         type: DataTypes.TEXT,
     },
+    twilio_call_sid: {
+        type: DataTypes.STRING,
+        unique: true
+    },
     // Foreign Keys
     clientId: {
         type: DataTypes.UUID,
         allowNull: false
+    },
+    assistantId: {
+        type: DataTypes.UUID,
+        allowNull: true
     }
 });
 

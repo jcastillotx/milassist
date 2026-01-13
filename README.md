@@ -13,7 +13,11 @@ MilAssist is a comprehensive virtual assistance and data services platform conne
 - **Task Management**: Kanban-style task board with priority levels and status tracking
 - **Real-time Messaging**: Direct chat between clients and assistants
 - **Document Management**: Upload, review, and collaborate on documents
-- **Travel Management**: Integrated travel booking and itinerary management
+- **Travel Management**: Comprehensive travel planning and booking
+  - **Google Flights Integration**: Real-time flight search and pricing
+  - **Trip Planning**: Comprehensive itinerary builder and management
+  - **Expense Tracking**: Budget monitoring and expense categorization
+  - **Document Storage**: Travel documents and booking confirmations
 - **Data & Research**: Research requests and data collection tools
 
 ### Advanced Capabilities

@@ -32,6 +32,8 @@ app.use('/invoices', require('./routes/invoices'));
 app.use('/pages', require('./routes/pages'));
 app.use('/integrations', require('./routes/integrations'));
 app.use('/trips', require('./routes/trips'));
+app.use('/travel', require('./routes/travel'));
+app.use('/twilio', require('./routes/twilio'));
 app.use('/documents', require('./routes/documents'));
 app.use('/research', require('./routes/research'));
 app.use('/ai', require('./routes/ai'));
