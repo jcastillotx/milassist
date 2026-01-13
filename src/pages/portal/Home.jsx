@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
+import Icon from '../../components/Icon';
 
 const Home = () => {
   const { user } = useOutletContext();
@@ -17,21 +18,21 @@ const Home = () => {
 
   const quickAccessItems = [
     {
-      icon: '🔗',
+      icon: 'link',
       title: 'Quick Links',
       description: 'No items found',
       action: 'Add Links',
       path: '#',
     },
     {
-      icon: '📹',
+      icon: 'video',
       title: 'My Meetings',
       description: 'No items found',
       action: 'Connect Your Calendar',
       path: '/portal/services',
     },
     {
-      icon: '📝',
+      icon: 'notes',
       title: 'Notes',
       description: 'No items found',
       action: 'Add Notes',
@@ -66,7 +67,7 @@ const Home = () => {
         <h1 className="portal-greeting-title">Hello, {userName}</h1>
         <p className="portal-greeting-subtitle">
           How can <span className="portal-assistant-name">
-            <span className="portal-assistant-icon">🤖</span> MilAssist
+            <span className="portal-assistant-icon"><Icon name="robot" size={18} /></span> MilAssist
           </span> help you?
         </p>
       </div>
@@ -74,7 +75,7 @@ const Home = () => {
       {/* Getting Started Card */}
       <div className="portal-getting-started card">
         <h3 className="portal-card-title">
-          <span>🎉</span> Getting Started with MilAssist – Your AI Assistant
+          <Icon name="party" size={20} /> Getting Started with MilAssist – Your AI Assistant
         </h3>
         <div className="portal-progress-bar">
           <div
@@ -88,14 +89,9 @@ const Home = () => {
               <span className="portal-checklist-text">{item.text}</span>
               <span className={`portal-checklist-icon ${item.completed ? 'completed' : ''}`}>
                 {item.completed ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="9 12 11 14 15 10" />
-                  </svg>
+                  <Icon name="checkCircle" size={20} />
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                  </svg>
+                  <Icon name="help" size={20} />
                 )}
               </span>
             </div>
@@ -109,11 +105,7 @@ const Home = () => {
         <form onSubmit={handleJoinMeeting} className="portal-join-form">
           <div className="portal-join-input-wrapper">
             <span className="portal-join-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="2" y="3" width="20" height="14" rx="2" />
-                <line x1="8" y1="21" x2="16" y2="21" />
-                <line x1="12" y1="17" x2="12" y2="21" />
-              </svg>
+              <Icon name="monitor" size={16} />
             </span>
             <input
               type="text"
@@ -135,7 +127,7 @@ const Home = () => {
         <div className="portal-quick-access-grid">
           {quickAccessItems.map((item, index) => (
             <div key={index} className="portal-quick-card card">
-              <span className="portal-quick-icon">{item.icon}</span>
+              <span className="portal-quick-icon"><Icon name={item.icon} size={24} /></span>
               <h4 className="portal-quick-title">{item.title}</h4>
               <p className="portal-quick-description">{item.description}</p>
               <Link to={item.path} className="portal-quick-action">

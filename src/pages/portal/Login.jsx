@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Icon from '../../components/Icon';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -48,19 +49,19 @@ const Login = () => {
         <div className="portal-auth-branding">
           <div className="portal-auth-brand-content">
             <div className="portal-auth-logo">
-              <span>🤖</span>
+              <Icon name="robot" size={48} />
             </div>
             <h1>MilAssist</h1>
             <p>Your AI-powered assistant for military families</p>
             <div className="portal-auth-features">
               <div className="portal-auth-feature">
-                <span>✓</span> Task Management
+                <Icon name="check" size={16} /> Task Management
               </div>
               <div className="portal-auth-feature">
-                <span>✓</span> Travel Coordination
+                <Icon name="check" size={16} /> Travel Coordination
               </div>
               <div className="portal-auth-feature">
-                <span>✓</span> 24/7 AI Support
+                <Icon name="check" size={16} /> 24/7 AI Support
               </div>
             </div>
           </div>
@@ -76,7 +77,7 @@ const Login = () => {
 
             {error && (
               <div className="portal-auth-error">
-                <span>⚠️</span>
+                <Icon name="warning" size={18} />
                 {error}
               </div>
             )}
@@ -86,10 +87,7 @@ const Login = () => {
                 <label htmlFor="email">Email Address</label>
                 <div className="portal-input-wrapper">
                   <span className="portal-input-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
-                    </svg>
+                    <Icon name="email" size={18} />
                   </span>
                   <input
                     type="email"
@@ -111,10 +109,7 @@ const Login = () => {
                 </div>
                 <div className="portal-input-wrapper">
                   <span className="portal-input-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
+                    <Icon name="lock" size={18} />
                   </span>
                   <input
                     type="password"

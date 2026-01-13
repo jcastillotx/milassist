@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import Icon from '../../components/Icon';
 
 const DataResearch = () => {
     const [activeTab, setActiveTab] = useState('analytics');
@@ -48,7 +49,7 @@ const DataResearch = () => {
 
                     <Card className="min-h-[300px] flex items-center justify-center bg-gray-50 border-dashed">
                         <div className="text-center text-gray-400">
-                            <p className="text-4xl mb-2">📊</p>
+                            <div className="mb-2"><Icon name="chart" size={40} /></div>
                             <p>Detailed Interactive Charts would render here (e.g. Recharts)</p>
                         </div>
                     </Card>

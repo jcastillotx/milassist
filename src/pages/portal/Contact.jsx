@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Icon from '../../components/Icon';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -23,19 +24,19 @@ const Contact = () => {
 
   const contactInfo = [
     {
-      icon: '📧',
+      icon: 'email',
       title: 'Email Us',
       description: 'support@milassist.com',
       subtitle: 'We respond within 24 hours',
     },
     {
-      icon: '📞',
+      icon: 'phone',
       title: 'Call Us',
       description: '1-800-MIL-ASST',
       subtitle: 'Mon-Fri, 9am-5pm EST',
     },
     {
-      icon: '💬',
+      icon: 'chat',
       title: 'Live Chat',
       description: 'Chat with our team',
       subtitle: 'Available 24/7',
@@ -59,7 +60,7 @@ const Contact = () => {
         <div className="portal-contact-methods">
           {contactInfo.map((info, index) => (
             <div key={index} className="portal-contact-card card">
-              <span className="portal-contact-icon">{info.icon}</span>
+              <span className="portal-contact-icon"><Icon name={info.icon} size={28} /></span>
               <h3 className="portal-contact-title">{info.title}</h3>
               <p className="portal-contact-description">{info.description}</p>
               <span className="portal-contact-subtitle">{info.subtitle}</span>
@@ -76,7 +77,7 @@ const Contact = () => {
 
             {submitted ? (
               <div className="portal-success-message card">
-                <span className="portal-success-icon">✅</span>
+                <span className="portal-success-icon"><Icon name="checkCircle" size={48} /></span>
                 <h3>Thank You!</h3>
                 <p>Your message has been sent successfully. We'll get back to you within 24 hours.</p>
                 <button
@@ -159,14 +160,14 @@ const Contact = () => {
               <h3>Our Office</h3>
               <div className="portal-office-details">
                 <div className="portal-office-item">
-                  <span className="portal-office-icon">📍</span>
+                  <span className="portal-office-icon"><Icon name="pin" size={20} /></span>
                   <div>
                     <strong>Address</strong>
                     <p>123 Military Way<br />Washington, DC 20001</p>
                   </div>
                 </div>
                 <div className="portal-office-item">
-                  <span className="portal-office-icon">🕐</span>
+                  <span className="portal-office-icon"><Icon name="clock" size={20} /></span>
                   <div>
                     <strong>Business Hours</strong>
                     <p>Monday - Friday<br />9:00 AM - 5:00 PM EST</p>
@@ -179,16 +180,16 @@ const Contact = () => {
               <h3>Follow Us</h3>
               <div className="portal-social-links">
                 <a href="#" className="portal-social-link">
-                  <span>📘</span> Facebook
+                  <Icon name="facebook" size={18} /> Facebook
                 </a>
                 <a href="#" className="portal-social-link">
-                  <span>🐦</span> Twitter
+                  <Icon name="twitter" size={18} /> Twitter
                 </a>
                 <a href="#" className="portal-social-link">
-                  <span>💼</span> LinkedIn
+                  <Icon name="linkedin" size={18} /> LinkedIn
                 </a>
                 <a href="#" className="portal-social-link">
-                  <span>📸</span> Instagram
+                  <Icon name="instagram" size={18} /> Instagram
                 </a>
               </div>
             </div>

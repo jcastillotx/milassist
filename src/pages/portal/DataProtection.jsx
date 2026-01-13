@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Icon from '../../components/Icon';
 
 const DataProtection = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -13,32 +14,32 @@ const DataProtection = () => {
 
   const securityMeasures = [
     {
-      icon: '🔐',
+      icon: 'encryption',
       title: 'Encryption',
       description: 'All data is encrypted using AES-256 bit encryption, both in transit and at rest.',
     },
     {
-      icon: '🔒',
+      icon: 'lock',
       title: 'Access Control',
       description: 'Role-based access ensures only authorized personnel can access your data.',
     },
     {
-      icon: '📊',
+      icon: 'chart',
       title: 'Monitoring',
       description: '24/7 security monitoring and anomaly detection to prevent unauthorized access.',
     },
     {
-      icon: '💾',
+      icon: 'database',
       title: 'Backups',
       description: 'Regular encrypted backups with geo-redundancy ensure your data is never lost.',
     },
     {
-      icon: '🔍',
+      icon: 'audit',
       title: 'Auditing',
       description: 'Comprehensive audit logs track all access and changes to your data.',
     },
     {
-      icon: '🛡️',
+      icon: 'shield',
       title: 'Penetration Testing',
       description: 'Regular security assessments by third-party experts to identify vulnerabilities.',
     },
@@ -140,22 +141,22 @@ const DataProtection = () => {
               <h3>Our Data Protection Principles</h3>
               <div className="portal-principles-grid">
                 <div className="portal-principle-card card">
-                  <span>📌</span>
+                  <Icon name="pin" size={24} />
                   <h4>Data Minimization</h4>
                   <p>We only collect the data necessary to provide our services.</p>
                 </div>
                 <div className="portal-principle-card card">
-                  <span>🎯</span>
+                  <Icon name="target" size={24} />
                   <h4>Purpose Limitation</h4>
                   <p>Your data is only used for the purposes you've agreed to.</p>
                 </div>
                 <div className="portal-principle-card card">
-                  <span>⏱️</span>
+                  <Icon name="clock" size={24} />
                   <h4>Storage Limitation</h4>
                   <p>We retain data only as long as necessary.</p>
                 </div>
                 <div className="portal-principle-card card">
-                  <span>✅</span>
+                  <Icon name="checkCircle" size={24} />
                   <h4>Accuracy</h4>
                   <p>We keep your data accurate and up-to-date.</p>
                 </div>
@@ -189,7 +190,7 @@ const DataProtection = () => {
             </div>
 
             <div className="portal-rights-note card">
-              <span>ℹ️</span>
+              <Icon name="info" size={20} />
               <p>
                 To exercise any of these rights, please log in to your account or contact our
                 Data Protection Officer at <a href="mailto:dpo@milassist.com">dpo@milassist.com</a>.
@@ -212,7 +213,7 @@ const DataProtection = () => {
             <div className="portal-security-grid">
               {securityMeasures.map((measure, index) => (
                 <div key={index} className="portal-security-card card">
-                  <span className="portal-security-icon">{measure.icon}</span>
+                  <span className="portal-security-icon"><Icon name={measure.icon} size={28} /></span>
                   <h3>{measure.title}</h3>
                   <p>{measure.description}</p>
                 </div>
@@ -267,14 +268,14 @@ const DataProtection = () => {
       <div className="portal-content-section">
         <div className="portal-legal-links">
           <Link to="/portal/privacy" className="portal-legal-link card">
-            <span>🔒</span>
+            <Icon name="lock" size={24} />
             <div>
               <h4>Privacy Policy</h4>
               <p>Read our full privacy policy</p>
             </div>
           </Link>
           <Link to="/portal/contact" className="portal-legal-link card">
-            <span>💬</span>
+            <Icon name="chat" size={24} />
             <div>
               <h4>Contact DPO</h4>
               <p>Reach our Data Protection Officer</p>

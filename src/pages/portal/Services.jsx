@@ -1,40 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Icon from '../../components/Icon';
 
 const Services = () => {
   const services = [
     {
-      icon: '📋',
+      icon: 'clipboard',
       title: 'Task Management',
       description: 'Delegate daily tasks to your personal assistant. From scheduling appointments to managing to-do lists.',
       features: ['Task tracking', 'Priority management', 'Progress updates', 'Team collaboration'],
     },
     {
-      icon: '✈️',
+      icon: 'plane',
       title: 'Travel Coordination',
       description: 'PCS moves, vacations, or emergency travel - we handle all the logistics so you can focus on your family.',
       features: ['Flight bookings', 'Hotel reservations', 'Itinerary planning', 'Travel alerts'],
     },
     {
-      icon: '📄',
+      icon: 'document',
       title: 'Document Management',
       description: 'Organize, store, and manage important documents. Never lose track of critical paperwork again.',
       features: ['Secure storage', 'Easy retrieval', 'Document sharing', 'Version control'],
     },
     {
-      icon: '🔍',
+      icon: 'search',
       title: 'Research Services',
       description: 'Need information? Our team conducts thorough research on any topic you need.',
       features: ['Market research', 'School comparisons', 'Housing options', 'Local resources'],
     },
     {
-      icon: '📧',
+      icon: 'email',
       title: 'Communication Support',
       description: 'Stay connected with integrated email, calendar, and messaging capabilities.',
       features: ['Email integration', 'Calendar sync', 'Video meetings', 'Message management'],
     },
     {
-      icon: '🤖',
+      icon: 'robot',
       title: 'AI-Powered Assistance',
       description: 'Our AI assistant is available 24/7 to answer questions and provide instant support.',
       features: ['Instant responses', '24/7 availability', 'Smart suggestions', 'Learning system'],
@@ -102,15 +103,13 @@ const Services = () => {
         <div className="portal-services-grid">
           {services.map((service, index) => (
             <div key={index} className="portal-service-card card">
-              <span className="portal-service-icon">{service.icon}</span>
+              <span className="portal-service-icon"><Icon name={service.icon} size={28} /></span>
               <h3 className="portal-service-title">{service.title}</h3>
               <p className="portal-service-description">{service.description}</p>
               <ul className="portal-service-features">
                 {service.features.map((feature, i) => (
                   <li key={i}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+                    <Icon name="check" size={16} />
                     {feature}
                   </li>
                 ))}
@@ -142,9 +141,7 @@ const Services = () => {
               <ul className="portal-pricing-features">
                 {plan.features.map((feature, i) => (
                   <li key={i}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+                    <Icon name="check" size={16} color="var(--color-primary)" />
                     {feature}
                   </li>
                 ))}
