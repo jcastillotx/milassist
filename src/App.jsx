@@ -50,6 +50,7 @@ import PortalPrivacy from './pages/portal/Privacy';
 import PortalDataProtection from './pages/portal/DataProtection';
 import PortalLogin from './pages/portal/Login';
 import PortalForgotPassword from './pages/portal/ForgotPassword';
+import PortalRequestAccess from './pages/portal/RequestAccess';
 
 import Login from './pages/Login';
 
@@ -78,6 +79,7 @@ function App() {
         </Route>
         <Route path="/login" element={<PortalLogin />} />
         <Route path="/forgot-password" element={<PortalForgotPassword />} />
+        <Route path="/request-access" element={<PortalRequestAccess />} />
 
         {/* Legacy Landing Page */}
         <Route path="/landing" element={<LandingPage />} />
