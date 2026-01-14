@@ -134,14 +134,15 @@ const TrainingModules: CollectionConfig = {
             condition: (data: any) => ['video', 'document', 'link'].includes(data?.type),
           },
         },
-        {
-          name: 'file',
-          type: 'upload',
-          relationTo: 'media',
-          admin: {
-            condition: (data: any) => data?.type === 'document',
-          },
-        },
+        // TODO: Add file upload when Media collection is implemented
+        // {
+        //   name: 'file',
+        //   type: 'upload',
+        //   relationTo: 'media',
+        //   admin: {
+        //     condition: (data: any) => data?.type === 'document',
+        //   },
+        // },
         {
           name: 'description',
           type: 'textarea',

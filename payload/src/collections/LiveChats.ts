@@ -150,21 +150,22 @@ const LiveChats: CollectionConfig = {
           type: 'checkbox',
           defaultValue: false,
         },
-        {
-          name: 'attachments',
-          type: 'array',
-          fields: [
-            {
-              name: 'file',
-              type: 'upload',
-              relationTo: 'media',
-            },
-            {
-              name: 'filename',
-              type: 'text',
-            },
-          ],
-        },
+        // TODO: Add attachments when Media collection is implemented
+        // {
+        //   name: 'attachments',
+        //   type: 'array',
+        //   fields: [
+        //     {
+        //       name: 'file',
+        //       type: 'upload',
+        //       relationTo: 'media',
+        //     },
+        //     {
+        //       name: 'filename',
+        //       type: 'text',
+        //     },
+        //   ],
+        // },
       ],
       admin: {
         description: 'Chat message history',

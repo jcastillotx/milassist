@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 
 // Import collections (we'll create these next)
 import { Users } from './collections/Users'
+<<<<<<< Updated upstream
 import { Tasks } from './collections/Tasks'
 import { Messages } from './collections/Messages'
 import { Invoices } from './collections/Invoices'
@@ -28,14 +29,37 @@ import VideoIntegrations from './collections/VideoIntegrations'
 import CalendarConnections from './collections/CalendarConnections'
 import TaskHandoffs from './collections/TaskHandoffs'
 import Integrations from './collections/Integrations'
+=======
+>>>>>>> Stashed changes
 import AssistantOnboarding from './collections/AssistantOnboarding'
 import TrainingModules from './collections/TrainingModules'
 import Assessments from './collections/Assessments'
 import LiveChats from './collections/LiveChats'
 import OnCallAssistants from './collections/OnCallAssistants'
+import { Media } from './collections/Media'
+import { Tasks } from './collections/Tasks'
+import { Messages } from './collections/Messages'
+import { Invoices } from './collections/Invoices'
+import { Documents } from './collections/Documents'
+import Trips from './collections/Trips'
+import TimeEntries from './collections/TimeEntries'
+import Meetings from './collections/Meetings'
+import FormTemplates from './collections/FormTemplates'
+import ServiceRequests from './collections/ServiceRequests'
+import Research from './collections/Research'
+import Calls from './collections/Calls'
+import RoutingRules from './collections/RoutingRules'
+import PrivacyRequests from './collections/PrivacyRequests'
+import EmailConnections from './collections/EmailConnections'
+import CalendarConnections from './collections/CalendarConnections'
+import TaskHandoffs from './collections/TaskHandoffs'
+import Integrations from './collections/Integrations'
+import VideoIntegrations from './collections/VideoIntegrations'
+import Resources from './collections/Resources'
+import Pages from './collections/Pages'
 
 // Import globals
-import { Settings } from './globals/Settings'
+// import { Settings } from './globals/Settings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -75,14 +99,40 @@ export default buildConfig({
     Assessments,
     LiveChats,
     OnCallAssistants,
+    Media,
+    Tasks,
+    Messages,
+    Invoices,
+    Documents,
+    Trips,
+    TimeEntries,
+    Meetings,
+    FormTemplates,
+    ServiceRequests,
+    Research,
+    Calls,
+    RoutingRules,
+    PrivacyRequests,
+    EmailConnections,
+    CalendarConnections,
+    TaskHandoffs,
+    Integrations,
+    VideoIntegrations,
+    Resources,
+    Pages,
   ],
-
   // Global settings
+<<<<<<< Updated upstream
   globals: [
     Settings,
   ],
+=======
+  // globals: [
+  //   Settings
+  // ],
+>>>>>>> Stashed changes
 
-  // Database adapter (SQLite for development)
+  // Database adapter (SQLite for development, Supabase for production)
   db: sqliteAdapter({
     client: {
       url: 'file:./payload.db',
@@ -102,7 +152,21 @@ export default buildConfig({
 
   // Plugins
   plugins: [
-    // TODO: Add S3 storage plugin when environment variables are configured
+    s3Storage({
+      collections: {
+        media: {
+          prefix: 'media/',
+        },
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        region: process.env.S3_REGION || 'us-east-1',
+      },
+    }),
   ],
 
   // CORS

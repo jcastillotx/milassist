@@ -105,15 +105,16 @@ const Resources: CollectionConfig = {
         return true;
       },
     },
-    {
-      name: 'attached_file',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description: 'Upload a file for this resource',
-        condition: (data: any) => data.content_type === 'file',
-      },
-    },
+    // TODO: Add file upload when Media collection is implemented
+    // {
+    //   name: 'attached_file',
+    //   type: 'upload',
+    //   relationTo: 'media',
+    //   admin: {
+    //     description: 'Upload a file for this resource',
+    //     condition: (data: any) => data.content_type === 'file',
+    //   },
+    // },
     {
       name: 'description',
       type: 'textarea',
