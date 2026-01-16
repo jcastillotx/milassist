@@ -77,6 +77,7 @@ function App() {
           <Route path="data-protection" element={<PortalDataProtection />} />
         </Route>
         <Route path="/login" element={<PortalLogin />} />
+        <Route path="/pricing" element={<PortalServices />} />
         <Route path="/forgot-password" element={<PortalForgotPassword />} />
 
         {/* Legacy Landing Page */}

@@ -1,8 +1,71 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../components/Icon';
 
 const Services = () => {
+  const [loading, setLoading] = useState(null);
+
+  // Load Stripe.js
+  const loadStripe = () => {
+    if (!window.Stripe) {
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/';
+      script.async = true;
+      document.head.appendChild(script);
+    }
+  };
+
+  // Handle Stripe checkout
+  const handleCheckout = async (planId, planName, price) => {
+    setLoading(planId);
+
+    try {
+      // Load Stripe if not already loaded
+      if (!window.Stripe) {
+        await new Promise((resolve) => {
+          loadStripe();
+          const checkStripe = setInterval(() => {
+            if (window.Stripe) {
+              clearInterval(checkStripe);
+              resolve();
+            }
+          }, 100);
+        });
+      }
+
+      const stripe = window.Stripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_...');
+
+      // Create checkout session
+      const response = await fetch('http://localhost:3000/api/stripe/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planId,
+          planName,
+          price: parseInt(price.replace('$', '')),
+        }),
+      });
+
+      const session = await response.json();
+
+      // Redirect to Stripe Checkout
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+
+      if (result.error) {
+        alert(result.error.message);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setLoading(null);
+    }
+  };
+
   const services = [
     {
       icon: 'clipboard',
@@ -44,6 +107,7 @@ const Services = () => {
 
   const pricingPlans = [
     {
+      id: 'basic',
       name: 'Basic',
       price: '$29',
       period: '/month',
@@ -57,6 +121,7 @@ const Services = () => {
       highlighted: false,
     },
     {
+      id: 'professional',
       name: 'Professional',
       price: '$79',
       period: '/month',
@@ -71,6 +136,7 @@ const Services = () => {
       highlighted: true,
     },
     {
+      id: 'enterprise',
       name: 'Enterprise',
       price: '$149',
       period: '/month',
@@ -146,12 +212,20 @@ const Services = () => {
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/portal/login"
+              <button
+                onClick={() => handleCheckout(plan.id, plan.name, plan.price)}
+                disabled={loading === plan.id}
                 className={`btn ${plan.highlighted ? 'btn-primary' : 'btn-secondary'} portal-pricing-btn`}
               >
-                Get Started
-              </Link>
+                {loading === plan.id ? (
+                  <>
+                    <span className="portal-spinner"></span>
+                    Processing...
+                  </>
+                ) : (
+                  'Get Started'
+                )}
+              </button>
             </div>
           ))}
         </div>

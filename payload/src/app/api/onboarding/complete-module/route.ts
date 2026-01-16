@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       ...(onboarding.progress?.completedModules || []),
       {
         moduleId,
-        completedAt: new Date(),
+        completedAt: new Date().toISOString(),
         score,
       },
     ]
@@ -77,22 +77,29 @@ export async function POST(request: NextRequest) {
 
     // If assessment results provided, store them
     if (assessmentResults) {
-      // Find the assessment for this module
-      const trainingModule = onboarding.trainingModules?.find(
-        (tm: any) => tm.module === moduleId
-      )
+      // Find the training module to get its assessment
+      const trainingModuleData = await payload.findByID({
+        collection: 'training-modules',
+        id: moduleId,
+      })
 
-      if (trainingModule?.assessment) {
-        await payload.create({
-          collection: 'assessment-results',
-          data: {
-            assessment: trainingModule.assessment,
-            assistant: onboarding.assistant,
-            onboarding: onboardingId,
-            results: assessmentResults,
+      if (trainingModuleData?.assessment) {
+        const existingResults = onboarding.assessmentResults || []
+        const updatedResults = [
+          ...existingResults,
+          {
+            assessment: trainingModuleData.assessment,
             score,
             passed: score >= 70, // Assuming 70% passing score
-            completedAt: new Date(),
+            completedAt: new Date().toISOString(),
+          },
+        ]
+
+        await payload.update({
+          collection: 'assistant-onboarding',
+          id: onboardingId,
+          data: {
+            assessmentResults: updatedResults,
           },
         })
       }

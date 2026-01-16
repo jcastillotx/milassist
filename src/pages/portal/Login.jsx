@@ -240,7 +240,7 @@ const Login = () => {
 
             <p className="portal-auth-footer">
               Don't have an account?{' '}
-              <Link to="/contact" className="portal-auth-footer-link">Request Access</Link>
+              <Link to="/pricing" className="portal-auth-footer-link">Request Access</Link>
             </p>
 
             <div className="portal-auth-security">

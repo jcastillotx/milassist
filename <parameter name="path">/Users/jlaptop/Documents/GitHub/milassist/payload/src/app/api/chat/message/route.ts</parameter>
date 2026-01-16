@@ -1,7 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server'
+<parameter name="content">import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '../../../../payload.config'
-import chatService from '../../../../services/chatService'
+import chatService from '../../../services/chatService'
+
+// Define message types
+type SenderType = 'assistant' | 'client' | 'ai_bot' | 'system'
+
+interface Message {
+  sender: number | null
+  senderType: SenderType
+  content: string
+  timestamp: string
+  isRead: boolean
+  attachments?: Array<{ file: string; filename: string }>
+}
+
+interface Attachment {
+  file: string
+  filename: string
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,58 +50,65 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // Determine sender type
-    let senderType = 'client'
+    // Determine sender type with proper typing
+    let senderType: SenderType = 'client'
     if (isAssignedAssistant) {
       senderType = 'assistant'
     } else if (isAdmin) {
       senderType = 'assistant' // Admins count as assistants
     }
 
-    // Create the message
-    const message = {
+    const now = new Date().toISOString()
+
+    // Create the message with proper types
+    const message: Message = {
       sender: decoded.id,
-      senderType: senderType as "client" | "assistant" | "ai_bot" | "system",
+      senderType,
       content,
-      timestamp: new Date().toISOString(),
+      timestamp: now,
       isRead: false,
-      attachments: attachments.map((att: any) => ({
+      attachments: attachments.map((att: Attachment) => ({
         file: att.file,
         filename: att.filename,
       })),
     }
 
     // Update chat with new message
-    const updatedMessages = [...(chat.messages || []), message]
+    const existingMessages = (chat.messages as Message[]) || []
+    const updatedMessages: Message[] = [...existingMessages, message]
+
+    // Prepare update data
+    const updateData: Record<string, unknown> = {
+      messages: updatedMessages,
+    }
+
+    // Update first response time if this is the first assistant response
+    if (!chat.firstResponseAt && senderType === 'assistant') {
+      updateData.firstResponseAt = now
+    }
 
     const updatedChat = await payload.update({
       collection: 'live-chats',
       id: chatId,
-      data: {
-        messages: updatedMessages,
-        // Update first response time if this is the first assistant response
-        firstResponseAt: !chat.firstResponseAt && senderType === 'assistant'
-          ? new Date().toISOString()
-          : chat.firstResponseAt,
-      },
+      data: updateData,
     })
 
     // If this is from a client and no human assistant is assigned yet, handle with AI
     if (senderType === 'client' && !chat.assignedAssistant && !chat.onCallAssistant && chat.status !== 'in_progress') {
       try {
         // Get AI response
-        const aiResponse = await chatService.handleAIChat(chatId, content, String(chat.client))
+        const aiResponse = await chatService.handleAIChat(chatId, content, chat.client)
 
         // Add AI response to chat
-        const aiMessage = {
-          sender: undefined,
-          senderType: 'ai_bot' as const,
+        const aiMessage: Message = {
+          sender: null,
+          senderType: 'ai_bot',
           content: aiResponse,
-          timestamp: new Date().toISOString(),
+          timestamp: now,
           isRead: false,
         }
 
-        const finalMessages = [...updatedMessages, aiMessage]
+        const finalMessages: Message[] = [...updatedMessages, aiMessage]
 
         await payload.update({
           collection: 'live-chats',
@@ -183,13 +207,15 @@ async function assignAvailableAssistant(payload: any, chatId: string, chat: any)
 
     // If we found an assistant, assign them
     if (availableAssistant) {
+      const now = new Date().toISOString()
+      
       await payload.update({
         collection: 'live-chats',
         id: chatId,
         data: {
           onCallAssistant: availableAssistant,
           status: 'in_progress',
-          assignedAt: new Date(),
+          assignedAt: now,
         },
       })
 
@@ -209,7 +235,7 @@ async function assignAvailableAssistant(payload: any, chatId: string, chat: any)
           id: assistantRecord.docs[0].id,
           data: {
             currentChatCount: assistantRecord.docs[0].currentChatCount + 1,
-            lastActivity: new Date(),
+            lastActivity: now,
           },
         })
       }
@@ -218,3 +244,4 @@ async function assignAvailableAssistant(payload: any, chatId: string, chat: any)
     console.error('Error assigning assistant:', error)
   }
 }
+</parameter>

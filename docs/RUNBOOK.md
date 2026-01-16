@@ -6,91 +6,105 @@
 
 #### Prerequisites
 - Node.js 18+ and npm
-- PostgreSQL 14+ (or use Docker)
-- Redis 6+ (for caching and sessions)
+- PostgreSQL 14+ (or use Supabase)
+- No Redis required (using in-memory caching)
 
 #### Local Development Setup
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-org/milassist.git
+git clone https://github.com/milassist/milassist.git
 cd milassist
 
 # 2. Install dependencies
 npm install
-cd server && npm install
-cd ../frontend && npm install
+cd payload && npm install
+cd ..
 
 # 3. Set up environment variables
-cp .env.example .env
+cp payload/.env.example payload/.env
 # Edit .env with your configuration
 
-# 4. Set up database
-cd server
-npm run db:migrate
-npm run db:seed
-
-# 5. Start development servers
+# 4. Start development server
+cd payload
 npm run dev
-# Frontend: http://localhost:5173
-# Backend: http://localhost:3000
+
+# Frontend: http://localhost:5173 (React app)
+# Backend: http://localhost:3000 (Payload CMS admin/API)
 ```
 
-#### Docker Development
+#### Database Setup
 
+**Option A: Supabase (Recommended)**
+1. Create project at [supabase.com](https://supabase.com)
+2. Get connection string from Settings → Database
+3. Add to `.env`:
+   ```env
+   DATABASE_URI=postgresql://postgres:[PASSWORD]@db.[PROJECT].supabase.co:5432/postgres
+   ```
+
+**Option B: Local PostgreSQL**
 ```bash
-# Start all services with Docker
-docker-compose up -d
+# Install PostgreSQL via Homebrew
+brew install postgresql@15
+brew services start postgresql@15
 
-# View logs
-docker-compose logs -f
+# Create database
+createdb milassist
 
-# Stop services
-docker-compose down
+# Add to .env:
+DATABASE_URI=postgresql://localhost:5432/milassist
 ```
 
 ## Deployment
 
-### How to Deploy to Production
+### How to Deploy to Vercel
 
-#### Railway Deployment
+#### Vercel Deployment
 
 ```bash
-# 1. Install Railway CLI
-npm install -g @railway/cli
+# 1. Install Vercel CLI
+npm install -g vercel
 
-# 2. Login and initialize
-railway login
-railway init
+# 2. Login
+vercel login
 
-# 3. Add PostgreSQL database
-railway add postgresql
+# 3. Link project
+cd milassist
+vercel link
 
-# 4. Set environment variables
-railway variables set NODE_ENV=production
-railway variables set JWT_SECRET=your-secure-secret
-railway variables set TWILIO_ACCOUNT_SID=your-sid
-railway variables set TWILIO_AUTH_TOKEN=your-token
-railway variables set TWILIO_PHONE_NUMBER=your-number
+# 4. Add environment variables in Vercel dashboard:
+# - PAYLOAD_SECRET (generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+# - DATABASE_URI (Supabase connection string)
+# - AWS credentials (S3 bucket)
+# - OAuth credentials (Google, Microsoft)
+# - AI API keys (optional)
 
 # 5. Deploy
-railway up
-
-# 6. Monitor deployment
-railway logs
+vercel --prod
 ```
 
-#### Manual Deployment
+#### Automatic Deployments
+
+Vercel auto-deploys on push to main branch:
+- Preview deployments for PRs
+- Production deployment on merge to main
+- Environment variables managed in Vercel dashboard
+
+### Supabase Database Setup
 
 ```bash
-# 1. Build application
-npm run build
+# 1. Create Supabase project
+# https://supabase.com
 
-# 2. Run database migrations
-npm run db:migrate:prod
+# 2. Get connection string from:
+# Settings → Database → Connection string
 
-# 3. Start application
-npm start
+# 3. Enable connection pooling (recommended for serverless)
+# Settings → Database → Connection pooling → Create new pooler
+
+# 4. Set environment variable in Vercel:
+# DATABASE_URI=postgresql://postgres:[PASSWORD]@pooler.[PROJECT].supabase.co:6543/postgres
 ```
 
 ## Monitoring
@@ -101,60 +115,65 @@ npm start
 
 ```bash
 # Check application health
-curl https://api.milassist.com/health
+curl https://your-domain.vercel.app/api/health
 
 # Expected response
 {
   "status": "healthy",
-  "timestamp": "2026-01-11T12:00:00Z",
+  "timestamp": "2026-01-13T12:00:00Z",
   "services": {
-    "database": "healthy",
-    "redis": "healthy",
-    "external_apis": "healthy"
+    "database": "healthy"
   },
   "version": "1.0.0"
 }
 ```
 
-#### System Metrics Dashboard
+#### Vercel Dashboard
 
-Access: `https://admin.milassist.com/health`
+Access: https://vercel.com/dashboard
 
 **Key Metrics to Monitor:**
-- **Response Time**: < 200ms average
-- **Error Rate**: < 0.1%
-- **Uptime**: > 99.5%
-- **Database Connections**: < 80% of pool
-- **Memory Usage**: < 80% of allocated
-- **CPU Usage**: < 70% average
+- **Response Time**: < 200ms average (check Functions tab)
+- **Error Rate**: < 0.1% (check Runtime Errors)
+- **Uptime**: > 99.5% (automatic with Vercel)
+- **Database Connections**: Check Supabase dashboard
+- **Function Invocations**: Monitor Lambda usage
 
-#### Log Monitoring
+#### Supabase Monitoring
+
+Access: https://supabase.com/dashboard → Your Project → Database
+
+- **Connection Pool**: Monitor active connections
+- **Query Performance**: Check slow query log
+- **Storage**: Monitor S3 bucket usage
+- **Backups**: Verify automatic backups enabled
+
+### Log Monitoring
 
 ```bash
-# View application logs
-docker-compose logs -f app
+# View Vercel function logs
+vercel logs [deployment-url]
 
-# View error logs only
-docker-compose logs app | grep ERROR
+# View real-time logs
+vercel logs --follow [deployment-url]
 
-# View specific service logs
-docker-compose logs -f postgres
-docker-compose logs -f redis
+# Filter by function
+vercel logs [deployment-url] --payload /api/ai/chat
 ```
 
 ### Monitoring Alerts
 
 #### Critical Alerts (Immediate Response Required)
-- **Service Down**: Application not responding
-- **Database Connection Failed**: Cannot connect to database
+- **Function Cold Starts**: > 5s cold start time
+- **Database Connection Failed**: Cannot connect to Supabase
 - **High Error Rate**: > 5% error rate for 5 minutes
 - **Security Breach**: Suspicious activity detected
 
 #### Warning Alerts (Investigate Within 1 Hour)
 - **High Response Time**: > 500ms for 10 minutes
-- **Memory Usage**: > 80% for 30 minutes
-- **Disk Space**: < 10% free
-- **Queue Buildup**: > 1000 pending jobs
+- **Function Timeout**: Functions approaching 10s limit
+- **Storage Usage**: > 80% of S3 bucket capacity
+- **API Rate Limiting**: Approaching Vercel limits
 
 ## Debugging Failures
 
@@ -164,65 +183,61 @@ docker-compose logs -f redis
 
 ```bash
 # 1. Check environment variables
-printenv | grep -E "(NODE_ENV|DATABASE_URL|JWT_SECRET)"
+cd payload && cat .env | grep -E "PAYLOAD_SECRET|DATABASE_URI"
 
 # 2. Check database connection
-npm run db:check
+npm run dev 2>&1 | head -50
 
 # 3. Check port availability
 lsof -i :3000
 
-# 4. View startup logs
-npm start 2>&1 | head -50
+# 4. View build output
+npm run build 2>&1
 ```
 
 #### Database Issues
 
 ```bash
-# 1. Check database connection
-npm run db:ping
+# 1. Test database connection
+curl https://your-domain.vercel.app/api/health
 
-# 2. Run database health check
-npm run db:health
+# 2. Check Supabase status
+# https://status.supabase.com
 
-# 3. Check migration status
-npm run db:status
+# 3. Verify connection string format
+# postgresql://postgres:[PASSWORD]@db.[PROJECT].supabase.co:5432/postgres
 
-# 4. Reset database (development only)
-npm run db:reset
+# 4. Check connection pooling
+# Use port 6543 for pooled connections
 ```
 
 #### External Service Failures
 
 ```bash
-# 1. Test Twilio connection
-npm run test:twilio
+# 1. Test S3 connection
+# Check Vercel logs for S3 errors
 
-# 2. Test Google Flights integration
-npm run test:flights
+# 2. Test OAuth providers
+# Check Google Cloud Console / Azure Portal
 
-# 3. Test Stripe connection
-npm run test:stripe
-
-# 4. Check external service status
-curl -I https://api.twilio.com
-curl -I https://api.stripe.com
+# 3. Test AI providers
+curl https://your-domain.vercel.app/api/ai/chat \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"message":"test"}'
 ```
 
 #### Performance Issues
 
 ```bash
-# 1. Check response times
-npm run perf:test
+# 1. Check Vercel function execution time
+vercel logs [url] | grep -i duration
 
 # 2. Profile database queries
-npm run db:profile
+# Use Supabase Query Performance tab
 
-# 3. Check memory usage
-npm run memory:profile
-
-# 4. Analyze bundle size
-npm run analyze:bundle
+# 3. Check bundle size
+npm run build -- --analyze
 ```
 
 ## Incident Response
@@ -234,40 +249,40 @@ npm run analyze:bundle
 1. **Immediate Assessment (0-5 minutes)**
    ```bash
    # Check service status
-   curl https://api.milassist.com/health
+   curl https://your-domain.vercel.app/api/health
    
-   # Check recent deployments
-   railway deployments list
+   # Check Vercel deployments
+   vercel list
    
-   # Check error rates
-   railway logs --since 10m
+   # Check recent logs
+   vercel logs --since 10m [url]
    ```
 
 2. **Communication (5-15 minutes)**
-   - Update status page: `https://status.milassist.com`
-   - Notify team via Slack
-   - Post incident update to users
+   - Check Vercel Status: https://status.vercel.com
+   - Check Supabase Status: https://status.supabase.com
+   - Update team in Slack/discord
 
 3. **Investigation (15-60 minutes)**
    ```bash
    # Review error logs
-   railway logs --since 1h | grep ERROR
+   vercel logs --since 1h [url] | grep ERROR
    
    # Check database performance
-   npm run db:metrics
+   # Review Supabase dashboard
    
-   # Check external service status
-   npm run external:status
+   # Check function invocations
+   # Review Vercel Functions tab
    ```
 
 4. **Resolution (60+ minutes)**
-   - Implement fix or rollback
-   - Test in staging environment
-   - Deploy to production
+   - Implement fix or rollback to previous deployment
+   - Test in preview environment
+   - Deploy fix to production
    - Monitor for 30 minutes
 
 5. **Post-Incident (Post-resolution)**
-   - Document incident in runbook
+   - Document incident
    - Create improvement tickets
    - Schedule post-mortem meeting
 
@@ -276,83 +291,72 @@ npm run analyze:bundle
 1. **Immediate Response (0-5 minutes)**
    ```bash
    # Check for suspicious activity
-   npm run security:audit
+   vercel logs --since 1h | grep "auth"
    
-   # Review authentication logs
-   railway logs --since 1h | grep "auth"
-   
-   # Check for data access anomalies
-   npm run audit:data-access
+   # Review recent deployments
+   vercel list --all
    ```
 
 2. **Containment (5-30 minutes)**
-   - Block suspicious IP addresses
-   - Force password reset for affected users
+   - Rollback to previous deployment if needed
+   - Revoke suspicious API keys
    - Enable additional monitoring
-   - Notify security team
 
 3. **Investigation (30+ minutes)**
    - Analyze breach scope
    - Review access logs
    - Check data integrity
-   - Document findings
 
 4. **Recovery (Post-investigation)**
    - Patch vulnerabilities
    - Reset compromised credentials
-   - Implement additional security measures
-   - Notify affected users
+   - Notify affected users if needed
 
 ## Rollback Procedures
 
 ### How to Roll Back Changes
 
-#### Application Rollback
+#### Vercel Rollback
 
 ```bash
-# 1. Identify last good deployment
-railway deployments list
+# 1. List previous deployments
+vercel list --all
 
 # 2. Rollback to previous version
-railway rollback <deployment-id>
+vercel rollback [deployment-url]
 
 # 3. Verify rollback
-curl https://api.milassist.com/health
+curl https://your-domain.vercel.app/api/health
 
 # 4. Monitor for 15 minutes
-railway logs --follow
+vercel logs --follow [url]
 ```
 
 #### Database Rollback
 
+Note: Vercel doesn't manage database - use Supabase:
+
 ```bash
-# 1. Check migration history
-npm run db:history
+# 1. Supabase automatic backups
+# Settings → Database → Backups
 
-# 2. Rollback to specific migration
-npm run db:rollback <migration-version>
+# 2. Restore from backup
+# Contact Supabase support for restoration
 
-# 3. Verify database integrity
-npm run db:verify
-
-# 4. Check data consistency
-npm run db:check-consistency
+# 3. Point application to restored database
+# Update DATABASE_URI in Vercel
 ```
 
 #### Emergency Rollback (Critical Issues)
 
 ```bash
-# 1. Immediate service stop
-railway stop
+# 1. Immediate rollback via Vercel
+vercel rollback [deployment-url]
 
-# 2. Switch to maintenance mode
-npm run maintenance:on
-
-# 3. Restore from backup (if needed)
-npm run backup:restore <backup-id>
-
-# 4. Start previous version
-npm run start:previous
+# 2. If that fails, redeploy previous commit
+git checkout [previous-commit-sha]
+vercel --prod
+git checkout main
 ```
 
 ## Maintenance Procedures
@@ -362,252 +366,224 @@ npm run start:previous
 #### Database Maintenance
 
 ```bash
-# 1. Put application in maintenance mode
-npm run maintenance:on
+# 1. Enable maintenance mode (if supported)
+# Not needed for Supabase - managed service
 
-# 2. Backup database
-npm run backup:create
+# 2. Supabase handles:
+# - Vacuum
+# - Reindex
+# - Updates
 
-# 3. Run maintenance tasks
-npm run db:vacuum
-npm run db:analyze
-npm run db:reindex
-
-# 4. Update statistics
-npm run db:update-stats
-
-# 5. Take application out of maintenance mode
-npm run maintenance:off
+# 3. Monitor from Supabase dashboard
 ```
 
-#### System Updates
+#### Vercel Function Updates
 
 ```bash
 # 1. Update dependencies
+cd payload
 npm update
 
-# 2. Run security audit
-npm audit fix
-
-# 3. Run tests
+# 2. Run tests
 npm test
 
-# 4. Deploy updates
-npm run deploy
+# 3. Deploy updates
+vercel --prod
 ```
 
 ## Troubleshooting Guide
 
 ### Common Issues and Solutions
 
-#### High Memory Usage
+#### High Function Cold Starts
 
 **Symptoms:**
-- Slow response times
-- Out of memory errors
-- System crashes
+- First request after idle is slow (>3s)
+- Timeouts on initial requests
 
 **Solutions:**
+- Keep functions warm with cron job
+- Reduce bundle size
+- Use smaller dependencies
+
 ```bash
-# 1. Check memory usage
-npm run memory:check
-
-# 2. Identify memory leaks
-npm run memory:profile
-
-# 3. Restart services
-docker-compose restart
-
-# 4. Scale resources
-railway scale memory=1024
+# Add cron to keep functions warm
+# vercel cron setup
 ```
 
-#### Database Connection Issues
+#### Database Connection Timeouts
 
 **Symptoms:**
-- Database connection timeouts
-- "Too many connections" errors
+- "Connection refused" errors
 - Slow database queries
 
 **Solutions:**
-```bash
-# 1. Check connection pool
-npm run db:pool-status
+- Use connection pooling (port 6543)
+- Increase connection pool size
+- Optimize queries
 
-# 2. Increase pool size
-# Update DATABASE_POOL_SIZE in .env
-
-# 3. Check slow queries
-npm run db:slow-queries
-
-# 4. Restart database
-docker-compose restart postgres
+```env
+# In .env, use pooled connection
+DATABASE_URI=postgresql://postgres:pwd@pooler.xx.supabase.co:6543/postgres
 ```
 
-#### External Service Failures
+#### S3 Upload Failures
 
 **Symptoms:**
-- Twilio calls not working
-- Google Flights API errors
-- Stripe payment failures
+- File upload errors
+- 403 Forbidden errors
 
 **Solutions:**
-```bash
-# 1. Check service status
-npm run external:status
+- Verify AWS credentials
+- Check S3 bucket permissions
+- Verify CORS configuration
 
-# 2. Test connectivity
-npm run test:external
+```json
+// S3 CORS configuration
+[{
+  "AllowedHeaders": ["*"],
+  "AllowedMethods": ["GET", "PUT", "POST", "DELETE"],
+  "AllowedOrigins": ["https://your-domain.vercel.app"],
+  "ExposeHeaders": ["ETag"]
+}]
+```
 
-# 3. Check API keys
-npm run check:api-keys
+#### OAuth Redirect Errors
 
-# 4. Enable fallback mode
-npm run fallback:on
+**Symptoms:**
+- OAuth flow fails at callback
+- "redirect_uri_mismatch" error
+
+**Solutions:**
+- Verify redirect URIs in OAuth provider
+- Match exactly between config and provider
+
+```env
+# Google OAuth - must match exactly
+GOOGLE_REDIRECT_URI=https://your-domain.vercel.app/api/oauth/google/callback
+
+# Microsoft OAuth - must match exactly
+MICROSOFT_REDIRECT_URI=https://your-domain.vercel.app/api/oauth/microsoft/callback
 ```
 
 ## Performance Optimization
 
 ### How to Optimize System Performance
 
+#### Vercel Function Optimization
+
+```bash
+# 1. Analyze bundle size
+npm run build -- --analyze
+
+# 2. Reduce bundle size
+# - Use dynamic imports
+# - Remove unused dependencies
+# - Enable compression
+
+# 3. Configure caching
+# Add cache headers to static assets
+```
+
 #### Database Optimization
 
 ```bash
-# 1. Analyze query performance
-npm run db:analyze-queries
+# 1. Check slow queries
+# Supabase Dashboard → Database → Query Performance
 
-# 2. Add missing indexes
-npm run db:add-indexes
+# 2. Add indexes for frequently queried columns
+# Use Supabase SQL Editor
 
-# 3. Optimize slow queries
-npm run db:optimize-queries
-
-# 4. Update statistics
-npm run db:update-stats
-```
-
-#### Application Optimization
-
-```bash
-# 1. Profile application performance
-npm run profile:app
-
-# 2. Optimize bundle size
-npm run optimize:bundle
-
-# 3. Enable caching
-npm run cache:warm
-
-# 4. Optimize images
-npm run optimize:images
+# 3. Use connection pooling
+# Already configured via port 6543
 ```
 
 ## Backup and Recovery
 
 ### Data Backup Procedures
 
-#### Automated Backups
+#### Supabase Automatic Backups
 
 ```bash
-# 1. Create database backup
-npm run backup:create
+# Supabase provides:
+# - Daily automatic backups (free tier)
+# - Point-in-time recovery (pro tier)
+# - 7-day retention (free) / 30-day (pro)
 
-# 2. Verify backup integrity
-npm run backup:verify
-
-# 3. Test backup restore
-npm run backup:test-restore
-
-# 4. Clean old backups
-npm run backup:cleanup
+# Check backup status:
+# Supabase Dashboard → Settings → Database → Backups
 ```
 
-#### Manual Backup
+#### Manual Backup (Optional)
 
 ```bash
-# 1. Export database
-pg_dump milassist_prod > backup_$(date +%Y%m%d).sql
+# Export data using pg_dump
+pg_dump "postgresql://postgres:[PASSWORD]@db.[PROJECT].supabase.co:5432/postgres" > backup.sql
 
-# 2. Backup files
-tar -czf files_backup_$(date +%Y%m%d).tar.gz uploads/
-
-# 3. Backup configuration
-cp .env .env.backup.$(date +%Y%m%d)
+# Backup S3 files
+# Use AWS CLI to sync bucket
+aws s3 sync s3://milassist-uploads ./backup/
 ```
 
 ### Disaster Recovery
 
-#### Complete System Recovery
-
 ```bash
-# 1. Provision new infrastructure
-railway up
+# 1. Deploy to Vercel
+vercel --prod
 
-# 2. Restore database
-npm run backup:restore <backup-id>
+# 2. If database issue:
+# - Restore from Supabase backup
+# - Update DATABASE_URI if needed
 
-# 3. Restore files
-npm run files:restore <backup-id>
-
-# 4. Update DNS
-npm run dns:update
-
-# 5. Verify system
-npm run health:check
+# 3. Verify system health
+curl https://your-domain.vercel.app/api/health
 ```
 
 ## Security Operations
 
-### Security Monitoring
+### Security Best Practices
 
 ```bash
-# 1. Run security audit
-npm run security:audit
+# 1. Rotate API keys regularly
+# - PAYLOAD_SECRET (every 90 days)
+# - AWS credentials (every 90 days)
+# - OAuth credentials (every 180 days)
 
-# 2. Check for vulnerabilities
-npm audit
+# 2. Monitor usage
+# - Vercel dashboard for function invocations
+# - Supabase dashboard for database usage
+# - AWS for S3 usage
 
-# 3. Scan dependencies
-npm run security:scan
-
-# 4. Review access logs
-npm run audit:access
+# 3. Enable logging
+# Vercel provides built-in logging
 ```
 
-### Security Updates
+### Security Checklist
 
-```bash
-# 1. Update security patches
-npm update
-
-# 2. Apply security fixes
-npm audit fix
-
-# 3. Restart services
-npm run restart
-
-# 4. Verify security
-npm run security:verify
-```
+- [ ] PAYLOAD_SECRET is 32+ characters
+- [ ] All API keys in environment variables
+- [ ] OAuth redirect URIs match production
+- [ ] S3 bucket has proper CORS
+- [ ] Rate limiting implemented
+- [ ] HTTPS enabled (automatic with Vercel)
 
 ## Contact Information
 
 ### Emergency Contacts
 
-- **On-call Engineer**: +1-555-0123
-- **System Administrator**: admin@milassist.com
-- **Security Team**: security@milassist.com
-- **DevOps Team**: devops@milassist.com
+- **On-call Engineer:** Check Slack #on-call
+- **DevOps Team:** devops@milassist.com
+- **Support:** support@milassist.com
 
 ### Service Providers
 
-- **Railway Support**: support@railway.app
-- **Twilio Support**: support@twilio.com
-- **Stripe Support**: support@stripe.com
-- **Database Support**: dba@milassist.com
+- **Vercel Support:** https://vercel.com/help
+- **Supabase Support:** https://supabase.com/support
+- **AWS Support:** https://aws.amazon.com/contact-us
 
 ---
 
-*Runbook Version: 1.0*
-*Last Updated: 2026-01-11*
-*Owner: Documentation & Runbook Agent*
+*Runbook Version: 2.0*  
+*Last Updated: 2026-01-13*  
+*Stack: Vercel + Supabase + Payload CMS 3.0*
+
