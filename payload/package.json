@@ -9,7 +9,10 @@
     "start": "cross-env NODE_OPTIONS=\"--no-deprecation\" next start",
     "lint": "cross-env NODE_OPTIONS=\"--no-deprecation\" next lint",
     "generate:types": "cross-env NODE_OPTIONS=\"--no-deprecation\" payload generate:types",
-    "payload": "cross-env NODE_OPTIONS=\"--no-deprecation\" payload"
+    "payload": "cross-env NODE_OPTIONS=\"--no-deprecation\" payload",
+    "test:db": "node scripts/test-db-connection.js",
+    "generate:secret": "node scripts/generate-payload-secret.js",
+    "setup:env": "./scripts/setup-env.sh"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.70.0",
@@ -37,7 +40,9 @@
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
     "cross-env": "^7.0.3",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "pg": "^8.11.3",
+    "dotenv": "^16.4.5"
   },
   "engines": {
     "node": ">=18.0.0"

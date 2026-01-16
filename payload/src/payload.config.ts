@@ -1,5 +1,5 @@
 import { buildConfig } from 'payload'
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url'
 
 // Import collections (we'll create these next)
 import { Users } from './collections/Users'
-<<<<<<< Updated upstream
 import { Tasks } from './collections/Tasks'
 import { Messages } from './collections/Messages'
 import { Invoices } from './collections/Invoices'
@@ -29,8 +28,6 @@ import VideoIntegrations from './collections/VideoIntegrations'
 import CalendarConnections from './collections/CalendarConnections'
 import TaskHandoffs from './collections/TaskHandoffs'
 import Integrations from './collections/Integrations'
-=======
->>>>>>> Stashed changes
 import AssistantOnboarding from './collections/AssistantOnboarding'
 import TrainingModules from './collections/TrainingModules'
 import Assessments from './collections/Assessments'
@@ -122,20 +119,14 @@ export default buildConfig({
     Pages,
   ],
   // Global settings
-<<<<<<< Updated upstream
   globals: [
     Settings,
   ],
-=======
-  // globals: [
-  //   Settings
-  // ],
->>>>>>> Stashed changes
 
-  // Database adapter (SQLite for development, Supabase for production)
-  db: sqliteAdapter({
-    client: {
-      url: 'file:./payload.db',
+  // Database adapter - PostgreSQL for Supabase
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI,
     },
   }),
 
