@@ -15,7 +15,7 @@
     "setup:env": "./scripts/setup-env.sh"
   },
   "dependencies": {
-    "@payloadcms/db-postgres": "^3.0.0",
+    "@payloadcms/db-postgres": "^3.70.0",
     "@payloadcms/db-sqlite": "^3.70.0",
     "@payloadcms/next": "^3.0.0",
     "@payloadcms/plugin-cloud-storage": "^3.0.0",
@@ -23,6 +23,7 @@
     "@payloadcms/storage-s3": "^3.0.0",
     "aws-sdk": "^2.1691.0",
     "axios": "^1.7.0",
+    "bcrypt": "^6.0.0",
     "grapesjs": "^0.21.0",
     "grapesjs-preset-webpage": "^1.0.3",
     "graphql": "^16.8.1",

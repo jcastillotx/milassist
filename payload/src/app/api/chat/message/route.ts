@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
+<<<<<<< Updated upstream
 import config from '@/payload.config'
 import chatService from '@/services/chatService'
+=======
+import config from '../../../../payload.config'
+import chatService from '../../../services/chatService'
+>>>>>>> Stashed changes
 
 export async function POST(request: NextRequest) {
   try {

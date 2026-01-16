@@ -1,30 +1,42 @@
-import payload from 'payload';
-import { getPayload } from 'payload';
+import { getPayload } from 'payload'
+import config from '../src/payload.config.ts'
 
-async function createAdminUser() {
+async function createAdmin() {
   try {
-    // Initialize Payload
-    const payloadInstance = await getPayload({
-      config: (await import('../src/payload.config.js')).default,
-    });
+    const payload = await getPayload({ config })
+
+    // Check if admin user already exists
+    const existingAdmin = await payload.find({
+      collection: 'users',
+      where: {
+        email: {
+          equals: 'admin@milassist.com'
+        }
+      }
+    })
+
+    if (existingAdmin.docs.length > 0) {
+      console.log('Admin user already exists')
+      return
+    }
 
     // Create admin user
-    const adminUser = await payloadInstance.create({
+    const adminUser = await payload.create({
       collection: 'users',
       data: {
-        email: 'admin@milassist.com',
-        password: 'admin123!',
         name: 'Admin User',
-        role: 'admin',
-      },
-    });
+        email: 'admin@milassist.com',
+        password: 'admin',
+        role: 'admin'
+      }
+    })
 
-    console.log('Admin user created successfully:', adminUser);
-    process.exit(0);
+    console.log('Admin user created successfully:', adminUser.id)
   } catch (error) {
-    console.error('Error creating admin user:', error);
-    process.exit(1);
+    console.error('Error creating admin user:', error)
+  } finally {
+    process.exit(0)
   }
 }
 
-createAdminUser();
+createAdmin()

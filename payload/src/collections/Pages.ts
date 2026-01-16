@@ -154,15 +154,16 @@ const Pages: CollectionConfig = {
         position: 'sidebar',
       },
     },
-    {
-      name: 'featured_image',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description: 'Featured image for social sharing and previews',
-        position: 'sidebar',
-      },
-    },
+    // TODO: Add featured image when Media collection is implemented
+    // {
+    //   name: 'featured_image',
+    //   type: 'upload',
+    //   relationTo: 'media',
+    //   admin: {
+    //     description: 'Featured image for social sharing and previews',
+    //     position: 'sidebar',
+    //   },
+    // },
     {
       name: 'author',
       type: 'relationship',
