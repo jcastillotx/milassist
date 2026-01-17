@@ -2,7 +2,8 @@
 // Usage: node scripts/create-admin.js
 // Uses environment variables: ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME
 
-const payload = require('../src/payload.config.js')
+require('ts-node/register')
+const payload = require('../src/payload.config.ts')
 
 async function createAdmin() {
   try {
