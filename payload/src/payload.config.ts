@@ -40,6 +40,9 @@ import { Settings } from './globals/Settings'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Default secret for builds - MUST be overridden in production via PAYLOAD_SECRET env var
+const BUILD_SECRET = 'build-time-secret-do-not-use-in-production-32chars'
+
 export default buildConfig({
   // Admin configuration
   admin: {
@@ -91,8 +94,9 @@ export default buildConfig({
   // Rich text editor
   editor: lexicalEditor({}),
 
-  // Secret for JWT
-  secret: process.env.PAYLOAD_SECRET || '',
+  // Secret for JWT - uses build-time default if PAYLOAD_SECRET not set
+  // WARNING: Set PAYLOAD_SECRET in production!
+  secret: process.env.PAYLOAD_SECRET || BUILD_SECRET,
 
   // TypeScript
   typescript: {
