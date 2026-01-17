@@ -20,11 +20,6 @@
       "dest": "payload/$1"
     }
   ],
-  "env": {
-    "PAYLOAD_SECRET": "@payload-secret",
-    "DATABASE_URI": "@database-uri",
-    "NODE_ENV": "production"
-  },
   "build": {
     "env": {
       "NODE_OPTIONS": "--no-deprecation"

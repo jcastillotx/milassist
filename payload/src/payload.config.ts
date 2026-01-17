@@ -12,33 +12,15 @@ import TrainingModules from './collections/TrainingModules'
 import Assessments from './collections/Assessments'
 import LiveChats from './collections/LiveChats'
 import OnCallAssistants from './collections/OnCallAssistants'
-import { Media } from './collections/Media'
-import { Tasks } from './collections/Tasks'
-import { Messages } from './collections/Messages'
-import { Invoices } from './collections/Invoices'
-import { Documents } from './collections/Documents'
-import Trips from './collections/Trips'
-import TimeEntries from './collections/TimeEntries'
-import Meetings from './collections/Meetings'
-import FormTemplates from './collections/FormTemplates'
-import ServiceRequests from './collections/ServiceRequests'
-import Research from './collections/Research'
-import Calls from './collections/Calls'
-import RoutingRules from './collections/RoutingRules'
-import PrivacyRequests from './collections/PrivacyRequests'
-import EmailConnections from './collections/EmailConnections'
-import CalendarConnections from './collections/CalendarConnections'
-import TaskHandoffs from './collections/TaskHandoffs'
-import Integrations from './collections/Integrations'
-import VideoIntegrations from './collections/VideoIntegrations'
-import Resources from './collections/Resources'
-import Pages from './collections/Pages'
 
 // Import globals
-// import { Settings } from './globals/Settings'
+import { Settings } from './globals/Settings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Default secret for builds - MUST be overridden in production via PAYLOAD_SECRET env var
+const BUILD_SECRET = 'build-time-secret-do-not-use-in-production-32chars'
 
 export default buildConfig({
   // Admin configuration
@@ -55,26 +37,6 @@ export default buildConfig({
     LiveChats,
     OnCallAssistants,
     Media,
-    Tasks,
-    Messages,
-    Invoices,
-    Documents,
-    Trips,
-    TimeEntries,
-    Meetings,
-    FormTemplates,
-    ServiceRequests,
-    Research,
-    Calls,
-    RoutingRules,
-    PrivacyRequests,
-    EmailConnections,
-    CalendarConnections,
-    TaskHandoffs,
-    Integrations,
-    VideoIntegrations,
-    Resources,
-    Pages,
   ],
   
   // Global settings
@@ -82,18 +44,19 @@ export default buildConfig({
   //   Settings
   // ],
 
-  // Database adapter (SQLite for development, Supabase for production)
+  // Database adapter - SQLite for local development
   db: sqliteAdapter({
     client: {
-      url: 'file:./payload.db',
+      url: process.env.DATABASE_URI || 'file:./payload.db',
     },
   }),
 
   // Rich text editor
   editor: lexicalEditor({}),
 
-  // Secret for JWT
-  secret: process.env.PAYLOAD_SECRET || '',
+  // Secret for JWT - uses build-time default if PAYLOAD_SECRET not set
+  // WARNING: Set PAYLOAD_SECRET in production!
+  secret: process.env.PAYLOAD_SECRET || BUILD_SECRET,
 
   // TypeScript
   typescript: {
