@@ -12,8 +12,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Validate email format - RFC 5322 compliant regex
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     if (!emailRegex.test(data.email)) {
       return NextResponse.json(
         { error: 'Invalid email address' },
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Access request submitted successfully',
-      requestId: `REQ-${Date.now()}-${crypto.randomUUID().substring(0, 8).toUpperCase()}`,
+      requestId: `REQ-${crypto.randomUUID()}`,
     });
   } catch (error) {
     console.error('Error processing access request:', error);

@@ -47,6 +47,14 @@ const Services = () => {
 
       // Create checkout session
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      
+      // Parse price safely
+      const priceString = price.replace(/[^0-9]/g, '');
+      const priceValue = parseInt(priceString, 10);
+      if (isNaN(priceValue) || priceValue <= 0) {
+        throw new Error('Invalid price value');
+      }
+
       const response = await fetch(`${apiUrl}/api/stripe/create-checkout-session`, {
         method: 'POST',
         headers: {
@@ -55,7 +63,7 @@ const Services = () => {
         body: JSON.stringify({
           planId,
           planName,
-          price: parseInt(price.replace('$', '')),
+          price: priceValue,
         }),
       });
 
