@@ -20,6 +20,12 @@ const Services = () => {
     setLoading(planId);
 
     try {
+      // Validate Stripe publishable key is configured
+      const stripeKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
+      if (!stripeKey) {
+        throw new Error('Stripe is not configured. Please contact support to set up payment processing.');
+      }
+
       // Load Stripe if not already loaded
       if (!window.Stripe) {
         await new Promise((resolve, reject) => {
@@ -39,10 +45,6 @@ const Services = () => {
         });
       }
 
-      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-      if (!stripeKey) {
-        throw new Error('Stripe is not configured. Please contact support.');
-      }
       const stripe = window.Stripe(stripeKey);
 
       // Create checkout session
