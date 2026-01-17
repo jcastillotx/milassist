@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
     }
 
-    const { planId, planName, price } = await request.json();
+    const { planId, planName } = await request.json();
 
     if (!plans[planId as string]) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
