@@ -49,6 +49,7 @@ import PortalContact from './pages/portal/Contact';
 import PortalPrivacy from './pages/portal/Privacy';
 import PortalDataProtection from './pages/portal/DataProtection';
 import PortalLogin from './pages/portal/Login';
+import PortalRequestAccess from './pages/portal/RequestAccess';
 import PortalForgotPassword from './pages/portal/ForgotPassword';
 import PortalRequestAccess from './pages/portal/RequestAccess';
 
@@ -78,6 +79,8 @@ function App() {
           <Route path="data-protection" element={<PortalDataProtection />} />
         </Route>
         <Route path="/login" element={<PortalLogin />} />
+        <Route path="/request-access" element={<PortalRequestAccess />} />
+        <Route path="/pricing" element={<PortalServices />} />
         <Route path="/forgot-password" element={<PortalForgotPassword />} />
         <Route path="/request-access" element={<PortalRequestAccess />} />
 

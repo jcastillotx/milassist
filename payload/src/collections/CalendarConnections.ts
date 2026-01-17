@@ -160,6 +160,7 @@ const CalendarConnections: CollectionConfig = {
           admin: {
             description: 'How often to sync calendar events',
           },
+          dbName: 'sync_freq', // Shortened to avoid 63 char limit
         },
         {
           name: 'sync_direction',

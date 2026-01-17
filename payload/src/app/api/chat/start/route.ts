@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import config from '@/payload.config'
+import config from '../../../../payload.config'
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       })
 
       if (recentTasks.docs.length > 0) {
-        assignedAssistant = recentTasks.docs[0].assistantId
+        assignedAssistant = recentTasks.docs[0].assistant
       }
     } catch (error) {
       console.warn('Could not find assigned assistant:', error)
@@ -117,15 +117,15 @@ export async function POST(request: NextRequest) {
         priority,
         channel,
         subject,
-        startedAt: new Date(),
-        assignedAt: availableAssistant ? new Date() : null,
+        startedAt: new Date().toISOString(),
+        assignedAt: availableAssistant ? new Date().toISOString() : null,
         metadata: metadata || {},
         messages: [
           {
             sender: clientId,
             senderType: 'client',
             content: subject || 'Chat started',
-            timestamp: new Date(),
+            timestamp: new Date().toISOString(),
             isRead: false,
           },
         ],

@@ -1,23 +1,32 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Icon from '../../components/Icon';
 
 const RequestAccess = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    company: '',
     phone: '',
-    serviceType: '',
-    message: ''
+    organization: '',
+    role: '',
+    serviceBranch: '',
+    rank: '',
+    location: '',
+    needs: '',
+    timeline: '',
+    referral: ''
   });
-  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -26,64 +35,156 @@ const RequestAccess = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:3000/auth/request-access', {
+      const response = await fetch('/api/request-access', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
-        setSubmitted(true);
-      } else {
-        const data = await res.json();
-        setError(data.error || 'Request failed. Please try again.');
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
       }
-    } catch (err) {
-      // Show success for demo purposes
+
+      const result = await response.json().catch(() => null);
+
       setSubmitted(true);
+
+      console.log('Access request submitted:', {
+        request: formData,
+        response: result,
+      });
+
+    } catch (err) {
+      setError('Failed to submit request. Please try again.');
+      console.error('Error submitting access request:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const features = [
-    {
-      icon: 'user',
-      title: 'Dedicated Assistant',
-      description: 'Get paired with a professional virtual assistant tailored to your business needs.'
-    },
-    {
-      icon: 'tasks',
-      title: 'Task Management',
-      description: 'Streamline your workflow with our comprehensive task tracking and delegation system.'
-    },
-    {
-      icon: 'shield',
-      title: 'Secure Platform',
-      description: 'Your data is protected with enterprise-grade security and encryption protocols.'
-    }
-  ];
+  if (submitted) {
+    return (
+      <div className="portal-auth-page">
+        <div className="portal-auth-container">
+          {/* Left Side - Success Message */}
+          <div className="portal-auth-branding">
+            <div className="portal-auth-brand-content">
+              <div className="portal-auth-logo-container">
+                <div className="portal-auth-logo-icon">
+                  <Icon name="checkCircle" size={28} color="#10B981" />
+                </div>
+                <div className="portal-auth-logo-text">
+                  <span className="portal-auth-logo-mil">MIL</span>
+                  <span className="portal-auth-logo-assist">ASSIST</span>
+                </div>
+              </div>
 
-  const stats = [
-    { value: '1,200+', label: 'Active Clients' },
-    { value: '98%', label: 'Satisfaction Rate' },
-    { value: '24/7', label: 'Platform Uptime' }
-  ];
+              <h1 className="portal-auth-headline">
+                Request Submitted<br />Successfully!
+              </h1>
 
-  const serviceOptions = [
-    { value: '', label: 'Select a service...' },
-    { value: 'executive-assistant', label: 'Executive Assistant Services' },
-    { value: 'administrative', label: 'Administrative Support' },
-    { value: 'travel-management', label: 'Travel Management' },
-    { value: 'research', label: 'Research & Analysis' },
-    { value: 'communication', label: 'Communication Management' },
-    { value: 'other', label: 'Other Services' }
-  ];
+              <p className="portal-auth-description">
+                Thank you for your interest in MilAssist. Our team will review
+                your request and get back to you within 24-48 hours with next steps.
+              </p>
+
+              <div className="portal-auth-features">
+                <div className="portal-auth-feature">
+                  <div className="portal-auth-feature-icon">
+                    <Icon name="email" size={20} />
+                  </div>
+                  <div className="portal-auth-feature-content">
+                    <h4>Check Your Email</h4>
+                    <p>We'll send confirmation and next steps to {formData.email}</p>
+                  </div>
+                </div>
+                <div className="portal-auth-feature">
+                  <div className="portal-auth-feature-icon">
+                    <Icon name="clock" size={20} />
+                  </div>
+                  <div className="portal-auth-feature-content">
+                    <h4>Response Time</h4>
+                    <p>Expect to hear from us within 24-48 business hours</p>
+                  </div>
+                </div>
+                <div className="portal-auth-feature">
+                  <div className="portal-auth-feature-icon">
+                    <Icon name="headset" size={20} />
+                  </div>
+                  <div className="portal-auth-feature-content">
+                    <h4>Questions?</h4>
+                    <p>Contact our support team if you need immediate assistance</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Next Steps */}
+          <div className="portal-auth-form-section">
+            <div className="portal-auth-form-wrapper">
+              <Link to="/" className="portal-back-link">
+                <Icon name="arrowLeft" size={16} />
+                Back to Home
+              </Link>
+
+              <div className="portal-auth-header">
+                <h2>What Happens Next?</h2>
+                <p>Here's what to expect after submitting your request</p>
+              </div>
+
+              <div className="portal-success-steps">
+                <div className="portal-success-step">
+                  <div className="portal-step-number">1</div>
+                  <div className="portal-step-content">
+                    <h4>Review Process</h4>
+                    <p>Our team reviews your information and verifies eligibility</p>
+                  </div>
+                </div>
+                <div className="portal-success-step">
+                  <div className="portal-step-number">2</div>
+                  <div className="portal-step-content">
+                    <h4>Account Setup</h4>
+                    <p>We create your secure account and set up your profile</p>
+                  </div>
+                </div>
+                <div className="portal-success-step">
+                  <div className="portal-step-number">3</div>
+                  <div className="portal-step-content">
+                    <h4>Assistant Assignment</h4>
+                    <p>You'll be matched with a dedicated assistant within 24 hours</p>
+                  </div>
+                </div>
+                <div className="portal-success-step">
+                  <div className="portal-step-number">4</div>
+                  <div className="portal-step-content">
+                    <h4>Welcome Call</h4>
+                    <p>Schedule an introductory call to discuss your specific needs</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="portal-success-actions">
+                <Link to="/" className="btn btn-secondary">
+                  Return to Home
+                </Link>
+                <Link to="/contact" className="btn btn-primary">
+                  Contact Support
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="portal-auth-page">
       <div className="portal-auth-container">
-        {/* Left Side - Dark Branding Panel */}
+        {/* Left Side - Branding Panel */}
         <div className="portal-auth-branding">
           <div className="portal-auth-brand-content">
             <div className="portal-auth-logo-container">
@@ -97,41 +198,47 @@ const RequestAccess = () => {
             </div>
 
             <h1 className="portal-auth-headline">
-              Start Your Journey<br />With Expert Support
+              Request Access to<br />MilAssist Platform
             </h1>
 
             <p className="portal-auth-description">
-              Join thousands of executives and businesses who trust
-              MilAssist to streamline their operations and enhance
-              productivity.
+              Join thousands of military families who trust MilAssist
+              to handle their administrative and personal support needs.
             </p>
 
             <div className="portal-auth-features">
-              {features.map((feature, index) => (
-                <div key={index} className="portal-auth-feature">
-                  <div className="portal-auth-feature-icon">
-                    <Icon name={feature.icon} size={20} />
-                  </div>
-                  <div className="portal-auth-feature-content">
-                    <h4>{feature.title}</h4>
-                    <p>{feature.description}</p>
-                  </div>
+              <div className="portal-auth-feature">
+                <div className="portal-auth-feature-icon">
+                  <Icon name="shield" size={20} />
                 </div>
-              ))}
-            </div>
-
-            <div className="portal-auth-stats">
-              {stats.map((stat, index) => (
-                <div key={index} className="portal-auth-stat">
-                  <span className="portal-auth-stat-value">{stat.value}</span>
-                  <span className="portal-auth-stat-label">{stat.label}</span>
+                <div className="portal-auth-feature-content">
+                  <h4>Military-Focused</h4>
+                  <p>Designed specifically for active duty, veterans, and their families</p>
                 </div>
-              ))}
+              </div>
+              <div className="portal-auth-feature">
+                <div className="portal-auth-feature-icon">
+                  <Icon name="clock" size={20} />
+                </div>
+                <div className="portal-auth-feature-content">
+                  <h4>24/7 Support</h4>
+                  <p>Round-the-clock assistance for urgent and routine needs</p>
+                </div>
+              </div>
+              <div className="portal-auth-feature">
+                <div className="portal-auth-feature-icon">
+                  <Icon name="users" size={20} />
+                </div>
+                <div className="portal-auth-feature-content">
+                  <h4>Dedicated Team</h4>
+                  <p>Personal assistant assigned to understand your unique situation</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Side - Request Access Form */}
+        {/* Right Side - Request Form */}
         <div className="portal-auth-form-section">
           <div className="portal-auth-form-wrapper">
             <Link to="/" className="portal-back-link">
@@ -139,205 +246,215 @@ const RequestAccess = () => {
               Back to Home
             </Link>
 
-            {!submitted ? (
-              <>
-                <div className="portal-auth-header">
-                  <h2>Request Access</h2>
-                  <p>Fill out the form below and our team will get in touch</p>
-                </div>
+            <div className="portal-auth-header">
+              <h2>Request Platform Access</h2>
+              <p>Tell us about yourself and we'll get you set up</p>
+            </div>
 
-                {error && (
-                  <div className="portal-auth-error">
-                    <Icon name="warning" size={18} />
-                    {error}
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="portal-auth-form">
-                  <div className="portal-form-row">
-                    <div className="portal-form-group">
-                      <label htmlFor="fullName">Full Name</label>
-                      <div className="portal-input-wrapper">
-                        <span className="portal-input-icon">
-                          <Icon name="user" size={18} />
-                        </span>
-                        <input
-                          type="text"
-                          id="fullName"
-                          name="fullName"
-                          value={formData.fullName}
-                          onChange={handleChange}
-                          placeholder="John Smith"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="portal-form-group">
-                      <label htmlFor="email">Email Address</label>
-                      <div className="portal-input-wrapper">
-                        <span className="portal-input-icon">
-                          <Icon name="email" size={18} />
-                        </span>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="you@company.com"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="portal-form-row">
-                    <div className="portal-form-group">
-                      <label htmlFor="company">Company / Organization</label>
-                      <div className="portal-input-wrapper">
-                        <span className="portal-input-icon">
-                          <Icon name="building" size={18} />
-                        </span>
-                        <input
-                          type="text"
-                          id="company"
-                          name="company"
-                          value={formData.company}
-                          onChange={handleChange}
-                          placeholder="Acme Inc."
-                        />
-                      </div>
-                    </div>
-
-                    <div className="portal-form-group">
-                      <label htmlFor="phone">Phone Number</label>
-                      <div className="portal-input-wrapper">
-                        <span className="portal-input-icon">
-                          <Icon name="phone" size={18} />
-                        </span>
-                        <input
-                          type="tel"
-                          id="phone"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          placeholder="+1 (555) 000-0000"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="portal-form-group">
-                    <label htmlFor="serviceType">Service Interested In</label>
-                    <div className="portal-input-wrapper portal-select-wrapper">
-                      <span className="portal-input-icon">
-                        <Icon name="briefcase" size={18} />
-                      </span>
-                      <select
-                        id="serviceType"
-                        name="serviceType"
-                        value={formData.serviceType}
-                        onChange={handleChange}
-                        required
-                      >
-                        {serviceOptions.map(option => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="portal-form-group">
-                    <label htmlFor="message">Tell Us About Your Needs</label>
-                    <div className="portal-input-wrapper portal-textarea-wrapper">
-                      <textarea
-                        id="message"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        placeholder="Describe your requirements, challenges, or any specific assistance you're looking for..."
-                        rows={4}
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary portal-auth-btn"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <span className="portal-spinner"></span>
-                        Submitting...
-                      </>
-                    ) : (
-                      'Submit Request'
-                    )}
-                  </button>
-                </form>
-
-                <p className="portal-auth-footer">
-                  Already have an account?{' '}
-                  <Link to="/login" className="portal-auth-footer-link">Sign In</Link>
-                </p>
-              </>
-            ) : (
-              <div className="portal-auth-success-container">
-                <div className="portal-auth-success-icon">
-                  <Icon name="checkCircle" size={64} />
-                </div>
-                <h2>Request Submitted!</h2>
-                <p className="portal-auth-success-message">
-                  Thank you for your interest in MilAssist. Our team will review your
-                  request and reach out within 1-2 business days.
-                </p>
-                <div className="portal-auth-success-next">
-                  <h4>What happens next?</h4>
-                  <ul>
-                    <li>
-                      <Icon name="email" size={16} />
-                      You'll receive a confirmation email shortly
-                    </li>
-                    <li>
-                      <Icon name="phone" size={16} />
-                      A team member will contact you to discuss your needs
-                    </li>
-                    <li>
-                      <Icon name="user" size={16} />
-                      We'll set up your personalized account
-                    </li>
-                  </ul>
-                </div>
-                <div className="portal-auth-success-actions">
-                  <Link to="/" className="btn btn-primary">
-                    Return to Home
-                  </Link>
-                  <Link to="/login" className="btn btn-secondary">
-                    Sign In
-                  </Link>
-                </div>
+            {error && (
+              <div className="portal-auth-error">
+                <Icon name="warning" size={18} />
+                {error}
               </div>
             )}
+
+            <form onSubmit={handleSubmit} className="portal-auth-form">
+              <div className="portal-form-row">
+                <div className="portal-form-group">
+                  <label htmlFor="firstName">First Name *</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    placeholder="John"
+                    required
+                  />
+                </div>
+                <div className="portal-form-group">
+                  <label htmlFor="lastName">Last Name *</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    placeholder="Doe"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="portal-form-row">
+                <div className="portal-form-group">
+                  <label htmlFor="email">Email Address *</label>
+                  <div className="portal-input-wrapper">
+                    <span className="portal-input-icon">
+                      <Icon name="email" size={18} />
+                    </span>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="john.doe@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="portal-form-group">
+                  <label htmlFor="phone">Phone Number</label>
+                  <div className="portal-input-wrapper">
+                    <span className="portal-input-icon">
+                      <Icon name="phone" size={18} />
+                    </span>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="portal-form-group">
+                <label htmlFor="organization">Organization/Unit</label>
+                <input
+                  type="text"
+                  id="organization"
+                  name="organization"
+                  value={formData.organization}
+                  onChange={handleChange}
+                  placeholder="e.g., 1st Infantry Division, Naval Base San Diego"
+                />
+              </div>
+
+              <div className="portal-form-row">
+                <div className="portal-form-group">
+                  <label htmlFor="serviceBranch">Service Branch</label>
+                  <select
+                    id="serviceBranch"
+                    name="serviceBranch"
+                    value={formData.serviceBranch}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Branch</option>
+                    <option value="army">Army</option>
+                    <option value="navy">Navy</option>
+                    <option value="air-force">Air Force</option>
+                    <option value="marines">Marines</option>
+                    <option value="coast-guard">Coast Guard</option>
+                    <option value="space-force">Space Force</option>
+                    <option value="civilian">Civilian/Dependent</option>
+                  </select>
+                </div>
+                <div className="portal-form-group">
+                  <label htmlFor="rank">Rank/Position</label>
+                  <input
+                    type="text"
+                    id="rank"
+                    name="rank"
+                    value={formData.rank}
+                    onChange={handleChange}
+                    placeholder="e.g., Captain, Sergeant, Civilian"
+                  />
+                </div>
+              </div>
+
+              <div className="portal-form-group">
+                <label htmlFor="location">Current Location</label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="City, State/Country"
+                />
+              </div>
+
+              <div className="portal-form-group">
+                <label htmlFor="needs">What support do you need? *</label>
+                <textarea
+                  id="needs"
+                  name="needs"
+                  value={formData.needs}
+                  onChange={handleChange}
+                  placeholder="Describe your specific needs and how we can help..."
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div className="portal-form-row">
+                <div className="portal-form-group">
+                  <label htmlFor="timeline">When do you need assistance?</label>
+                  <select
+                    id="timeline"
+                    name="timeline"
+                    value={formData.timeline}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Timeline</option>
+                    <option value="asap">As soon as possible</option>
+                    <option value="this-week">This week</option>
+                    <option value="this-month">This month</option>
+                    <option value="planning">Just planning ahead</option>
+                  </select>
+                </div>
+                <div className="portal-form-group">
+                  <label htmlFor="referral">How did you hear about us?</label>
+                  <select
+                    id="referral"
+                    name="referral"
+                    value={formData.referral}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Source</option>
+                    <option value="social-media">Social Media</option>
+                    <option value="military-base">Military Base/Installation</option>
+                    <option value="word-of-mouth">Word of Mouth</option>
+                    <option value="online-search">Online Search</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn-primary portal-auth-btn"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="portal-spinner"></span>
+                    Submitting Request...
+                  </>
+                ) : (
+                  'Submit Access Request'
+                )}
+              </button>
+            </form>
+
+            <div className="portal-auth-footer">
+              Already have an account?{' '}
+              <Link to="/login" className="portal-auth-footer-link">Sign In</Link>
+            </div>
 
             <div className="portal-auth-security">
               <span className="portal-security-badge">
                 <Icon name="lock" size={14} />
-                256-bit SSL Encryption
+                Secure Submission
               </span>
               <span className="portal-security-badge">
                 <Icon name="shield" size={14} />
-                SOC 2 Compliant
+                Privacy Protected
               </span>
-            </div>
-
-            <div className="portal-auth-legal">
-              <Link to="/terms">Terms of Service</Link>
-              <Link to="/privacy">Privacy Policy</Link>
-              <Link to="/contact">Support</Link>
             </div>
           </div>
         </div>

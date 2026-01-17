@@ -1,42 +1,73 @@
-import { getPayload } from 'payload'
-import config from '../src/payload.config.ts'
+// Create Admin User Script
+// Usage: node scripts/create-admin.js
+// Uses environment variables: ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME
+
+require('ts-node/register')
+const payload = require('../src/payload.config.ts')
 
 async function createAdmin() {
   try {
-    const payload = await getPayload({ config })
+    await payload.init({
+      secret: process.env.PAYLOAD_SECRET || 'default-secret-change-me',
+      local: true,
+    })
 
-    // Check if admin user already exists
-    const existingAdmin = await payload.find({
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@milassist.com'
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123'
+    const adminName = process.env.ADMIN_NAME || 'Admin User'
+
+    console.log('Creating admin user...')
+    console.log(`Email: ${adminEmail}`)
+    console.log('Password: [HIDDEN]')
+
+    // Check if admin already exists
+    const existing = await payload.find({
       collection: 'users',
       where: {
         email: {
-          equals: 'admin@milassist.com'
-        }
-      }
+          equals: adminEmail,
+        },
+      },
     })
 
-    if (existingAdmin.docs.length > 0) {
-      console.log('Admin user already exists')
-      return
+    if (existing.docs.length > 0) {
+      console.log('Admin user already exists. Updating...')
+      
+      await payload.update({
+        collection: 'users',
+        id: existing.docs[0].id,
+        data: {
+          name: adminName,
+          password: adminPassword,
+          role: 'admin',
+          active: true,
+        },
+      })
+      
+      console.log('Admin user updated successfully!')
+    } else {
+      console.log('Creating new admin user...')
+      
+      await payload.create({
+        collection: 'users',
+        data: {
+          email: adminEmail,
+          name: adminName,
+          password: adminPassword,
+          role: 'admin',
+          active: true,
+        },
+      })
+      
+      console.log('Admin user created successfully!')
     }
 
-    // Create admin user
-    const adminUser = await payload.create({
-      collection: 'users',
-      data: {
-        name: 'Admin User',
-        email: 'admin@milassist.com',
-        password: 'admin',
-        role: 'admin'
-      }
-    })
-
-    console.log('Admin user created successfully:', adminUser.id)
+    process.exit(0)
   } catch (error) {
     console.error('Error creating admin user:', error)
-  } finally {
-    process.exit(0)
+    process.exit(1)
   }
 }
 
 createAdmin()
+
