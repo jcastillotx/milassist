@@ -9,7 +9,10 @@
     "start": "cross-env NODE_OPTIONS=\"--no-deprecation\" next start",
     "lint": "cross-env NODE_OPTIONS=\"--no-deprecation\" next lint",
     "generate:types": "cross-env NODE_OPTIONS=\"--no-deprecation\" payload generate:types",
-    "payload": "cross-env NODE_OPTIONS=\"--no-deprecation\" payload"
+    "payload": "cross-env NODE_OPTIONS=\"--no-deprecation\" payload",
+    "test:db": "node scripts/test-db-connection.js",
+    "generate:secret": "node scripts/generate-payload-secret.js",
+    "setup:env": "./scripts/setup-env.sh"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.70.0",
@@ -33,6 +36,7 @@
     "twilio": "^5.3.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
