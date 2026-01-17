@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-<<<<<<< Updated upstream
 import config from '@/payload.config'
-=======
-import config from '../../../../payload.config'
->>>>>>> Stashed changes
 
 export async function POST(request: NextRequest) {
   try {
