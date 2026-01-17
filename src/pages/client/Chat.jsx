@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import { API_URL } from '../../config/api';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
@@ -10,7 +11,7 @@ const Chat = () => {
     const fetchMessages = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/messages', {
+            const res = await fetch(`${API_URL}/messages`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -53,7 +54,7 @@ const Chat = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await fetch('http://localhost:3000/messages', {
+            await fetch(`${API_URL}/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

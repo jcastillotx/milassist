@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
+import { API_URL } from '../../config/api';
 
 const Onboarding = () => {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Onboarding = () => {
         const fetchNDA = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:3000/settings/nda_content', {
+                const res = await fetch(`${API_URL}/settings/nda_content`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -60,7 +61,7 @@ const Onboarding = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/users/onboarding', {
+            const res = await fetch(`${API_URL}/users/onboarding`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

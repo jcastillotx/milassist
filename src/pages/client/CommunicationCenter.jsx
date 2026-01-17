@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import { API_URL } from '../../config/api';
 
 const CommunicationCenter = () => {
     const [activeTab, setActiveTab] = useState('logs');
@@ -20,8 +21,8 @@ const CommunicationCenter = () => {
                 const headers = { 'Authorization': `Bearer ${token}` };
 
                 const [logsRes, rulesRes] = await Promise.all([
-                    fetch('http://localhost:3000/communication/logs', { headers }),
-                    fetch('http://localhost:3000/communication/rules', { headers })
+                    fetch(`${API_URL}/communication/logs`, { headers }),
+                    fetch(`${API_URL}/communication/rules`, { headers })
                 ]);
 
                 if (logsRes.ok) setLogs(await logsRes.json());
@@ -41,7 +42,7 @@ const CommunicationCenter = () => {
     const saveRule = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/communication/rules', {
+            const res = await fetch(`${API_URL}/communication/rules`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
