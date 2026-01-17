@@ -52,10 +52,13 @@ const RequestAccess = () => {
 
       setSubmitted(true);
 
-      console.log('Access request submitted:', {
-        request: formData,
-        response: result,
-      });
+      // Log success in development only
+      if (import.meta.env.DEV) {
+        console.log('Access request submitted successfully:', {
+          email: formData.email,
+          response: result,
+        });
+      }
 
     } catch (err) {
       setError(err.message || 'Failed to submit request. Please try again.');

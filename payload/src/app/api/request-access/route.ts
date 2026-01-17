@@ -27,20 +27,22 @@ export async function POST(request: NextRequest) {
     // 3. Send a confirmation email to the user
     // 4. Potentially integrate with a CRM system
 
-    // Log the request for now
-    console.log('Access request received:', {
-      name: `${data.firstName} ${data.lastName}`,
-      email: data.email,
-      organization: data.organization,
-      serviceBranch: data.serviceBranch,
-      timestamp: new Date().toISOString(),
-    });
+    // Log the request for now (in production, use structured logging and mask sensitive data)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Access request received:', {
+        name: `${data.firstName} ${data.lastName}`,
+        email: data.email,
+        organization: data.organization,
+        serviceBranch: data.serviceBranch,
+        timestamp: new Date().toISOString(),
+      });
+    }
 
     // Return success response
     return NextResponse.json({
       success: true,
       message: 'Access request submitted successfully',
-      requestId: `REQ-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
+      requestId: `REQ-${Date.now()}-${crypto.randomUUID().substring(0, 8).toUpperCase()}`,
     });
   } catch (error) {
     console.error('Error processing access request:', error);
