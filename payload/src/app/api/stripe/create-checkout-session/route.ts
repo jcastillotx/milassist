@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const plan = plans[planId as string];
 
     // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
+    const sessionConfig: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -67,7 +67,14 @@ export async function POST(request: NextRequest) {
         planId,
         planName,
       },
-    });
+    };
+
+    // Add customer email if provided
+    if (customerEmail) {
+      sessionConfig.customer_email = customerEmail;
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({ id: session.id });
   } catch (error) {
