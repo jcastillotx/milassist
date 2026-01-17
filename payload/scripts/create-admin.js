@@ -1,16 +1,14 @@
 // Create Admin User Script
-// Usage: node scripts/create-admin.js
+// Usage: node --loader ts-node/esm scripts/create-admin.js
+// Or use: npm run payload -- users create
 // Uses environment variables: ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME
 
-require('ts-node/register')
-const payload = require('../src/payload.config.ts')
+import { getPayload } from 'payload'
+import config from '../src/payload.config.js'
 
 async function createAdmin() {
   try {
-    await payload.init({
-      secret: process.env.PAYLOAD_SECRET || 'default-secret-change-me',
-      local: true,
-    })
+    const payload = await getPayload({ config })
 
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@milassist.com'
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin123'

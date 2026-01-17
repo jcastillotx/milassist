@@ -22,21 +22,40 @@ const Services = () => {
     try {
       // Load Stripe if not already loaded
       if (!window.Stripe) {
-        await new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
           loadStripe();
+          let attempts = 0;
+          const maxAttempts = 100; // 10 seconds timeout
           const checkStripe = setInterval(() => {
+            attempts++;
             if (window.Stripe) {
               clearInterval(checkStripe);
               resolve();
+            } else if (attempts >= maxAttempts) {
+              clearInterval(checkStripe);
+              reject(new Error('Failed to load Stripe. Please check your internet connection and try again.'));
             }
           }, 100);
         });
       }
 
-      const stripe = window.Stripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_...');
+      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+      if (!stripeKey) {
+        throw new Error('Stripe is not configured. Please contact support.');
+      }
+      const stripe = window.Stripe(stripeKey);
 
       // Create checkout session
-      const response = await fetch('http://localhost:3000/api/stripe/create-checkout-session', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      
+      // Parse price safely
+      const priceString = price.replace(/[^0-9]/g, '');
+      const priceValue = parseInt(priceString, 10);
+      if (isNaN(priceValue) || priceValue <= 0) {
+        throw new Error('Invalid price value');
+      }
+
+      const response = await fetch(`${apiUrl}/api/stripe/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,9 +63,14 @@ const Services = () => {
         body: JSON.stringify({
           planId,
           planName,
-          price: parseInt(price.replace('$', '')),
+          price: priceValue,
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `Request failed with status ${response.status}`);
+      }
 
       const session = await response.json();
 
