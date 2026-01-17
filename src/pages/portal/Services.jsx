@@ -48,6 +48,11 @@ const Services = () => {
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
       const session = await response.json();
 
       // Redirect to Stripe Checkout
