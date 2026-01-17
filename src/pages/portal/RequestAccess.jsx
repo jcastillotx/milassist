@@ -35,17 +35,30 @@ const RequestAccess = () => {
     setLoading(true);
 
     try {
-      // TODO: Implement actual API call to submit request
-      // For now, just simulate success
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch('/api/request-access', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const result = await response.json().catch(() => null);
 
       setSubmitted(true);
 
-      // In a real implementation, this would send to an API endpoint
-      console.log('Access request submitted:', formData);
+      console.log('Access request submitted:', {
+        request: formData,
+        response: result,
+      });
 
     } catch (err) {
       setError('Failed to submit request. Please try again.');
+      console.error('Error submitting access request:', err);
     } finally {
       setLoading(false);
     }
