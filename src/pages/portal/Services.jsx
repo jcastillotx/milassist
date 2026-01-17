@@ -22,11 +22,19 @@ const Services = () => {
     try {
       // Load Stripe if not already loaded
       if (!window.Stripe) {
-        await new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
           loadStripe();
+          
+          // Set timeout to reject after 10 seconds
+          const timeout = setTimeout(() => {
+            clearInterval(checkStripe);
+            reject(new Error('Stripe failed to load within 10 seconds'));
+          }, 10000);
+          
           const checkStripe = setInterval(() => {
             if (window.Stripe) {
               clearInterval(checkStripe);
+              clearTimeout(timeout);
               resolve();
             }
           }, 100);
