@@ -30,12 +30,18 @@ const Services = () => {
       if (!window.Stripe) {
         await new Promise((resolve, reject) => {
           loadStripe();
-          let attempts = 0;
-          const maxAttempts = 100; // 10 seconds timeout
+          
+          // Set timeout to reject after 10 seconds
+          const timeout = setTimeout(() => {
+            clearInterval(checkStripe);
+            reject(new Error('Stripe failed to load within 10 seconds'));
+          }, 10000);
+          
           const checkStripe = setInterval(() => {
             attempts++;
             if (window.Stripe) {
               clearInterval(checkStripe);
+              clearTimeout(timeout);
               resolve();
             } else if (attempts >= maxAttempts) {
               clearInterval(checkStripe);
