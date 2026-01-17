@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
     }
 
-    const { planId, planName, price } = await request.json();
+    const { planId, planName, price, customerEmail } = await request.json();
 
     if (!plans[planId as string]) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
       mode: 'subscription',
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/pricing`,
+      customer_email: customerEmail,
       metadata: {
         planId,
         planName,
