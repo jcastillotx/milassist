@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Icon from '../../components/Icon';
 
 const RequestAccess = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -35,17 +34,32 @@ const RequestAccess = () => {
     setLoading(true);
 
     try {
-      // TODO: Implement actual API call to submit request
-      // For now, just simulate success
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${apiUrl}/api/request-access`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `Request failed with status ${response.status}`);
+      }
+
+      const result = await response.json().catch(() => null);
 
       setSubmitted(true);
 
-      // In a real implementation, this would send to an API endpoint
-      console.log('Access request submitted:', formData);
+      console.log('Access request submitted:', {
+        request: formData,
+        response: result,
+      });
 
     } catch (err) {
-      setError('Failed to submit request. Please try again.');
+      setError(err.message || 'Failed to submit request. Please try again.');
+      console.error('Error submitting access request:', err);
     } finally {
       setLoading(false);
     }
