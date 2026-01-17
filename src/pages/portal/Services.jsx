@@ -17,6 +17,14 @@ const Services = () => {
 
   // Handle Stripe checkout
   const handleCheckout = async (planId, planName, price) => {
+    // Prompt for email to identify the customer
+    const customerEmail = prompt('Please enter your email address:');
+    
+    if (!customerEmail || !customerEmail.includes('@')) {
+      alert('A valid email address is required to proceed with checkout.');
+      return;
+    }
+
     setLoading(planId);
 
     try {
@@ -71,7 +79,8 @@ const Services = () => {
         body: JSON.stringify({
           planId,
           planName,
-          price: priceValue,
+          price: parseInt(price.replace('$', '')),
+          customerEmail,
         }),
       });
 
