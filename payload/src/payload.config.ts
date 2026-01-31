@@ -54,9 +54,10 @@ export default buildConfig({
   // Rich text editor
   editor: lexicalEditor({}),
 
-  // Secret for JWT - uses build-time default if PAYLOAD_SECRET not set
-  // WARNING: Set PAYLOAD_SECRET in production!
-  secret: process.env.PAYLOAD_SECRET || BUILD_SECRET,
+  // Secret for JWT
+  secret: process.env.PAYLOAD_SECRET || (() => {
+    throw new Error('PAYLOAD_SECRET environment variable is required');
+  })(),
 
   // TypeScript
   typescript: {

@@ -1,4 +1,4 @@
-so Production Deployment Guide - MilAssist on Vercel + Supabase
+#Production Deployment Guide - MilAssist on Vercel + Supabase
 
 ## 🚀 Deployment Status
 

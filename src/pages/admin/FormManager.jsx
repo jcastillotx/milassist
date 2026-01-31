@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import { useNavigate } from 'react-router-dom';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 
 const FormManager = () => {
     const [templates, setTemplates] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('http://localhost:3000/forms/templates')
+        fetch(`${API_URL}/forms/templates')
             .then(res => res.json())
             .then(data => setTemplates(data))
             .catch(err => console.error(err));
@@ -18,7 +22,7 @@ const FormManager = () => {
         if (!confirm('Are you sure you want to delete this form?')) return;
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/forms/templates/${id}`, {
+            const res = await fetch(`${API_URL}/forms/templates/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

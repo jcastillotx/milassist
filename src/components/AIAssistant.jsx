@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
+import API_URL from "../config/api";
 import Button from './Button';
+import API_URL from "../config/api";
 import Card from './Card';
+import API_URL from "../config/api";
 
 const AIAssistant = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +31,7 @@ const AIAssistant = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/ai/chat', {
+            const res = await fetch(`${API_URL}/ai/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

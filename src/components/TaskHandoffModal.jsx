@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Button from '../components/Button';
+import API_URL from "../config/api";
 import Card from '../components/Card';
+import API_URL from "../config/api";
 
 const TaskHandoffModal = ({ task, onClose, onSuccess }) => {
     const [assistants, setAssistants] = useState([]);
@@ -15,7 +18,7 @@ const TaskHandoffModal = ({ task, onClose, onSuccess }) => {
     const fetchAssistants = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/tasks/assistants/available', {
+            const res = await fetch(`${API_URL}/tasks/assistants/available', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -39,7 +42,7 @@ const TaskHandoffModal = ({ task, onClose, onSuccess }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/tasks/${task.id}/handoff`, {
+            const res = await fetch(`${API_URL}/tasks/${task.id}/handoff`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

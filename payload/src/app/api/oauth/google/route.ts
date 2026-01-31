@@ -130,11 +130,25 @@ async function handleCallback(request: NextRequest) {
       })
     }
 
-    // TODO: Implement proper JWT token generation for OAuth users in Payload 3.0
-    // For now, just redirect to admin - user will need to log in manually
+    // Generate JWT token for OAuth user
+    const payload = require('payload')
+    const token = payload.generateToken({
+      id: user.id,
+      email: user.email,
+      collection: 'users',
+    })
+
+    // Set JWT cookie and redirect to admin
     const response = NextResponse.redirect(
-      `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/admin?oauth_success=true&email=${encodeURIComponent(user.email)}`
+      `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/admin`
     )
+    
+    response.cookies.set('payload-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    })
 
     return response
   } catch (error) {

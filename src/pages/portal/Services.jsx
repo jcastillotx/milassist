@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import API_URL from "../config/api";
 import { Link } from 'react-router-dom';
+import API_URL from "../config/api";
 import Icon from '../../components/Icon';
+import API_URL from "../config/api";
 
 const Services = () => {
   const [loading, setLoading] = useState(null);
@@ -62,16 +65,7 @@ const Services = () => {
       const stripe = window.Stripe(stripeKey);
 
       // Create checkout session
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-      
-      // Parse price safely
-      const priceString = price.replace(/[^0-9]/g, '');
-      const priceValue = parseInt(priceString, 10);
-      if (isNaN(priceValue) || priceValue <= 0) {
-        throw new Error('Invalid price value');
-      }
-
-      const response = await fetch(`${apiUrl}/api/stripe/create-checkout-session`, {
+      const response = await fetch(`${API_URL}/api/stripe/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

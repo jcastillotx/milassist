@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import { useNavigate, useParams } from 'react-router-dom';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 
 const FormBuilder = () => {
     const { id } = useParams();
@@ -14,7 +18,7 @@ const FormBuilder = () => {
         if (id) {
             setLoading(true);
             const token = localStorage.getItem('token');
-            fetch(`http://localhost:3000/forms/templates/${id}`, {
+            fetch(`${API_URL}/forms/templates/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
                 .then(res => res.json())

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import API_URL from "../config/api";
 import { Link } from 'react-router-dom';
+import API_URL from "../config/api";
 import Icon from '../../components/Icon';
+import API_URL from "../config/api";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -15,7 +18,7 @@ const ForgotPassword = () => {
 
     try {
       // In production, this would call the actual API
-      const res = await fetch('http://localhost:3000/auth/forgot-password', {
+      const res = await fetch(`${API_URL}/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

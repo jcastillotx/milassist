@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 
 const MeetingScheduler = () => {
     const [videoConnections, setVideoConnections] = useState([]);
@@ -20,7 +23,7 @@ const MeetingScheduler = () => {
     const fetchConnections = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/video/connections', {
+            const res = await fetch(`${API_URL}/video/connections', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -38,7 +41,7 @@ const MeetingScheduler = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/meetings/create', {
+            const res = await fetch(`${API_URL}/meetings/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,7 +69,7 @@ const MeetingScheduler = () => {
     const handleConnect = async (provider) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/video/auth/${provider}`, {
+            const res = await fetch(`${API_URL}/video/auth/${provider}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

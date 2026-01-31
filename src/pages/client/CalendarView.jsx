@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 
 const CalendarView = () => {
     const [events, setEvents] = useState([]);
@@ -17,7 +20,7 @@ const CalendarView = () => {
             const token = localStorage.getItem('token');
             
             // Fetch calendar events
-            const calRes = await fetch('http://localhost:3000/calendar/events', {
+            const calRes = await fetch(`${API_URL}/calendar/events', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (calRes.ok) {
@@ -26,7 +29,7 @@ const CalendarView = () => {
             }
 
             // Fetch meetings
-            const meetRes = await fetch('http://localhost:3000/meetings', {
+            const meetRes = await fetch(`${API_URL}/meetings', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (meetRes.ok) {

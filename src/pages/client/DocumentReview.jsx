@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 
 const DocumentReview = () => {
     const [documents, setDocuments] = useState([]);
@@ -23,7 +26,7 @@ const DocumentReview = () => {
     const handleAnalyze = async (docId) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/ai/analyze-doc', {
+            const res = await fetch(`${API_URL}/ai/analyze-doc', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

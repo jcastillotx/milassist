@@ -1,7 +1,11 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const secretKey = process.env.JWT_SECRET || 'milassist_secret_key_dev_CHANGE_IN_PRODUCTION';
+if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is required');
+}
+
+const secretKey = process.env.JWT_SECRET;
 const jwtExpiration = process.env.JWT_EXPIRATION || '24h';
 
 const authenticateToken = (req, res, next) => {

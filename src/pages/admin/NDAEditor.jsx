@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 
 const NDAEditor = () => {
     const [content, setContent] = useState('');
@@ -10,7 +13,7 @@ const NDAEditor = () => {
         const fetchNDA = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:3000/settings/nda_content', {
+                const res = await fetch(`${API_URL}/settings/nda_content', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -29,7 +32,7 @@ const NDAEditor = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/settings/nda_content', {
+            const res = await fetch(`${API_URL}/settings/nda_content', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

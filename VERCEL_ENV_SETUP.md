@@ -1,201 +1,252 @@
 # Vercel Environment Variables Setup
 
-## 🔧 Required Environment Variables
+This document lists all environment variables needed for deployment on Vercel.
 
-Your MilAssist Payload CMS deployment requires the following environment variables to be configured in Vercel Dashboard.
+## 🔑 Core Application
 
-## 📋 Step-by-Step Setup
-
-### 1. Access Vercel Dashboard
-1. Go to [vercel.com/dashboard](https://vercel.com/dashboard)
-2. Select your **milassist** project
-3. Navigate to **Settings** → **Environment Variables**
-
-### 2. Add Required Variables
-
-Add the following environment variables:
-
-#### **PAYLOAD_SECRET** (Required)
-- **Name**: `PAYLOAD_SECRET`
-- **Value**: Generate a secure random string
-- **Environments**: Production, Preview, Development
-
-**Generate value using:**
 ```bash
-openssl rand -base64 32
+# Node Environment
+NODE_ENV=production
+
+# JWT Authentication
+JWT_SECRET=your-super-secure-jwt-secret-min-32-chars
+
+# Frontend URL (for OAuth redirects)
+FRONTEND_URL=https://your-app.vercel.app
+
+# Database (PostgreSQL on Vercel, Supabase, or elsewhere)
+DATABASE_URL=postgresql://username:password@host:5432/database
 ```
 
-Example value: `a8f3k2j9d8s7f6h5g4j3k2l1m0n9b8v7c6x5z4a3s2d1`
+## 💳 Stripe Payment Integration
 
----
-
-#### **DATABASE_URI** (Required)
-- **Name**: `DATABASE_URI`
-- **Value**: Your PostgreSQL connection string
-- **Environments**: Production, Preview, Development
-
-**Format:**
-```
-postgresql://username:password@host:port/database?sslmode=require
-```
-
-**Example:**
-```
-postgresql://milassist_user:securepass123@db.example.com:5432/milassist_prod?sslmode=require
-```
-
-**Options for Database:**
-- **Vercel Postgres**: Use Vercel's built-in PostgreSQL
-- **Supabase**: Free PostgreSQL hosting
-- **Railway**: PostgreSQL with free tier
-- **Neon**: Serverless PostgreSQL
-
----
-
-#### **PAYLOAD_PUBLIC_SERVER_URL** (Required)
-- **Name**: `PAYLOAD_PUBLIC_SERVER_URL`
-- **Value**: Your Vercel deployment URL
-- **Environments**: Production, Preview, Development
-
-**Format:**
-```
-https://your-app.vercel.app
-```
-
-**Example:**
-```
-https://milassist.vercel.app
-```
-
----
-
-#### **NODE_ENV** (Optional - Auto-set by Vercel)
-- **Name**: `NODE_ENV`
-- **Value**: `production`
-- **Environments**: Production
-
-*Note: Vercel automatically sets this for production deployments*
-
----
-
-## 🚀 Quick Setup Commands
-
-### Generate PAYLOAD_SECRET
 ```bash
-openssl rand -base64 32
+STRIPE_SECRET_KEY=sk_live_xxxxxxxxxxxxx
+STRIPE_PUBLISHABLE_KEY=pk_live_xxxxxxxxxxxxx
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx
 ```
 
-### Test Database Connection (Local)
+## ☁️ AWS S3 File Storage
+
 ```bash
-psql "postgresql://username:password@host:port/database?sslmode=require"
+AWS_ACCESS_KEY_ID=AKIAXXXXXXXXXXXXXXXX
+AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+AWS_REGION=us-east-1
+S3_BUCKET=milassist-documents
+```
+
+## 📧 Email Integration
+
+### Gmail (Google APIs)
+```bash
+GOOGLE_CLIENT_ID=xxxxxxxxxxxxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-xxxxxxxxxxxxx
+```
+
+### Office365 / Outlook (Microsoft Graph)
+```bash
+MICROSOFT_CLIENT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+MICROSOFT_CLIENT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MICROSOFT_TENANT_ID=common
+```
+
+### IMAP (Universal - No global config needed)
+*IMAP credentials are stored per-user in the database*
+
+## 📅 Calendar Integration
+
+### Google Calendar
+*Uses same Google OAuth credentials as Gmail above*
+
+### Office365 Calendar
+*Uses same Microsoft OAuth credentials as above*
+
+### CalDAV (iCloud, Yahoo, Fastmail, etc.)
+*Per-user credentials stored in database*
+
+**Example CalDAV Configurations:**
+
+**iCloud:**
+```json
+{
+  "serverUrl": "https://caldav.icloud.com",
+  "username": "your-apple-id@icloud.com",
+  "password": "app-specific-password",
+  "calendarUrl": "https://caldav.icloud.com/xxxxxxxxx/calendars/work/"
+}
+```
+
+**Yahoo Calendar:**
+```json
+{
+  "serverUrl": "https://caldav.calendar.yahoo.com",
+  "username": "your-email@yahoo.com",
+  "password": "app-password",
+  "calendarUrl": "https://caldav.calendar.yahoo.com/dav/your-email@yahoo.com/Calendar/inbox/"
+}
+```
+
+**Fastmail:**
+```json
+{
+  "serverUrl": "https://caldav.fastmail.com",
+  "username": "your-email@fastmail.com",
+  "password": "your-password",
+  "calendarUrl": "https://caldav.fastmail.com/dav/calendars/user/your-email@fastmail.com/Default/"
+}
+```
+
+## 📞 Twilio Communication
+
+```bash
+TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TWILIO_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TWILIO_PHONE_NUMBER=+1234567890
+```
+
+## 🎥 Video Conferencing (Optional)
+
+### Zoom
+```bash
+ZOOM_CLIENT_ID=xxxxxxxxxxxxx
+ZOOM_CLIENT_SECRET=xxxxxxxxxxxxx
+ZOOM_WEBHOOK_SECRET_TOKEN=xxxxxxxxxxxxx
+```
+
+### Microsoft Teams
+*Uses same Microsoft credentials as above*
+
+### Google Meet
+*Uses same Google credentials as above*
+
+## 🔧 Sync Settings (Optional)
+
+```bash
+# Sync intervals in minutes
+EMAIL_SYNC_INTERVAL=5
+CALENDAR_SYNC_INTERVAL=15
+
+# Enable/disable features
+ENABLE_EMAIL_SYNC=true
+ENABLE_CALENDAR_SYNC=true
+ENABLE_VIDEO_CONFERENCING=true
+```
+
+## 📊 Logging & Monitoring (Optional)
+
+```bash
+# Sentry Error Tracking
+SENTRY_DSN=https://xxxxxxxxxxxxx@sentry.io/xxxxxxxxxxxxx
+
+# Log Level
+LOG_LEVEL=info
+
+# Redis (for caching)
+REDIS_URL=redis://username:password@host:6379
 ```
 
 ---
 
-## 📝 Vercel Dashboard Instructions
+## 🚀 Quick Deploy Steps
 
-### Adding Environment Variables:
+### 1. In Vercel Dashboard:
 
-1. **Go to Project Settings**
-   - Dashboard → Your Project → Settings → Environment Variables
+1. Go to your project settings
+2. Navigate to "Environment Variables"
+3. Add each variable from above
+4. Select environment: Production, Preview, or Development
 
-2. **Click "Add New"**
-   - Enter variable name (e.g., `PAYLOAD_SECRET`)
-   - Enter variable value
-   - Select environments (Production, Preview, Development)
-   - Click "Save"
+### 2. Required Variables (Minimum):
 
-3. **Repeat for all required variables**
+For basic deployment, you MUST have:
+- `JWT_SECRET`
+- `DATABASE_URL`
+- `FRONTEND_URL`
+- `STRIPE_SECRET_KEY` (if using payments)
+- `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY` (if using file uploads)
 
-4. **Redeploy**
-   - Go to Deployments tab
-   - Click "..." on latest deployment
-   - Select "Redeploy"
+### 3. OAuth Variables:
+
+For each integration you want to enable:
+- **Gmail/Google Calendar**: Add `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`
+- **Office365/Outlook**: Add `MICROSOFT_CLIENT_ID` + `MICROSOFT_CLIENT_SECRET`
+- **Twilio**: Add `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN`
+
+### 4. User-Specific Credentials:
+
+These are stored in the database per user:
+- IMAP email credentials
+- CalDAV calendar credentials (iCloud, Yahoo, etc.)
+
+Users will connect their accounts through the frontend UI.
+
+---
+
+## 🔒 Security Notes
+
+1. **Never commit these values to git**
+2. **Use Vercel's encrypted environment variables**
+3. **Rotate secrets regularly**
+4. **Use app-specific passwords** for email services
+5. **Enable 2FA** on all service accounts
+6. **Use least-privilege IAM roles** for AWS
+
+---
+
+## 📝 Environment Variable Priority
+
+Vercel checks environment variables in this order:
+1. Environment-specific (Production/Preview/Development)
+2. All environments
+3. `.env` file (local development only)
+
+Use environment-specific variables for:
+- Different database URLs (dev vs prod)
+- Test Stripe keys (dev) vs live keys (prod)
+- Development vs production OAuth redirect URLs
 
 ---
 
 ## ✅ Verification
 
-After adding environment variables and redeploying:
+After setting up, verify each integration:
 
-1. **Check Deployment Logs**
-   - Vercel Dashboard → Deployments → Latest Deployment → View Function Logs
-   - Look for successful build and no environment variable errors
+```bash
+# Test email sync
+curl https://your-app.vercel.app/api/email-sync/test
 
-2. **Test Admin Panel**
-   - Navigate to: `https://your-app.vercel.app/admin`
-   - Should see "Create First User" screen
-   - If you see errors, check logs for missing variables
+# Test calendar sync
+curl https://your-app.vercel.app/api/calendar-sync/test
 
-3. **Test API Endpoint**
-   - Navigate to: `https://your-app.vercel.app/api/health`
-   - Should return 200 OK status
+# Test file upload
+curl -X POST https://your-app.vercel.app/api/documents/upload
 
----
-
-## 🔒 Security Best Practices
-
-1. **Never commit secrets to Git**
-   - `.env` files are in `.gitignore`
-   - Use Vercel dashboard for production secrets
-
-2. **Use different secrets per environment**
-   - Different `PAYLOAD_SECRET` for production vs preview
-   - Different database for production vs development
-
-3. **Rotate secrets regularly**
-   - Update `PAYLOAD_SECRET` every 90 days
-   - Update database passwords periodically
-
-4. **Use SSL for database connections**
-   - Always include `?sslmode=require` in `DATABASE_URI`
-
----
-
-## 🐛 Troubleshooting
-
-### Error: "PAYLOAD_SECRET is required"
-- **Solution**: Add `PAYLOAD_SECRET` environment variable in Vercel dashboard
-- **Generate**: `openssl rand -base64 32`
-
-### Error: "Cannot connect to database"
-- **Solution**: Verify `DATABASE_URI` is correct
-- **Test**: Try connecting locally with the same connection string
-- **Check**: Ensure database allows connections from Vercel IPs
-
-### Error: "Environment Variable references Secret which does not exist"
-- **Solution**: This error is now fixed - `vercel.json` no longer references secrets
-- **Action**: Commit and push the updated `vercel.json`
-
-### Deployment still failing?
-1. Check build logs in Vercel dashboard
-2. Verify all environment variables are set
-3. Ensure database is accessible from Vercel
-4. Check that `payload/package.json` has correct build scripts
+# Test payments
+curl https://your-app.vercel.app/api/payments/health
+```
 
 ---
 
 ## 📚 Additional Resources
 
-- [Vercel Environment Variables Docs](https://vercel.com/docs/concepts/projects/environment-variables)
-- [Payload CMS Configuration](https://payloadcms.com/docs/configuration/overview)
-- [PostgreSQL Connection Strings](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING)
+- [Vercel Environment Variables Docs](https://vercel.com/docs/environment-variables)
+- [Google OAuth Setup](https://console.cloud.google.com/)
+- [Microsoft App Registration](https://portal.azure.com/)
+- [AWS IAM Console](https://console.aws.amazon.com/iam/)
+- [Stripe Dashboard](https://dashboard.stripe.com/)
 
 ---
 
-## 🎯 Summary Checklist
+## 🆘 Troubleshooting
 
-- [ ] Generate `PAYLOAD_SECRET` with `openssl rand -base64 32`
-- [ ] Set up PostgreSQL database (Vercel Postgres, Supabase, Railway, or Neon)
-- [ ] Add `PAYLOAD_SECRET` to Vercel environment variables
-- [ ] Add `DATABASE_URI` to Vercel environment variables
-- [ ] Add `PAYLOAD_PUBLIC_SERVER_URL` to Vercel environment variables
-- [ ] Commit and push updated `vercel.json` (without secret references)
-- [ ] Redeploy from Vercel dashboard
-- [ ] Test admin panel at `https://your-app.vercel.app/admin`
-- [ ] Create first admin user
+**Issue: OAuth redirect mismatch**
+- Solution: Add `https://your-app.vercel.app/api/oauth/callback` to OAuth providers
 
----
+**Issue: Database connection fails**
+- Solution: Verify `DATABASE_URL` format and connection pooling settings
 
-**Last Updated**: January 13, 2026
-**Status**: Ready for deployment after environment variables are configured
+**Issue: File uploads fail**
+- Solution: Check AWS credentials and S3 bucket permissions (public read for signed URLs)
+
+**Issue: CalDAV connection timeout**
+- Solution: Verify server URL format and app-specific passwords are enabled
