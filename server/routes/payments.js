@@ -38,23 +38,59 @@ router.post('/create-intent', authenticateToken, async (req, res) => {
     }
 });
 
-// Simulate Webhook (Since we can't receive real webhooks locally without tunneling)
+// Webhook endpoint with mandatory signature verification
+// SECURITY: This endpoint REQUIRES stripe signature verification
 router.post('/webhook', async (req, res) => {
-    const { type, data } = req.body;
+    const sig = req.headers['stripe-signature'];
+    
+    // Require webhook secret - fail hard if not configured
+    if (!process.env.STRIPE_WEBHOOK_SECRET) {
+        console.error('[Webhook] STRIPE_WEBHOOK_SECRET not configured - rejecting webhook');
+        return res.status(500).json({ 
+            error: 'Webhook endpoint not properly configured' 
+        });
+    }
+    
+    if (!sig) {
+        console.error('[Webhook] Missing stripe-signature header');
+        return res.status(400).json({ 
+            error: 'Missing signature header' 
+        });
+    }
 
-    if (type === 'payment_intent.succeeded') {
-        const invoiceId = data.object.metadata.invoiceId;
-        console.log(`[Webhook] Payment succeeded for Invoice ${invoiceId}`);
+    let event;
+    try {
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            sig,
+            process.env.STRIPE_WEBHOOK_SECRET
+        );
+    } catch (err) {
+        console.error('[Webhook] Signature verification failed:', err.message);
+        return res.status(400).json({ 
+            error: `Webhook signature verification failed: ${err.message}` 
+        });
+    }
 
-        try {
-            const invoice = await Invoice.findByPk(invoiceId);
-            if (invoice) {
-                invoice.status = 'paid';
-                await invoice.save();
+    // Process verified event
+    try {
+        if (event.type === 'payment_intent.succeeded') {
+            const invoiceId = event.data.object.metadata?.invoiceId;
+            if (invoiceId) {
+                console.log(`[Webhook] Payment succeeded for Invoice ${invoiceId}`);
+                const invoice = await Invoice.findByPk(invoiceId);
+                if (invoice) {
+                    invoice.status = 'paid';
+                    invoice.paidAt = new Date();
+                    await invoice.save();
+                    console.log(`[Webhook] Invoice ${invoiceId} marked as paid`);
+                }
             }
-        } catch (err) {
-            console.error('Webhook Error:', err);
         }
+    } catch (err) {
+        console.error('[Webhook] Error processing event:', err);
+        return res.status(500).json({ error: 'Event processing failed' });
     }
 
     res.json({ received: true });

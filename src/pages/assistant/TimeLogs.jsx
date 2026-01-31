@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 
 const TimeLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -9,7 +11,7 @@ const TimeLogs = () => {
         const fetchLogs = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:3000/time', {
+                const res = await fetch(`${API_URL}/time', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) setLogs(await res.json());

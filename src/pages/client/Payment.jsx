@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import { useParams, useNavigate } from 'react-router-dom';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 
 const Payment = () => {
     const { invoiceId } = useParams();
@@ -25,7 +29,7 @@ const Payment = () => {
                 // We'll reuse the list endpoint and filter for now as a shortcut, 
                 // or ideally fetch a single invoice if the endpoint supported it.
                 // Assuming /invoices returns user's invoices.
-                const res = await fetch('http://localhost:3000/invoices', {
+                const res = await fetch(`${API_URL}/invoices', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -53,7 +57,7 @@ const Payment = () => {
             const token = localStorage.getItem('token');
 
             // 1. Create Payment Intent
-            const intentRes = await fetch('http://localhost:3000/payments/create-intent', {
+            const intentRes = await fetch(`${API_URL}/payments/create-intent', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,7 +78,7 @@ const Payment = () => {
             // 3. Simulate Webhook Success (Since we can't receive real webhooks)
             // We manually tell the server "Hey, this succeeded" for the simulation
             // In prod, Stripe sends this to us.
-            await fetch('http://localhost:3000/payments/webhook', {
+            await fetch(`${API_URL}/payments/webhook', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

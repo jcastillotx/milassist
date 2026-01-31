@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import { useNavigate } from 'react-router-dom';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 
 const ClientInvoices = () => {
     const navigate = useNavigate();
@@ -12,7 +16,7 @@ const ClientInvoices = () => {
         const fetchInvoices = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:3000/invoices', {
+                const res = await fetch(`${API_URL}/invoices', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

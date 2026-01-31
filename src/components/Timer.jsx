@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 
 const Timer = () => {
     const [running, setRunning] = useState(false);
@@ -11,7 +12,7 @@ const Timer = () => {
         const fetchCurrent = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:3000/time/current', {
+                const res = await fetch(`${API_URL}/time/current', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

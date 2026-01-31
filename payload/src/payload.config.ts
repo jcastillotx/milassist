@@ -93,7 +93,9 @@ export default buildConfig({
   editor: lexicalEditor({}),
 
   // Secret for JWT
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET || (() => {
+    throw new Error('PAYLOAD_SECRET environment variable is required');
+  })(),
 
   // TypeScript
   typescript: {

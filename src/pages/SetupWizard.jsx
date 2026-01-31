@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import { useNavigate } from 'react-router-dom';
+import API_URL from "../config/api";
 import Card from '../components/Card';
+import API_URL from "../config/api";
 import Button from '../components/Button';
+import API_URL from "../config/api";
 
 const SetupWizard = () => {
     const [step, setStep] = useState(1);
@@ -25,7 +29,7 @@ const SetupWizard = () => {
     useEffect(() => {
         const checkStatus = async () => {
             try {
-                const res = await fetch('http://localhost:3000/setup/status');
+                const res = await fetch(`${API_URL}/setup/status');
                 if (res.ok) {
                     const data = await res.json();
                     if (data.initialized) {
@@ -48,7 +52,7 @@ const SetupWizard = () => {
         }
 
         try {
-            const res = await fetch('http://localhost:3000/setup/init', {
+            const res = await fetch(`${API_URL}/setup/init', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ admin: adminData, settings })

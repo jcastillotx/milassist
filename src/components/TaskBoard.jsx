@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import API_URL from "../config/api";
 import Card from './Card';
+import API_URL from "../config/api";
 import Button from './Button';
+import API_URL from "../config/api";
 import TaskHandoffModal from './TaskHandoffModal';
+import API_URL from "../config/api";
 
 const TaskBoard = ({ role }) => {
     const [tasks, setTasks] = useState([]);
@@ -13,7 +17,7 @@ const TaskBoard = ({ role }) => {
         const fetchTasks = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:3000/tasks', {
+                const res = await fetch(`${API_URL}/tasks', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -32,7 +36,7 @@ const TaskBoard = ({ role }) => {
     const refreshTasks = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/tasks', {
+            const res = await fetch(`${API_URL}/tasks', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

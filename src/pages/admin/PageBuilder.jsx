@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 
 const PageBuilder = () => {
     const [pages, setPages] = useState([]);
@@ -13,7 +16,7 @@ const PageBuilder = () => {
 
     // Load pages on mount
     useEffect(() => {
-        fetch('http://localhost:3000/pages')
+        fetch(`${API_URL}/pages')
             .then(res => res.json())
             .then(data => setPages(data))
             .catch(err => console.error(err));
@@ -59,7 +62,7 @@ const PageBuilder = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/pages', {
+            const res = await fetch(`${API_URL}/pages', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

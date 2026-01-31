@@ -1,37 +1,20 @@
 /**
- * Mock Stripe Service
- * Simulates the Stripe Node.js SDK for development and testing.
+ * Real Stripe Service
+ * Uses the official Stripe Node.js SDK
  */
 
-const uuid = require('crypto').randomUUID;
+require('dotenv').config();
 
-class MockStripe {
-    constructor() {
-        this.paymentIntents = {
-            create: async ({ amount, currency, description, metadata }) => {
-                console.log(`[MockStripe] Creating PaymentIntent: ${amount} ${currency}`);
-                return {
-                    id: `pi_${uuid()}`,
-                    amount,
-                    currency,
-                    description,
-                    metadata,
-                    status: 'requires_payment_method',
-                    client_secret: `pi_${uuid()}_secret_${uuid()}`,
-                    created: Date.now() / 1000
-                };
-            },
-            confirm: async (id, { payment_method }) => {
-                console.log(`[MockStripe] Confirming PaymentIntent: ${id} with method ${payment_method}`);
-                // Simulate processing delay
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                return {
-                    id,
-                    status: 'succeeded',
-                };
-            }
-        };
-    }
+// Validate Stripe configuration
+if (!process.env.STRIPE_SECRET_KEY) {
+    console.error('ERROR: STRIPE_SECRET_KEY environment variable is required');
+    throw new Error('STRIPE_SECRET_KEY environment variable is required for payment processing');
 }
 
-module.exports = new MockStripe();
+// Initialize real Stripe SDK
+const Stripe = require('stripe');
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+console.log('[Stripe] Initialized with real Stripe SDK');
+
+module.exports = stripe;

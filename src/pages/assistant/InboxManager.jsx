@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 
 const InboxManager = () => {
     const [clients, setClients] = useState([]);
@@ -33,7 +36,7 @@ const InboxManager = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/email/messages/${clientId}`, {
+            const res = await fetch(`${API_URL}/email/messages/${clientId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -57,7 +60,7 @@ const InboxManager = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/email/send/${selectedClient.userId || selectedClient.id}`, {
+            const res = await fetch(`${API_URL}/email/send/${selectedClient.userId || selectedClient.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

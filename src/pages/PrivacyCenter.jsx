@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Card from '../components/Card';
+import API_URL from "../config/api";
 import Button from '../components/Button';
+import API_URL from "../config/api";
 
 const PrivacyCenter = () => {
     const [requests, setRequests] = useState([]);
@@ -9,7 +12,7 @@ const PrivacyCenter = () => {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/privacy', {
+            const res = await fetch(`${API_URL}/privacy', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setRequests(await res.json());
@@ -26,7 +29,7 @@ const PrivacyCenter = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/privacy', {
+            const res = await fetch(`${API_URL}/privacy', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

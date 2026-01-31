@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from "../config/api";
 import Card from '../../components/Card';
+import API_URL from "../config/api";
 import Button from '../../components/Button';
+import API_URL from "../config/api";
 
 const EmailSettings = () => {
     const [connections, setConnections] = useState([]);
@@ -13,7 +16,7 @@ const EmailSettings = () => {
     const fetchConnections = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/email/connections', {
+            const res = await fetch(`${API_URL}/email/connections', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -30,7 +33,7 @@ const EmailSettings = () => {
     const handleConnect = async (provider) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/email/auth/${provider}`, {
+            const res = await fetch(`${API_URL}/email/auth/${provider}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -49,7 +52,7 @@ const EmailSettings = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/email/connections/${connectionId}`, {
+            const res = await fetch(`${API_URL}/email/connections/${connectionId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

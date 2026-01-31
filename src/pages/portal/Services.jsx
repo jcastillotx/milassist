@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import API_URL from "../config/api";
 import { Link } from 'react-router-dom';
+import API_URL from "../config/api";
 import Icon from '../../components/Icon';
+import API_URL from "../config/api";
 
 const Services = () => {
   const [loading, setLoading] = useState(null);
@@ -36,7 +39,7 @@ const Services = () => {
       const stripe = window.Stripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_...');
 
       // Create checkout session
-      const response = await fetch('http://localhost:3000/api/stripe/create-checkout-session', {
+      const response = await fetch(`${API_URL}/api/stripe/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
