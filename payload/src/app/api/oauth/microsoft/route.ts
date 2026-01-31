@@ -140,8 +140,8 @@ async function handleCallback(request: NextRequest) {
     }
 
     // Generate JWT token for OAuth user
-    const payload = require('payload')
-    const token = payload.generateToken({
+    const payloadCMS = (await import('payload')).default
+    const token = payloadCMS.generateToken({
       id: user.id,
       email: user.email,
       collection: 'users',
