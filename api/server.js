@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 // Vercel Serverless Function wrapper for Express.js backend
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 
 // Set up environment
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -20,8 +21,10 @@ process.env.NODE_PATH = process.env.NODE_PATH
   : rootNodeModules;
 require('module').Module._initPaths();
 
-// Load environment variables from server directory
-require('dotenv').config({ path: path.join(__dirname, '..', 'server', '.env') });
+// Load environment variables in non-production environments
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: path.join(__dirname, '..', 'server', '.env') });
+}
 
 // CRITICAL: Validate JWT secret strength before starting server
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -71,6 +74,15 @@ const { sequelize } = require('../server/models');
 
 // Create Express app
 const app = express();
+
+// Trust Vercel Proxy
+app.set('trust proxy', 1);
+
+// Security Headers
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false // Disable CSP for now if it interferes with frontend
+}));
 
 // CORS Configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS
@@ -161,10 +173,7 @@ apiRouter.use('/email', require('../server/routes/email'));
 apiRouter.use('/video', require('../server/routes/video'));
 apiRouter.use('/meetings', require('../server/routes/meetings'));
 apiRouter.use('/calendar', require('../server/routes/calendar'));
-// apiRouter.use('/oauth', require('../server/routes/oauth'));
 apiRouter.use('/privacy', require('../server/routes/privacy'));
-// apiRouter.use('/nda', require('../server/routes/nda'));
-// apiRouter.use('/onboarding', require('../server/routes/onboarding'));
 apiRouter.use('/audit-logs', require('../server/routes/auditLogs'));
 apiRouter.use('/rbac', require('../server/routes/rbac'));
 apiRouter.use('/va-profiles', require('../server/routes/vaProfiles'));
@@ -219,7 +228,7 @@ app.use((err, req, res, next) => {
 });
 
 // 404 handler
-app.use('/*', (req, res) => {
+app.use((req, res) => {
     res.status(404).json({ error: 'API endpoint not found' });
 });
 

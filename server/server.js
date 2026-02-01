@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const { sequelize } = require('./models');
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 // CRITICAL: Validate JWT secret strength before starting server
 const JWT_SECRET = process.env.JWT_SECRET;

@@ -3,7 +3,9 @@
  * Uses the official Stripe Node.js SDK
  */
 
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 // Validate Stripe configuration
 if (!process.env.STRIPE_SECRET_KEY) {
