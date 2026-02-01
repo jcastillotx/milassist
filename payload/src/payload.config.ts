@@ -12,6 +12,7 @@ import TrainingModules from './collections/TrainingModules'
 import Assessments from './collections/Assessments'
 import LiveChats from './collections/LiveChats'
 import OnCallAssistants from './collections/OnCallAssistants'
+import { Media } from './collections/Media'
 
 // Import globals
 import { Settings } from './globals/Settings'
@@ -54,10 +55,8 @@ export default buildConfig({
   // Rich text editor
   editor: lexicalEditor({}),
 
-  // Secret for JWT
-  secret: process.env.PAYLOAD_SECRET || (() => {
-    throw new Error('PAYLOAD_SECRET environment variable is required');
-  })(),
+  // Secret for JWT - use BUILD_SECRET for development builds, require PAYLOAD_SECRET in production
+  secret: process.env.PAYLOAD_SECRET || BUILD_SECRET,
 
   // TypeScript
   typescript: {

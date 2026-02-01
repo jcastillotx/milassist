@@ -1,4 +1,4 @@
-import type { Access } from 'payload'
+import type { Access, Where } from 'payload'
 
 export const isOwner: Access = ({ req: { user } }) => {
   // Allow if user owns the resource
@@ -6,8 +6,8 @@ export const isOwner: Access = ({ req: { user } }) => {
     return false
   }
 
-  // Return a query constraint
-  return {
+  // Return a query constraint - explicitly type as Where to satisfy TypeScript
+  const query: Where = {
     or: [
       {
         'client.id': {
@@ -26,4 +26,6 @@ export const isOwner: Access = ({ req: { user } }) => {
       },
     ],
   }
+
+  return query
 }

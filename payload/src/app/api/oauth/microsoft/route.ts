@@ -139,13 +139,20 @@ async function handleCallback(request: NextRequest) {
       })
     }
 
-    // Generate JWT token for OAuth user
-    const payloadCMS = (await import('payload')).default
-    const token = payloadCMS.generateToken({
-      id: user.id,
-      email: user.email,
-      collection: 'users',
-    })
+    // Generate JWT token for OAuth user manually
+    // OAuth users don't have passwords, so we sign the JWT directly
+    const jwt = await import('jsonwebtoken')
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        collection: 'users',
+      },
+      process.env.PAYLOAD_SECRET || '',
+      {
+        expiresIn: '7d',
+      }
+    )
 
     // Set JWT cookie and redirect to admin
     const response = NextResponse.redirect(
