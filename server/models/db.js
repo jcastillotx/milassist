@@ -12,21 +12,25 @@ if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL && !proce
 const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
 // PostgreSQL configuration for production
+// PostgreSQL configuration for production/development
+const isProduction = process.env.NODE_ENV === 'production';
+
 const sequelize = new Sequelize(databaseUrl || 'postgresql://localhost:5432/milassist_dev', {
     dialect: 'postgres',
-    logging: process.env.NODE_ENV !== 'production' ? console.log : false,
+    logging: isProduction ? false : console.log,
     pool: {
-        max: 10,
-        min: 2,
+        max: isProduction ? 5 : 10, // Reduce max connections for serverless to prevent exhaustion
+        min: 0, // Allow scaling down to 0 to release resources
         acquire: 30000,
         idle: 10000
     },
-    dialectOptions: {
-        ssl: process.env.NODE_ENV === 'production' ? {
+    dialectOptions: isProduction ? {
+        ssl: {
             require: true,
-            rejectUnauthorized: false
-        } : false
-    }
+            rejectUnauthorized: false // Critical for Supabase/Vercel connections
+        },
+        keepAlive: true // Helps prevent ECONNRESET
+    } : {}
 });
 
 // Test the connection
