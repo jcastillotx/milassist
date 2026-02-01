@@ -43,38 +43,59 @@ const consoleFormat = winston.format.combine(
     )
 );
 
-// Define transports
+// Detect serverless environment (Vercel, AWS Lambda, Google Cloud Functions, etc.)
+const isServerless = !!(
+    process.env.VERCEL ||
+    process.env.AWS_LAMBDA_FUNCTION_NAME ||
+    process.env.FUNCTION_NAME ||
+    process.env.LAMBDA_TASK_ROOT
+);
+
+// Define transports - console always, files only in non-serverless
 const transports = [
     // Console for all environments
     new winston.transports.Console({
         format: process.env.NODE_ENV === 'production' ? format : consoleFormat,
     }),
-    // Error log file
-    new winston.transports.File({
-        filename: path.join('logs', 'error.log'),
-        level: 'error',
-        format,
-    }),
-    // Combined log file
-    new winston.transports.File({
-        filename: path.join('logs', 'combined.log'),
-        format,
-    }),
 ];
 
-// Create logger
-const logger = winston.createLogger({
+// Only add file transports in non-serverless environments
+if (!isServerless) {
+    transports.push(
+        // Error log file
+        new winston.transports.File({
+            filename: path.join('logs', 'error.log'),
+            level: 'error',
+            format,
+        }),
+        // Combined log file
+        new winston.transports.File({
+            filename: path.join('logs', 'combined.log'),
+            format,
+        })
+    );
+}
+
+// Logger configuration
+const loggerConfig = {
     level: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
     levels,
     format,
     transports,
-    exceptionHandlers: [
+};
+
+// Only add file-based exception/rejection handlers in non-serverless environments
+if (!isServerless) {
+    loggerConfig.exceptionHandlers = [
         new winston.transports.File({ filename: path.join('logs', 'exceptions.log') }),
-    ],
-    rejectionHandlers: [
+    ];
+    loggerConfig.rejectionHandlers = [
         new winston.transports.File({ filename: path.join('logs', 'rejections.log') }),
-    ],
-});
+    ];
+}
+
+// Create logger
+const logger = winston.createLogger(loggerConfig);
 
 // HTTP request logging middleware
 const httpLogger = (req, res, next) => {
