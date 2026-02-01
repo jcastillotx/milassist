@@ -55,6 +55,17 @@ if (WEAK_SECRETS.some(weak => secretLower.includes(weak))) {
   throw new Error(error);
 }
 
+// Pre-load pg from root node_modules before server code requires it
+// This ensures Sequelize can find it when initializing
+try {
+  require('pg');
+  require('pg-hstore');
+  console.log('✓ Pre-loaded pg and pg-hstore from root node_modules');
+} catch (e) {
+  console.error('Failed to pre-load pg packages:', e.message);
+  throw e;
+}
+
 // Import database connection
 const { sequelize } = require('../server/models');
 
