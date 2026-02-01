@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/api/server.cjs"
+      "destination": "/api/server.js"
     }
   ],
   "env": {

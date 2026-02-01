@@ -1,7 +1,14 @@
+import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Vercel Serverless Function wrapper for Express.js backend
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 
 // Set up environment
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -171,4 +178,4 @@ app.use('/*', (req, res) => {
 });
 
 // Export the Express app as a serverless function
-module.exports = app;
+export default app;
