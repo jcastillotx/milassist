@@ -74,6 +74,7 @@ app.use('/rbac', require('./routes/rbac'));
 app.use('/va-profiles', require('./routes/vaProfiles'));
 app.use('/va-matching', require('./routes/vaMatching'));
 app.use('/ai', require('./routes/aiProductivity'));
+app.use('/alerts', require('./routes/alerts'));
 
 // Health Check
 app.get('/health', (req, res) => {

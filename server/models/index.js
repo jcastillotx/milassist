@@ -30,6 +30,7 @@ const AccessControl = require('./AccessControl')(sequelize);
 const VAProfile = require('./VAProfile')(sequelize);
 const VAMatch = require('./VAMatch')(sequelize);
 const IntegrationLog = require('./IntegrationLog');
+const Alert = require('./Alert');
 
 // Associations
 
@@ -182,5 +183,6 @@ module.exports = {
     AccessControl,
     VAProfile,
     VAMatch,
-    IntegrationLog
+    IntegrationLog,
+    Alert
 };

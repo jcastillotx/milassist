@@ -92,6 +92,68 @@ VALUES
     ('aws', 'AWS S3', 'Cloud storage for documents', 'storage', 'inactive', '{"autoBackup": true, "encryptionEnabled": true}')
 ON CONFLICT (provider) DO NOTHING;
 
+-- ==========================================
+-- ALERTS TABLE
+-- ==========================================
+
+-- Create ENUM for alert types and priorities
+DO $$ BEGIN
+    CREATE TYPE alert_type AS ENUM ('error', 'warning', 'info', 'success');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE alert_priority AS ENUM ('low', 'normal', 'high', 'urgent');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE alert_status AS ENUM ('active', 'dismissed', 'resolved');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+-- Create Alerts table
+CREATE TABLE IF NOT EXISTS "Alerts" (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    type VARCHAR(20) DEFAULT 'info',
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    action VARCHAR(255),
+    "actionUrl" VARCHAR(500),
+    priority VARCHAR(20) DEFAULT 'normal',
+    status VARCHAR(20) DEFAULT 'active',
+    "dismissedAt" TIMESTAMP WITH TIME ZONE,
+    "dismissedBy" UUID REFERENCES "Users"(id) ON DELETE SET NULL,
+    metadata JSONB DEFAULT '{}',
+    "expiresAt" TIMESTAMP WITH TIME ZONE,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for alerts
+CREATE INDEX IF NOT EXISTS idx_alerts_status ON "Alerts"(status);
+CREATE INDEX IF NOT EXISTS idx_alerts_priority ON "Alerts"(priority);
+CREATE INDEX IF NOT EXISTS idx_alerts_created ON "Alerts"("createdAt" DESC);
+
+-- Add trigger for Alerts updatedAt
+DROP TRIGGER IF EXISTS update_alerts_updated_at ON "Alerts";
+CREATE TRIGGER update_alerts_updated_at
+    BEFORE UPDATE ON "Alerts"
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Insert sample alerts
+INSERT INTO "Alerts" (type, title, description, action, "actionUrl", priority)
+VALUES
+    ('error', 'Assistant Capacity Alert', 'An assistant has exceeded 90% capacity. Reassignment recommended.', 'Review Assignment', '/admin/users?role=assistant', 'urgent'),
+    ('warning', 'Client SLA Risk', 'A client has tasks approaching SLA deadline within 24 hours.', 'View Tasks', '/admin/tasks', 'high'),
+    ('info', 'New Client Onboarding', 'New client requires assistant matching.', 'Begin Matching', '/admin/matches', 'normal')
+ON CONFLICT DO NOTHING;
+
 -- Verify the tables were created
 SELECT 'Integrations table created' as status, count(*) as row_count FROM "Integrations";
 SELECT 'IntegrationLogs table created' as status, count(*) as row_count FROM "IntegrationLogs";
+SELECT 'Alerts table created' as status, count(*) as row_count FROM "Alerts";

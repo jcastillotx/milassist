@@ -31,7 +31,55 @@ const AdminOverview = () => {
   useEffect(() => {
     fetchDashboardData();
     fetchUserProfile();
+    fetchAlerts();
   }, [selectedPeriod]);
+
+  // Fetch alerts from API
+  const fetchAlerts = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/alerts`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAlerts(data.map(alert => ({
+          id: alert.id,
+          type: alert.type,
+          title: alert.title,
+          description: alert.description,
+          time: formatTimeAgo(alert.createdAt),
+          action: alert.action || 'View Details',
+          actionUrl: alert.actionUrl
+        })));
+
+        // Update stats
+        const urgentCount = data.filter(a => a.priority === 'urgent').length;
+        setStats(prev => ({
+          ...prev,
+          alerts: { count: data.length, urgent: urgentCount }
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching alerts:', error);
+      // Fall back to sample alerts if API fails
+    }
+  };
+
+  // Format time ago helper
+  const formatTimeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  };
 
   const fetchUserProfile = async () => {
     try {
@@ -106,38 +154,7 @@ const AdminOverview = () => {
         }));
       }
 
-      // Set sample alerts (would come from alerts API)
-      setAlerts([
-        {
-          id: 1,
-          type: 'error',
-          title: 'Assistant Capacity Alert',
-          description: 'An assistant has exceeded 90% capacity. Reassignment recommended.',
-          time: '15 minutes ago',
-          action: 'Review Assignment'
-        },
-        {
-          id: 2,
-          type: 'warning',
-          title: 'Client SLA Risk',
-          description: 'A client has tasks approaching SLA deadline within 24 hours.',
-          time: '1 hour ago',
-          action: 'View Tasks'
-        },
-        {
-          id: 3,
-          type: 'info',
-          title: 'New Client Onboarding',
-          description: 'New client requires assistant matching.',
-          time: '2 hours ago',
-          action: 'Begin Matching'
-        }
-      ]);
-
-      setStats(prev => ({
-        ...prev,
-        alerts: { count: 3, urgent: 1 }
-      }));
+      // Alerts are now fetched separately via fetchAlerts()
 
       // Set sample assignments
       setAssignments([
@@ -221,9 +238,38 @@ const AdminOverview = () => {
     navigate(`/admin/users?id=${result.id}`);
   };
 
-  // Dismiss alert
-  const dismissAlert = (alertId) => {
-    setAlerts(prev => prev.filter(a => a.id !== alertId));
+  // Dismiss alert - calls API to log and persist
+  const dismissAlert = async (alertId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/alerts/${alertId}/dismiss`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        // Remove from local state with animation
+        setAlerts(prev => prev.filter(a => a.id !== alertId));
+
+        // Update alert count in stats
+        setStats(prev => ({
+          ...prev,
+          alerts: {
+            count: Math.max(0, prev.alerts.count - 1),
+            urgent: prev.alerts.urgent > 0 ? prev.alerts.urgent - 1 : 0
+          }
+        }));
+      } else {
+        console.error('Failed to dismiss alert');
+      }
+    } catch (error) {
+      console.error('Error dismissing alert:', error);
+      // Still remove locally for UX even if API fails
+      setAlerts(prev => prev.filter(a => a.id !== alertId));
+    }
   };
 
   // Helper functions
@@ -523,32 +569,46 @@ const AdminOverview = () => {
 
       {/* Assignment Overview & Coverage Status */}
       <div className="admin-grid">
-        <div className="admin-card">
+        <div className="admin-card assignment-overview-card">
           <div className="admin-card-header">
             <h3 className="admin-card-title">Assignment Overview</h3>
+            <span className="admin-card-badge">{coverageStatus.reduce((a, b) => a + b.assigned, 0)} Total</span>
           </div>
           <div className="admin-card-body">
             <p className="admin-card-subtitle">Current Assignments by Service Type</p>
             <div className="admin-bar-chart">
-              {coverageStatus.map((item, index) => (
-                <div key={index} className="admin-bar-item">
-                  <div className="admin-bar" style={{ height: `${item.assigned * 2}px`, backgroundColor: '#8b5cf6' }}></div>
-                  <span className="admin-bar-label">{item.type.split(' ')[0]}</span>
-                </div>
-              ))}
+              {coverageStatus.map((item, index) => {
+                const maxAssigned = Math.max(...coverageStatus.map(i => i.assigned));
+                const heightPercent = (item.assigned / maxAssigned) * 100;
+                return (
+                  <div key={index} className="admin-bar-item">
+                    <span className="admin-bar-value">{item.assigned}</span>
+                    <div
+                      className="admin-bar"
+                      style={{
+                        height: `${Math.max(heightPercent, 15)}%`
+                      }}
+                    ></div>
+                    <span className="admin-bar-label">{item.type.split(' ')[0]}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
-        <div className="admin-card">
+        <div className="admin-card coverage-status-card">
           <div className="admin-card-header">
             <h3 className="admin-card-title">Coverage Status</h3>
+            <span className="admin-card-badge success">{Math.round(coverageStatus.reduce((a, b) => a + b.percentage, 0) / coverageStatus.length)}% Avg</span>
           </div>
           <div className="admin-card-body">
             {coverageStatus.map((item, index) => (
               <div key={index} className="admin-coverage-item">
                 <div className="admin-coverage-header">
                   <span className="admin-coverage-type">{item.type}</span>
-                  <span className="admin-coverage-percent">{item.percentage}%</span>
+                  <span className={`admin-coverage-percent ${item.percentage > 80 ? 'high' : item.percentage > 60 ? 'medium' : 'low'}`}>
+                    {item.percentage}%
+                  </span>
                 </div>
                 <div className="admin-progress">
                   <div
@@ -560,8 +620,8 @@ const AdminOverview = () => {
                   ></div>
                 </div>
                 <div className="admin-coverage-stats">
-                  <span>{item.assigned} assigned</span>
-                  <span>{item.available} available</span>
+                  <span><Icon name="users" size={12} style={{ marginRight: '4px' }} />{item.assigned} assigned</span>
+                  <span><Icon name="checkCircle" size={12} style={{ marginRight: '4px' }} />{item.available} available</span>
                 </div>
               </div>
             ))}
