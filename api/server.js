@@ -21,6 +21,16 @@ require('dotenv').config();
 
 // CRITICAL: Validate JWT secret strength before starting server
 const JWT_SECRET = process.env.JWT_SECRET;
+
+// Debug logging to diagnose the issue
+console.log('=== JWT_SECRET DEBUG ===');
+console.log('JWT_SECRET exists:', !!JWT_SECRET);
+console.log('JWT_SECRET length:', JWT_SECRET?.length || 0);
+console.log('JWT_SECRET first 15 chars:', JWT_SECRET?.substring(0, 15) || 'undefined');
+console.log('JWT_SECRET last 10 chars:', JWT_SECRET?.substring(JWT_SECRET.length - 10) || 'undefined');
+console.log('All env vars with JWT:', Object.keys(process.env).filter(k => k.includes('JWT')));
+console.log('========================');
+
 if (!JWT_SECRET) {
   const error = 'FATAL: JWT_SECRET environment variable is not set. Please configure JWT_SECRET in Vercel environment variables (separate from SUPABASE_JWT_SECRET).';
   console.error(error);
