@@ -29,6 +29,7 @@ const AuditLog = require('./AuditLog')(sequelize);
 const AccessControl = require('./AccessControl')(sequelize);
 const VAProfile = require('./VAProfile')(sequelize);
 const VAMatch = require('./VAMatch')(sequelize);
+const IntegrationLog = require('./IntegrationLog');
 
 // Associations
 
@@ -144,6 +145,12 @@ VAMatch.belongsTo(User, { foreignKey: 'clientId', as: 'client' });
 VAProfile.hasMany(VAMatch, { foreignKey: 'vaId', as: 'matches' });
 VAMatch.belongsTo(VAProfile, { foreignKey: 'vaId', as: 'va' });
 
+// Integration Logs
+Integration.hasMany(IntegrationLog, { foreignKey: 'integrationId', as: 'logs' });
+IntegrationLog.belongsTo(Integration, { foreignKey: 'integrationId' });
+User.hasMany(IntegrationLog, { foreignKey: 'userId', as: 'integrationLogs' });
+IntegrationLog.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 module.exports = {
     sequelize,
     User,
@@ -174,5 +181,6 @@ module.exports = {
     AuditLog,
     AccessControl,
     VAProfile,
-    VAMatch
+    VAMatch,
+    IntegrationLog
 };
