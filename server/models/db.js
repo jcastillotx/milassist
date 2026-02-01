@@ -9,27 +9,35 @@ if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL && !proce
 }
 
 // Use DATABASE_URL or POSTGRES_URL (Vercel provides POSTGRES_URL)
-const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+let databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
-// PostgreSQL configuration for production
 // PostgreSQL configuration for production/development
 const isProduction = process.env.NODE_ENV === 'production';
+
+// For production, ensure sslmode doesn't conflict with our dialectOptions
+// Remove sslmode from URL to let dialectOptions handle SSL configuration
+if (isProduction && databaseUrl) {
+    const url = new URL(databaseUrl);
+    url.searchParams.delete('sslmode');
+    databaseUrl = url.toString();
+}
 
 const sequelize = new Sequelize(databaseUrl || 'postgresql://localhost:5432/milassist_dev', {
     dialect: 'postgres',
     logging: isProduction ? false : console.log,
     pool: {
-        max: isProduction ? 5 : 10, // Reduce max connections for serverless to prevent exhaustion
-        min: 0, // Allow scaling down to 0 to release resources
+        max: isProduction ? 5 : 10,
+        min: 0,
         acquire: 30000,
         idle: 10000
     },
+    // SSL configuration for cloud databases (Supabase, Neon, etc.)
+    // rejectUnauthorized: false allows self-signed certificates
     dialectOptions: isProduction ? {
         ssl: {
             require: true,
-            rejectUnauthorized: false // Critical for Supabase/Vercel connections
-        },
-        keepAlive: true // Helps prevent ECONNRESET
+            rejectUnauthorized: false
+        }
     } : {}
 });
 
