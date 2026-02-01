@@ -81,8 +81,8 @@ class AuditLogService {
     } = event;
 
     try {
-      const AuditLog = require('../models/AuditLog');
-      
+      const { AuditLog } = require('../models');
+
       const auditEntry = await AuditLog.create({
         eventType,
         severity,
@@ -213,7 +213,7 @@ class AuditLogService {
    * Query audit logs with filters
    */
   static async query(filters = {}) {
-    const AuditLog = require('../models/AuditLog');
+    const { AuditLog } = require('../models');
     const { Op } = require('sequelize');
 
     const where = {};
@@ -386,7 +386,7 @@ Please investigate immediately.`,
    * Archive old logs (data retention policy)
    */
   static async archiveOldLogs(retentionDays = 2555) { // 7 years for SOC2
-    const AuditLog = require('../models/AuditLog');
+    const { AuditLog } = require('../models');
     const { Op } = require('sequelize');
 
     const cutoffDate = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
