@@ -145,6 +145,25 @@ milassist/
 
 **IMPORTANT**: This application now uses **PostgreSQL exclusively** for all environments (development, testing, production). SQLite is no longer supported.
 
+### Quick Setup (RECOMMENDED)
+
+Use the automated migration script:
+
+```bash
+# Get your Supabase connection string from: Settings → Database → Connection String (URI)
+./scripts/migrate-production.sh "postgresql://postgres:PASSWORD@db.PROJECT-REF.supabase.co:5432/postgres"
+```
+
+This script will:
+- ✅ Test database connection
+- ✅ Run all migrations
+- ✅ Create 9 test accounts (optional)
+- ✅ Verify setup
+
+**For detailed instructions, see:** `docs/PRODUCTION_DATABASE_SETUP.md`
+
+---
+
 ### Production (Vercel + Supabase)
 
 1. **Create Supabase Project**
