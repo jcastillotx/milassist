@@ -23,6 +23,12 @@ const VideoIntegration = require('./VideoIntegration');
 const Meeting = require('./Meeting');
 const CalendarConnection = require('./CalendarConnection');
 const TaskHandoff = require('./TaskHandoff');
+const Email = require('./Email')(sequelize);
+const CalendarEvent = require('./CalendarEvent')(sequelize);
+const AuditLog = require('./AuditLog')(sequelize);
+const AccessControl = require('./AccessControl')(sequelize);
+const VAProfile = require('./VAProfile')(sequelize);
+const VAMatch = require('./VAMatch')(sequelize);
 
 // Associations
 
@@ -108,6 +114,36 @@ User.hasMany(TaskHandoff, { foreignKey: 'toAssistantId', as: 'handoffsReceived' 
 TaskHandoff.belongsTo(User, { as: 'fromAssistant', foreignKey: 'fromAssistantId' });
 TaskHandoff.belongsTo(User, { as: 'toAssistant', foreignKey: 'toAssistantId' });
 
+// Emails
+User.hasMany(Email, { foreignKey: 'userId', as: 'emails' });
+Email.belongsTo(User, { foreignKey: 'userId' });
+
+// Calendar Events
+User.hasMany(CalendarEvent, { foreignKey: 'userId', as: 'calendarEvents' });
+CalendarEvent.belongsTo(User, { foreignKey: 'userId' });
+
+// Audit Logs
+User.hasMany(AuditLog, { foreignKey: 'userId', as: 'auditLogs' });
+AuditLog.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+User.hasMany(AuditLog, { foreignKey: 'targetUserId', as: 'targetedAuditLogs' });
+AuditLog.belongsTo(User, { foreignKey: 'targetUserId', as: 'targetUser' });
+
+// Access Control
+User.hasMany(AccessControl, { foreignKey: 'userId', as: 'accessControls' });
+AccessControl.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(AccessControl, { foreignKey: 'grantedBy', as: 'accessGrantsGiven' });
+AccessControl.belongsTo(User, { foreignKey: 'grantedBy', as: 'grantor' });
+
+// VA Profiles
+User.hasOne(VAProfile, { foreignKey: 'userId', as: 'vaProfile' });
+VAProfile.belongsTo(User, { foreignKey: 'userId' });
+
+// VA Matches
+User.hasMany(VAMatch, { foreignKey: 'clientId', as: 'vaMatches' });
+VAMatch.belongsTo(User, { foreignKey: 'clientId', as: 'client' });
+VAProfile.hasMany(VAMatch, { foreignKey: 'vaId', as: 'matches' });
+VAMatch.belongsTo(VAProfile, { foreignKey: 'vaId', as: 'va' });
+
 module.exports = {
     sequelize,
     User,
@@ -132,5 +168,11 @@ module.exports = {
     VideoIntegration,
     Meeting,
     CalendarConnection,
-    TaskHandoff
+    TaskHandoff,
+    Email,
+    CalendarEvent,
+    AuditLog,
+    AccessControl,
+    VAProfile,
+    VAMatch
 };

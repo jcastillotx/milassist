@@ -1,20 +1,8 @@
-{
-  "development": {
-    "dialect": "sqlite",
-    "storage": "./database.sqlite"
-  },
-  "test": {
-    "dialect": "sqlite",
-    "storage": ":memory:"
-  },
-  "production": {
-    "use_env_variable": "DATABASE_URL",
-    "dialect": "postgres",
-    "dialectOptions": {
-      "ssl": {
-        "require": true,
-        "rejectUnauthorized": false
-      }
-    }
-  }
-}
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('config', 'database.json'),
+  'models-path': path.resolve('models'),
+  'seeders-path': path.resolve('seeders'),
+  'migrations-path': path.resolve('migrations')
+};

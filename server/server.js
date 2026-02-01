@@ -50,6 +50,7 @@ app.use('/video', require('./routes/video'));
 app.use('/meetings', require('./routes/meetings'));
 app.use('/calendar', require('./routes/calendar'));
 app.use('/setup', require('./routes/setup'));
+app.use('/audit-logs', require('./routes/auditLogs'));
 
 // Health Check
 app.get('/health', (req, res) => {

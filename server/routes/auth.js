@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const { User, Skill } = require('../models');
 const { secretKey, jwtExpiration } = require('../middleware/auth');
+const AuditLogService = require('../services/auditLog');
 
 // Rate limiter for authentication endpoints
 const authLimiter = rateLimit({
@@ -28,6 +29,18 @@ router.post('/register', async (req, res) => {
             role
         });
 
+        // Log user registration
+        await AuditLogService.log({
+            eventType: AuditLogService.EVENT_TYPES.USER_REGISTERED,
+            userId: user.id,
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            details: {
+                email: user.email,
+                role: user.role
+            }
+        });
+
         res.status(201).json({ message: 'User created successfully', userId: user.id });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -40,12 +53,51 @@ router.post('/login', authLimiter, async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ where: { email } });
 
-        if (!user) return res.status(400).json({ error: 'User not found' });
+        if (!user) {
+            // Log failed login attempt
+            await AuditLogService.log({
+                eventType: AuditLogService.EVENT_TYPES.LOGIN_FAILED,
+                severity: 'medium',
+                ipAddress: req.ip,
+                userAgent: req.get('user-agent'),
+                details: {
+                    email,
+                    reason: 'User not found'
+                }
+            });
+            return res.status(400).json({ error: 'User not found' });
+        }
 
         const validPassword = await bcrypt.compare(password, user.password_hash);
-        if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
+        if (!validPassword) {
+            // Log failed login attempt
+            await AuditLogService.log({
+                eventType: AuditLogService.EVENT_TYPES.LOGIN_FAILED,
+                severity: 'medium',
+                userId: user.id,
+                ipAddress: req.ip,
+                userAgent: req.get('user-agent'),
+                details: {
+                    email,
+                    reason: 'Invalid password'
+                }
+            });
+            return res.status(400).json({ error: 'Invalid password' });
+        }
 
         const token = jwt.sign({ id: user.id, role: user.role }, secretKey, { expiresIn: jwtExpiration });
+        
+        // Log successful login
+        await AuditLogService.log({
+            eventType: AuditLogService.EVENT_TYPES.LOGIN_SUCCESS,
+            userId: user.id,
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            details: {
+                email: user.email
+            }
+        });
+
         res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
     } catch (error) {
         res.status(500).json({ error: error.message });
