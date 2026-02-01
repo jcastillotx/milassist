@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API_URL from "../config/api";
 import Card from '../../components/Card';
-import API_URL from "../config/api";
 
 const TimeLogs = () => {
     const [logs, setLogs] = useState([]);

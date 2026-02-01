@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import API_URL from "../config/api";
 import { useNavigate } from 'react-router-dom';
-import API_URL from "../config/api";
 import Button from '../../components/Button';
-import API_URL from "../config/api";
 import Card from '../../components/Card';
-import API_URL from "../config/api";
 
 const FormManager = () => {
     const [templates, setTemplates] = useState([]);

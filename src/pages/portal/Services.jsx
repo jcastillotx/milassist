@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import API_URL from "../config/api";
 import { Link } from 'react-router-dom';
-import API_URL from "../config/api";
 import Icon from '../../components/Icon';
-import API_URL from "../config/api";
 
 const Services = () => {
   const [loading, setLoading] = useState(null);
