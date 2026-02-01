@@ -13,20 +13,26 @@ process.chdir(path.join(__dirname, '..', 'server'));
 require('dotenv').config();
 
 // CRITICAL: Validate JWT secret strength before starting server
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET || JWT_SECRET.length < 32) {
-  console.error('FATAL: JWT_SECRET must be at least 32 characters long');
-  console.error('Generate a strong secret with: openssl rand -base64 32');
-  process.exit(1);
+const JWT_SECRET = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET;
+if (!JWT_SECRET) {
+  const error = 'FATAL: JWT_SECRET environment variable is not set. Please configure SUPABASE_JWT_SECRET in Vercel environment variables.';
+  console.error(error);
+  throw new Error(error);
+}
+
+if (JWT_SECRET.length < 32) {
+  const error = `FATAL: JWT_SECRET must be at least 32 characters long (current: ${JWT_SECRET.length}). Generate a strong secret with: openssl rand -base64 32`;
+  console.error(error);
+  throw new Error(error);
 }
 
 // Check for weak/default secrets
 const WEAK_SECRETS = ['your-secret-key', 'secret', 'default', 'changeme', 'your_super_secret_jwt_key_here_min_32_chars'];
 const secretLower = JWT_SECRET.toLowerCase();
 if (WEAK_SECRETS.some(weak => secretLower.includes(weak))) {
-  console.error('FATAL: JWT_SECRET appears to be a default/weak secret');
-  console.error('Generate a strong secret with: openssl rand -base64 32');
-  process.exit(1);
+  const error = 'FATAL: JWT_SECRET appears to be a default/weak secret. Generate a strong secret with: openssl rand -base64 32';
+  console.error(error);
+  throw new Error(error);
 }
 
 // Import database connection
@@ -40,15 +46,25 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',')
     : ['http://localhost:5173', 'http://localhost:5174'];
 
+console.log('CORS allowed origins:', allowedOrigins);
+
 app.use(cors({
     origin: (origin, callback) => {
         // Allow requests with no origin (mobile apps, curl, etc.)
         if (!origin) return callback(null, true);
 
         if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+            console.log('CORS allowed:', origin);
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            console.log('CORS blocked:', origin);
+            // In production, allow all Vercel preview URLs
+            if (process.env.NODE_ENV === 'production' && origin && origin.includes('.vercel.app')) {
+                console.log('CORS allowed (Vercel preview):', origin);
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
         }
     },
     credentials: true
@@ -87,41 +103,41 @@ app.use(async (req, res, next) => {
 });
 
 // Import all routes
-app.use('/api/auth', require('../server/routes/auth'));
-app.use('/api/users', require('../server/routes/users'));
-app.use('/api/invoices', require('../server/routes/invoices'));
-app.use('/api/pages', require('../server/routes/pages'));
-app.use('/api/integrations', require('../server/routes/integrations'));
-app.use('/api/trips', require('../server/routes/trips'));
-app.use('/api/travel', require('../server/routes/travel'));
-app.use('/api/twilio', require('../server/routes/twilio'));
-app.use('/api/documents', require('../server/routes/documents'));
-app.use('/api/research', require('../server/routes/research'));
-app.use('/api/ai', require('../server/routes/ai'));
-app.use('/api/communication', require('../server/routes/communication'));
-app.use('/api/messages', require('../server/routes/messages'));
-app.use('/api/tasks', require('../server/routes/tasks'));
-app.use('/api/forms', require('../server/routes/forms'));
-app.use('/api/resources', require('../server/routes/resources'));
-app.use('/api/time', require('../server/routes/time'));
-app.use('/api/settings', require('../server/routes/settings'));
-app.use('/api/payments', require('../server/routes/payments'));
-app.use('/api/email', require('../server/routes/email'));
-app.use('/api/video', require('../server/routes/video'));
-app.use('/api/meetings', require('../server/routes/meetings'));
-app.use('/api/calendar', require('../server/routes/calendar'));
-app.use('/api/oauth', require('../server/routes/oauth'));
-app.use('/api/privacy', require('../server/routes/privacy'));
-app.use('/api/nda', require('../server/routes/nda'));
-app.use('/api/onboarding', require('../server/routes/onboarding'));
-app.use('/api/audit-logs', require('../server/routes/auditLogs'));
-app.use('/api/rbac', require('../server/routes/rbac'));
-app.use('/api/va-profiles', require('../server/routes/vaProfiles'));
-app.use('/api/va-matching', require('../server/routes/vaMatching'));
-app.use('/api/setup', require('../server/routes/setup'));
+app.use('/auth', require('../server/routes/auth'));
+app.use('/users', require('../server/routes/users'));
+app.use('/invoices', require('../server/routes/invoices'));
+app.use('/pages', require('../server/routes/pages'));
+app.use('/integrations', require('../server/routes/integrations'));
+app.use('/trips', require('../server/routes/trips'));
+app.use('/travel', require('../server/routes/travel'));
+app.use('/twilio', require('../server/routes/twilio'));
+app.use('/documents', require('../server/routes/documents'));
+app.use('/research', require('../server/routes/research'));
+app.use('/ai', require('../server/routes/ai'));
+app.use('/communication', require('../server/routes/communication'));
+app.use('/messages', require('../server/routes/messages'));
+app.use('/tasks', require('../server/routes/tasks'));
+app.use('/forms', require('../server/routes/forms'));
+app.use('/resources', require('../server/routes/resources'));
+app.use('/time', require('../server/routes/time'));
+app.use('/settings', require('../server/routes/settings'));
+app.use('/payments', require('../server/routes/payments'));
+app.use('/email', require('../server/routes/email'));
+app.use('/video', require('../server/routes/video'));
+app.use('/meetings', require('../server/routes/meetings'));
+app.use('/calendar', require('../server/routes/calendar'));
+app.use('/oauth', require('../server/routes/oauth'));
+app.use('/privacy', require('../server/routes/privacy'));
+app.use('/nda', require('../server/routes/nda'));
+app.use('/onboarding', require('../server/routes/onboarding'));
+app.use('/audit-logs', require('../server/routes/auditLogs'));
+app.use('/rbac', require('../server/routes/rbac'));
+app.use('/va-profiles', require('../server/routes/vaProfiles'));
+app.use('/va-matching', require('../server/routes/vaMatching'));
+app.use('/setup', require('../server/routes/setup'));
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
         environment: process.env.NODE_ENV,
@@ -150,7 +166,7 @@ app.use((err, req, res, next) => {
 });
 
 // 404 handler
-app.use('/api/*', (req, res) => {
+app.use('/*', (req, res) => {
     res.status(404).json({ error: 'API endpoint not found' });
 });
 
