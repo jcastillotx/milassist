@@ -28,7 +28,14 @@
   },
   "build": {
     "env": {
-      "NODE_OPTIONS": "--no-deprecation"
+      "NODE_OPTIONS": "--no-deprecation",
+      "VITE_API_URL": "/api",
+      "VITE_ENABLE_PAYMENTS": "true",
+      "VITE_ENABLE_DOCUMENTS": "true",
+      "VITE_ENABLE_EMAIL_INTEGRATION": "true",
+      "VITE_ENABLE_VIDEO_INTEGRATION": "true",
+      "VITE_ENABLE_CALENDAR_INTEGRATION": "true",
+      "VITE_ENABLE_TRAVEL": "true"
     }
   }
 }
