@@ -23,6 +23,8 @@ vercel --prod
 
 ## ⚙️ Required Environment Variables
 
+**📝 See [VERCEL_ENV_MAPPING.md](docs/setup/VERCEL_ENV_MAPPING.md) for a complete mapping of your existing Vercel environment variables to what the app needs.**
+
 Configure these in **Vercel Project Settings → Environment Variables**:
 
 ### Database (Supabase)
