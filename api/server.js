@@ -20,15 +20,24 @@ process.chdir(path.join(__dirname, '..', 'server'));
 require('dotenv').config();
 
 // CRITICAL: Validate JWT secret strength before starting server
-const JWT_SECRET = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
-  const error = 'FATAL: JWT_SECRET environment variable is not set. Please configure SUPABASE_JWT_SECRET in Vercel environment variables.';
+  const error = 'FATAL: JWT_SECRET environment variable is not set. Please configure JWT_SECRET in Vercel environment variables (separate from SUPABASE_JWT_SECRET).';
   console.error(error);
   throw new Error(error);
 }
 
 if (JWT_SECRET.length < 32) {
-  const error = `FATAL: JWT_SECRET must be at least 32 characters long (current: ${JWT_SECRET.length}). Generate a strong secret with: openssl rand -base64 32`;
+  const error = `FATAL: JWT_SECRET must be at least 32 characters long (current: ${JWT_SECRET.length}).
+
+IMPORTANT: JWT_SECRET and SUPABASE_JWT_SECRET are different:
+- JWT_SECRET: Used for your app's authentication tokens (needs 32+ chars)
+- SUPABASE_JWT_SECRET: Used by Supabase internally (can be shorter)
+
+Generate a secure JWT_SECRET with: openssl rand -base64 32
+
+Then add it to Vercel environment variables at:
+https://vercel.com/your-project/settings/environment-variables`;
   console.error(error);
   throw new Error(error);
 }
