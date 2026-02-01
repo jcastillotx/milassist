@@ -34,7 +34,29 @@ DATABASE_URL=postgresql://user:password@host.supabase.co:5432/postgres
 
 ### Authentication
 ```bash
+# CRITICAL: JWT_SECRET must be at least 32 characters long
+# Generate a strong secret with: openssl rand -base64 32
 JWT_SECRET=your-secure-random-string-min-32-characters
+
+# Example:
+# JWT_SECRET=xK9mP2nQ8wR5tY7uI0oP3aS6dF8gH1jK2lZ5xC4vB7nM9qW0e
+```
+
+**⚠️ IMPORTANT**: The application will fail to start if:
+- `JWT_SECRET` is missing
+- `JWT_SECRET` is less than 32 characters
+- `JWT_SECRET` contains default/weak values like "your-secret-key", "secret", "default", "changeme"
+
+Generate a cryptographically strong secret:
+```bash
+# macOS/Linux
+openssl rand -base64 32
+
+# Node.js
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+
+# Python
+python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
 ### Stripe Payments
@@ -119,23 +141,72 @@ milassist/
 /api/health     → Backend health check
 ```
 
-## 🗄️ Database Setup (Supabase)
+## 🗄️ Database Setup (PostgreSQL)
+
+**IMPORTANT**: This application now uses **PostgreSQL exclusively** for all environments (development, testing, production). SQLite is no longer supported.
+
+### Production (Vercel + Supabase)
 
 1. **Create Supabase Project**
    - Go to https://supabase.com
    - Create new project
    - Copy connection string from Settings → Database
 
-2. **Run Migrations**
+2. **Configure Vercel Environment Variable**
+   - In Vercel dashboard, add `DATABASE_URL` or use existing `POSTGRES_URL`
+   - Format: `postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres`
+
+3. **Run Migrations** (after first deployment)
+   ```bash
+   # Connect to your Vercel deployment or run locally with production DATABASE_URL
+   cd server
+   DATABASE_URL="your-supabase-url" npx sequelize-cli db:migrate --env production
+   ```
+
+### Local Development
+
+1. **Install PostgreSQL**
+   ```bash
+   # macOS
+   brew install postgresql@14
+   brew services start postgresql@14
+
+   # Ubuntu/Debian
+   sudo apt-get install postgresql postgresql-contrib
+   sudo systemctl start postgresql
+
+   # Windows
+   # Download from https://www.postgresql.org/download/windows/
+   ```
+
+2. **Create Development Database**
+   ```bash
+   psql postgres
+   CREATE DATABASE milassist_dev;
+   CREATE DATABASE milassist_test;
+   \q
+   ```
+
+3. **Run Migrations**
    ```bash
    cd server
    npx sequelize-cli db:migrate
    ```
 
-3. **Connection String Format**
+4. **Configure Local .env** (optional, uses defaults)
+   ```bash
+   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/milassist_dev
    ```
-   postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
-   ```
+
+### Connection String Format
+```
+postgresql://[USER]:[PASSWORD]@[HOST]:[PORT]/[DATABASE]
+
+# Examples:
+# Local: postgresql://postgres:postgres@localhost:5432/milassist_dev
+# Supabase: postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
+# Vercel Postgres: Uses POSTGRES_URL automatically
+```
 
 ## 📦 Deployment Process
 

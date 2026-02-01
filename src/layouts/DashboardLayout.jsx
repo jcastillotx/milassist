@@ -142,6 +142,14 @@ const DashboardLayout = ({ role }) => {
             </aside>
 
             {/* Main Content */}
+            <main style={{
+                flex: 1,
+                padding: '2rem',
+                overflow: 'auto'
+            }}>
+                <Outlet />
+            </main>
+
             {/* AI Assistant Widget */}
             <AIAssistant />
 

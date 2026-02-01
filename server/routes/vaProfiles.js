@@ -3,13 +3,14 @@ const router = express.Router();
 const { VAProfile, User } = require('../models');
 const AuditLogService = require('../services/auditLog');
 const { Op } = require('sequelize');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 
 /**
  * @route   POST /api/va-profiles
  * @desc    Create a new VA profile
  * @access  Admin or VA user themselves
  */
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
     const {
       userId,
@@ -202,7 +203,7 @@ router.get('/', async (req, res) => {
  * @desc    Get a specific VA profile by ID
  * @access  Public (limited data) or Admin/Owner (full data)
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -220,7 +221,33 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'VA profile not found' });
     }
 
-    // TODO: Filter sensitive data based on permissions
+    // Filter sensitive data based on permissions
+    const isOwner = req.user && req.user.id === vaProfile.userId;
+    const isAdmin = req.user && ['admin', 'superadmin', 'success_manager'].includes(req.user.role);
+
+    if (!isOwner && !isAdmin) {
+      // Public view - hide sensitive information
+      const publicProfile = {
+        id: vaProfile.id,
+        userId: vaProfile.userId,
+        role: vaProfile.role,
+        tier: vaProfile.tier,
+        skills: vaProfile.skills,
+        certifications: vaProfile.certifications,
+        languages: vaProfile.languages,
+        timezone: vaProfile.timezone,
+        yearsExperience: vaProfile.yearsExperience,
+        industries: vaProfile.industries,
+        bio: vaProfile.bio,
+        tagline: vaProfile.tagline,
+        status: vaProfile.status,
+        rating: vaProfile.rating,
+        completedTasks: vaProfile.completedTasks,
+        user: vaProfile.user ? { id: vaProfile.user.id, name: vaProfile.user.name } : null
+        // Hide: hourlyRate, availabilitySchedule, weeklyCapacity, currentLoad, backgroundCheck, NDA, portfolio
+      };
+      return res.json({ vaProfile: publicProfile });
+    }
 
     res.json({ vaProfile });
   } catch (error) {
@@ -234,7 +261,7 @@ router.get('/:id', async (req, res) => {
  * @desc    Get VA profile by user ID
  * @access  Admin or VA user themselves
  */
-router.get('/user/:userId', async (req, res) => {
+router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
 
@@ -265,7 +292,7 @@ router.get('/user/:userId', async (req, res) => {
  * @desc    Update a VA profile
  * @access  Admin or VA user themselves
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -275,7 +302,15 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ error: 'VA profile not found' });
     }
 
-    // TODO: Check permission (admin or own profile)
+    // Permission check: Only admin or the VA themselves can update the profile
+    const isOwner = req.user.id === vaProfile.userId;
+    const isAdmin = ['admin', 'superadmin', 'success_manager'].includes(req.user.role);
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        error: 'Access denied. You can only update your own profile or be an admin.'
+      });
+    }
 
     // Fields that can be updated
     const allowedUpdates = [
@@ -326,7 +361,7 @@ router.put('/:id', async (req, res) => {
  * @desc    Delete a VA profile
  * @access  Admin only
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -367,7 +402,7 @@ router.delete('/:id', async (req, res) => {
  * @desc    Update performance statistics for a VA
  * @access  System or Admin
  */
-router.post('/:id/update-stats', async (req, res) => {
+router.post('/:id/update-stats', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
     const { id } = req.params;
     const { rating, completedTasks, responseTime } = req.body;
@@ -402,7 +437,7 @@ router.post('/:id/update-stats', async (req, res) => {
  * @desc    Get overview statistics of all VAs
  * @access  Admin only
  */
-router.get('/stats/overview', async (req, res) => {
+router.get('/stats/overview', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
     const totalVAs = await VAProfile.count();
     const availableVAs = await VAProfile.count({ where: { status: 'available' } });

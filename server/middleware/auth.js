@@ -21,4 +21,18 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-module.exports = { authenticateToken, secretKey, jwtExpiration };
+const requireRole = (...allowedRoles) => {
+    return (req, res, next) => {
+        if (!req.user) {
+            return res.status(401).json({ error: 'Authentication required' });
+        }
+
+        if (!allowedRoles.includes(req.user.role)) {
+            return res.status(403).json({ error: 'Insufficient permissions' });
+        }
+
+        next();
+    };
+};
+
+module.exports = { authenticateToken, requireRole, secretKey, jwtExpiration };

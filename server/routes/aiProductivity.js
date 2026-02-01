@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const AIProductivityService = require('../services/aiProductivity');
 const AuditLogService = require('../services/auditLog');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 
 /**
  * @route   POST /api/ai/draft-email
  * @desc    Generate an email draft using AI
  * @access  Authenticated users
  */
-router.post('/draft-email', async (req, res) => {
+router.post('/draft-email', authenticateToken, async (req, res) => {
   try {
     const {
       recipient,
@@ -64,7 +65,7 @@ router.post('/draft-email', async (req, res) => {
  * @desc    Summarize a document or text
  * @access  Authenticated users
  */
-router.post('/summarize', async (req, res) => {
+router.post('/summarize', authenticateToken, async (req, res) => {
   try {
     const { text, style = 'bullet-points', maxLength } = req.body;
 
@@ -118,7 +119,7 @@ router.post('/summarize', async (req, res) => {
  * @desc    Extract action items from meeting notes or emails
  * @access  Authenticated users
  */
-router.post('/extract-actions', async (req, res) => {
+router.post('/extract-actions', authenticateToken, async (req, res) => {
   try {
     const { text, context } = req.body;
 
@@ -163,7 +164,7 @@ router.post('/extract-actions', async (req, res) => {
  * @desc    Generate a meeting agenda
  * @access  Authenticated users
  */
-router.post('/generate-agenda', async (req, res) => {
+router.post('/generate-agenda', authenticateToken, async (req, res) => {
   try {
     const {
       meetingTitle,
@@ -219,7 +220,7 @@ router.post('/generate-agenda', async (req, res) => {
  * @desc    Estimate task duration using AI
  * @access  Authenticated users
  */
-router.post('/estimate-duration', async (req, res) => {
+router.post('/estimate-duration', authenticateToken, async (req, res) => {
   try {
     const {
       taskDescription,
@@ -256,7 +257,7 @@ router.post('/estimate-duration', async (req, res) => {
  * @desc    Generate social media post
  * @access  Authenticated users
  */
-router.post('/generate-social-post', async (req, res) => {
+router.post('/generate-social-post', authenticateToken, async (req, res) => {
   try {
     const {
       platform,
@@ -321,7 +322,7 @@ router.post('/generate-social-post', async (req, res) => {
  * @desc    Improve/rewrite text for professionalism
  * @access  Authenticated users
  */
-router.post('/improve-text', async (req, res) => {
+router.post('/improve-text', authenticateToken, async (req, res) => {
   try {
     const { text, instructions } = req.body;
 
@@ -386,16 +387,65 @@ router.get('/status', async (req, res) => {
  * @desc    Get AI usage statistics
  * @access  Admin only
  */
-router.get('/usage-stats', async (req, res) => {
+router.get('/usage-stats', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, userId } = req.query;
+    const { AuditLog } = require('../models');
+    const { Op } = require('sequelize');
 
-    // TODO: Implement proper usage tracking
-    // For now, query audit logs for AI usage
+    // Build filter for audit logs
+    const where = {
+      resourceType: 'AI'
+    };
+
+    if (userId) {
+      where.userId = userId;
+    }
+
+    if (startDate || endDate) {
+      where.createdAt = {};
+      if (startDate) where.createdAt[Op.gte] = new Date(startDate);
+      if (endDate) where.createdAt[Op.lte] = new Date(endDate);
+    }
+
+    // Get usage statistics from audit logs
+    const logs = await AuditLog.findAll({
+      where,
+      attributes: ['userId', 'details', 'createdAt'],
+      order: [['createdAt', 'DESC']]
+    });
+
+    // Aggregate statistics
+    const stats = {
+      totalRequests: logs.length,
+      byAction: {},
+      byUser: {},
+      timeline: {}
+    };
+
+    logs.forEach(log => {
+      const action = log.details?.action || 'unknown';
+      const date = log.createdAt.toISOString().split('T')[0];
+
+      // Count by action type
+      stats.byAction[action] = (stats.byAction[action] || 0) + 1;
+
+      // Count by user
+      if (log.userId) {
+        stats.byUser[log.userId] = (stats.byUser[log.userId] || 0) + 1;
+      }
+
+      // Count by date
+      stats.timeline[date] = (stats.timeline[date] || 0) + 1;
+    });
 
     res.json({
-      message: 'Usage statistics coming soon',
-      note: 'Check audit logs with resourceType=AI for current usage'
+      success: true,
+      period: {
+        startDate: startDate || 'all time',
+        endDate: endDate || 'now'
+      },
+      statistics: stats
     });
   } catch (error) {
     console.error('Error fetching AI usage stats:', error);

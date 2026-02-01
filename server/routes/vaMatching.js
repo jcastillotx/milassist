@@ -3,13 +3,14 @@ const router = express.Router();
 const VAMatchingService = require('../services/vaMatching');
 const { VAMatch, VAProfile, User } = require('../models');
 const AuditLogService = require('../services/auditLog');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 
 /**
  * @route   POST /api/va-matching/find-matches
  * @desc    Find matching VAs for a client based on requirements
  * @access  Authenticated clients
  */
-router.post('/find-matches', async (req, res) => {
+router.post('/find-matches', authenticateToken, async (req, res) => {
   try {
     const {
       clientId,
@@ -98,7 +99,7 @@ router.post('/find-matches', async (req, res) => {
  * @desc    Get all matches for a specific client
  * @access  Admin or client themselves
  */
-router.get('/matches/:clientId', async (req, res) => {
+router.get('/matches/:clientId', authenticateToken, async (req, res) => {
   try {
     const { clientId } = req.params;
     const { status, page = 1, limit = 20 } = req.query;
@@ -152,7 +153,7 @@ router.get('/matches/:clientId', async (req, res) => {
  * @desc    Get a specific match by ID
  * @access  Admin, client, or VA involved
  */
-router.get('/match/:matchId', async (req, res) => {
+router.get('/match/:matchId', authenticateToken, async (req, res) => {
   try {
     const { matchId } = req.params;
 
@@ -193,7 +194,7 @@ router.get('/match/:matchId', async (req, res) => {
  * @desc    Update match status (reviewed, accepted, rejected)
  * @access  Client or Admin
  */
-router.put('/match/:matchId/status', async (req, res) => {
+router.put('/match/:matchId/status', authenticateToken, async (req, res) => {
   try {
     const { matchId } = req.params;
     const { status, notes } = req.body;
@@ -245,7 +246,7 @@ router.put('/match/:matchId/status', async (req, res) => {
  * @desc    Accept a match and potentially create assignment
  * @access  Client or Admin
  */
-router.post('/match/:matchId/accept', async (req, res) => {
+router.post('/match/:matchId/accept', authenticateToken, async (req, res) => {
   try {
     const { matchId } = req.params;
     const { startDate, notes } = req.body;
@@ -273,11 +274,25 @@ router.post('/match/:matchId/accept', async (req, res) => {
     if (notes) match.notes = notes;
     await match.save();
 
-    // Update VA status to busy (optional - depends on capacity)
+    // Update VA status based on capacity
     if (match.va) {
-      // TODO: Check if VA has capacity before marking as busy
-      // For now, just increment currentLoad
-      match.va.currentLoad += (match.requirements?.hoursPerWeek || 40);
+      const hoursToAdd = match.requirements?.hoursPerWeek || 40;
+      const newLoad = match.va.currentLoad + hoursToAdd;
+
+      // Check if VA has capacity
+      if (newLoad > match.va.weeklyCapacity) {
+        return res.status(400).json({
+          error: 'VA does not have sufficient capacity for this assignment',
+          details: {
+            currentLoad: match.va.currentLoad,
+            weeklyCapacity: match.va.weeklyCapacity,
+            requestedHours: hoursToAdd,
+            availableHours: match.va.weeklyCapacity - match.va.currentLoad
+          }
+        });
+      }
+
+      match.va.currentLoad = newLoad;
       if (match.va.currentLoad >= match.va.weeklyCapacity) {
         match.va.status = 'busy';
       }
@@ -316,7 +331,7 @@ router.post('/match/:matchId/accept', async (req, res) => {
  * @desc    Get all matches for a specific VA
  * @access  Admin or VA themselves
  */
-router.get('/va/:vaId/matches', async (req, res) => {
+router.get('/va/:vaId/matches', authenticateToken, async (req, res) => {
   try {
     const { vaId } = req.params;
     const { status, page = 1, limit = 20 } = req.query;
@@ -364,7 +379,7 @@ router.get('/va/:vaId/matches', async (req, res) => {
  * @desc    Get matching statistics
  * @access  Admin only
  */
-router.get('/stats', async (req, res) => {
+router.get('/stats', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
     const totalMatches = await VAMatch.count();
     const byStatus = await VAMatch.count({ group: ['status'] });

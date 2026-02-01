@@ -3,6 +3,23 @@ const cors = require('cors');
 const { sequelize } = require('./models');
 require('dotenv').config();
 
+// CRITICAL: Validate JWT secret strength before starting server
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  console.error('FATAL: JWT_SECRET must be at least 32 characters long');
+  console.error('Generate a strong secret with: openssl rand -base64 32');
+  process.exit(1);
+}
+
+// Check for weak/default secrets
+const WEAK_SECRETS = ['your-secret-key', 'secret', 'default', 'changeme', 'your_super_secret_jwt_key_here_min_32_chars'];
+const secretLower = JWT_SECRET.toLowerCase();
+if (WEAK_SECRETS.some(weak => secretLower.includes(weak))) {
+  console.error('FATAL: JWT_SECRET appears to be a default/weak secret');
+  console.error('Generate a strong secret with: openssl rand -base64 32');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';

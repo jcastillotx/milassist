@@ -4,13 +4,14 @@ const RBACService = require('../services/rbac');
 const AuditLogService = require('../services/auditLog');
 const { AccessControl, User } = require('../models');
 const { Op } = require('sequelize');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 
 /**
  * @route   GET /api/rbac/permissions
  * @desc    Get all available permissions
  * @access  Admin only
  */
-router.get('/permissions', async (req, res) => {
+router.get('/permissions', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
     const permissions = RBACService.PERMISSIONS;
     res.json({ permissions });
@@ -25,7 +26,7 @@ router.get('/permissions', async (req, res) => {
  * @desc    Get all predefined roles with their permissions
  * @access  Admin only
  */
-router.get('/roles', async (req, res) => {
+router.get('/roles', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
     const roles = RBACService.ROLES;
     res.json({ roles });
@@ -40,17 +41,22 @@ router.get('/roles', async (req, res) => {
  * @desc    Get all permissions for a specific user
  * @access  Admin or own user
  */
-router.get('/user/:userId/permissions', async (req, res) => {
+router.get('/user/:userId/permissions', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // TODO: Add permission check - only admin or own user
+    // Permission check: Only admin or the user themselves can view permissions
+    if (req.user.id !== userId && !['admin', 'superadmin'].includes(req.user.role)) {
+      return res.status(403).json({
+        error: 'Access denied. You can only view your own permissions or be an admin.'
+      });
+    }
 
     const permissions = await RBACService.getUserPermissions(userId);
-    
-    res.json({ 
+
+    res.json({
       userId,
-      permissions 
+      permissions
     });
   } catch (error) {
     console.error('Error fetching user permissions:', error);
@@ -63,7 +69,7 @@ router.get('/user/:userId/permissions', async (req, res) => {
  * @desc    Check if user has a specific permission
  * @access  Any authenticated user
  */
-router.post('/check-permission', async (req, res) => {
+router.post('/check-permission', authenticateToken, async (req, res) => {
   try {
     const { userId, permission, resourceId } = req.body;
 
@@ -94,10 +100,10 @@ router.post('/check-permission', async (req, res) => {
  * @desc    Grant a permission to a user for a specific resource
  * @access  Admin only
  */
-router.post('/grant-permission', async (req, res) => {
+router.post('/grant-permission', authenticateToken, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { userId, resourceType, resourceId, permissions, expiresAt } = req.body;
-    const grantedBy = req.user?.id; // TODO: Get from auth middleware
+    const grantedBy = req.user.id;
 
     if (!userId || !resourceType || !resourceId || !permissions) {
       return res.status(400).json({ 
@@ -145,10 +151,10 @@ router.post('/grant-permission', async (req, res) => {
  * @desc    Revoke permissions for a user on a specific resource
  * @access  Admin only
  */
-router.post('/revoke-permission', async (req, res) => {
+router.post('/revoke-permission', authenticateToken, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { userId, resourceType, resourceId } = req.body;
-    const revokedBy = req.user?.id; // TODO: Get from auth middleware
+    const revokedBy = req.user.id;
 
     if (!userId || !resourceType || !resourceId) {
       return res.status(400).json({ 
@@ -194,7 +200,7 @@ router.post('/revoke-permission', async (req, res) => {
  * @desc    Get all users with access to a specific resource
  * @access  Admin or resource owner
  */
-router.get('/resource/:resourceType/:resourceId', async (req, res) => {
+router.get('/resource/:resourceType/:resourceId', authenticateToken, async (req, res) => {
   try {
     const { resourceType, resourceId } = req.params;
 
@@ -229,10 +235,10 @@ router.get('/resource/:resourceType/:resourceId', async (req, res) => {
  * @desc    Assign a predefined role to a user (updates user.role)
  * @access  Admin only
  */
-router.post('/assign-role', async (req, res) => {
+router.post('/assign-role', authenticateToken, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { userId, role } = req.body;
-    const assignedBy = req.user?.id; // TODO: Get from auth middleware
+    const assignedBy = req.user.id;
 
     if (!userId || !role) {
       return res.status(400).json({ error: 'userId and role are required' });
@@ -287,7 +293,7 @@ router.post('/assign-role', async (req, res) => {
  * @desc    Get all access controls with filtering
  * @access  Admin only
  */
-router.get('/access-controls', async (req, res) => {
+router.get('/access-controls', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
     const { userId, resourceType, includeExpired = false, page = 1, limit = 50 } = req.query;
 
@@ -334,7 +340,7 @@ router.get('/access-controls', async (req, res) => {
  * @desc    Remove expired access controls
  * @access  Admin only
  */
-router.delete('/cleanup-expired', async (req, res) => {
+router.delete('/cleanup-expired', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
     const deleted = await AccessControl.destroy({
       where: {

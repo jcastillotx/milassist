@@ -10,6 +10,8 @@ import PortalLayout from './layouts/PortalLayout';
 import LandingLayout from './layouts/LandingLayout';
 import TaskBoard from './components/TaskBoard';
 import LiveChatWidget from './components/LiveChatWidget';
+import ErrorBoundary from './components/ErrorBoundary';
+import NotFound from './pages/NotFound';
 
 // Pages
 import AdminOverview from './pages/admin/Overview';
@@ -67,7 +69,8 @@ const LandingPage = () => (
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
+      <ErrorBoundary>
+        <Routes>
         {/* Main Public Routes (Landing Page Design) */}
         <Route path="/" element={<LandingLayout />}>
           <Route index element={<PortalHome />} />
@@ -79,9 +82,7 @@ function App() {
         </Route>
         <Route path="/login" element={<PortalLogin />} />
         <Route path="/request-access" element={<PortalRequestAccess />} />
-        <Route path="/pricing" element={<PortalServices />} />
         <Route path="/forgot-password" element={<PortalForgotPassword />} />
-        <Route path="/request-access" element={<PortalRequestAccess />} />
 
         {/* Legacy Landing Page */}
         <Route path="/landing" element={<LandingPage />} />
@@ -92,7 +93,6 @@ function App() {
         <Route path="/admin" element={<DashboardLayout role="admin" />}>
           <Route index element={<AdminOverview />} />
           <Route path="users" element={<Users />} />
-          <Route path="invoices" element={<Invoices />} />
           <Route path="invoices" element={<Invoices />} />
           <Route path="forms" element={<FormManager />} />
           <Route path="forms/new" element={<FormBuilder />} />
@@ -108,7 +108,6 @@ function App() {
           <Route index element={<ClientOverview />} />
           <Route path="tasks" element={<TaskBoard role="client" />} />
           <Route path="travel" element={<TravelManagement />} />
-          <Route path="documents" element={<DocumentReview />} />
           <Route path="documents" element={<DocumentReview />} />
           <Route path="research" element={<DataResearch />} />
           <Route path="communication" element={<CommunicationCenter />} />
@@ -133,10 +132,14 @@ function App() {
           <Route path="live-chat" element={<LiveChatDashboard />} />
         </Route>
 
+        {/* 404 Not Found - Catch all unmatched routes */}
+        <Route path="*" element={<NotFound />} />
+
       </Routes>
 
       {/* Live Chat Widget - appears on all pages for authenticated clients */}
       <LiveChatWidget />
+      </ErrorBoundary>
     </BrowserRouter>
   )
 }

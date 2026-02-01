@@ -12,6 +12,23 @@ process.chdir(path.join(__dirname, '..', 'server'));
 // Load environment variables
 require('dotenv').config();
 
+// CRITICAL: Validate JWT secret strength before starting server
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  console.error('FATAL: JWT_SECRET must be at least 32 characters long');
+  console.error('Generate a strong secret with: openssl rand -base64 32');
+  process.exit(1);
+}
+
+// Check for weak/default secrets
+const WEAK_SECRETS = ['your-secret-key', 'secret', 'default', 'changeme', 'your_super_secret_jwt_key_here_min_32_chars'];
+const secretLower = JWT_SECRET.toLowerCase();
+if (WEAK_SECRETS.some(weak => secretLower.includes(weak))) {
+  console.error('FATAL: JWT_SECRET appears to be a default/weak secret');
+  console.error('Generate a strong secret with: openssl rand -base64 32');
+  process.exit(1);
+}
+
 // Import database connection
 const { sequelize } = require('../server/models');
 
@@ -44,12 +61,22 @@ let dbInitialized = false;
 async function initializeDatabase() {
     if (dbInitialized) return;
 
+    // Fail fast if DATABASE_URL is not set in production
+    if (process.env.NODE_ENV === 'production') {
+        if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
+            throw new Error('DATABASE_URL or POSTGRES_URL environment variable is required in production');
+        }
+    }
+
     try {
         await sequelize.authenticate();
-        console.log('Database connection established.');
+        console.log('Database connection established (PostgreSQL).');
         dbInitialized = true;
     } catch (error) {
         console.error('Unable to connect to database:', error);
+        if (process.env.NODE_ENV === 'production') {
+            throw error; // Fail fast in production
+        }
     }
 }
 
