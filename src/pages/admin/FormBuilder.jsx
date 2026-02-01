@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import API_URL from "../config/api";
+import API_URL from "../../config/api";
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
