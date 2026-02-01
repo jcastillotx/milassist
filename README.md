@@ -1,8 +1,15 @@
-# MilAssist Platform v2.0.0
+# MilAssist Platform v2.0.1
 
 **Empowering Military Spouses. Reliable Support for Business.**
 
-MilAssist is a comprehensive virtual assistance and data services platform connecting military spouses with clients. Built with React, Node.js, and SQLite, it provides a complete solution for managing virtual assistant services, client relationships, and business operations.
+MilAssist is a comprehensive virtual assistance and data services platform connecting military spouses with clients. Built with React 19, Node.js, and PostgreSQL, it provides a complete solution for managing virtual assistant services, client relationships, and business operations.
+
+## 🚀 Production Status
+
+**✅ LIVE**: Deployed on Vercel with Supabase PostgreSQL
+**📊 Production Ready**: 95% (all critical systems operational)
+**🔐 Database**: 32 tables migrated, 9 test accounts seeded
+**🌐 Platform**: [https://milassist.vercel.app](https://milassist.vercel.app)
 
 ---
 
@@ -48,14 +55,15 @@ MilAssist is a comprehensive virtual assistance and data services platform conne
 
 ### Prerequisites
 - **Node.js** 18+ and npm
+- **PostgreSQL** 14+ (local development) or Supabase account (production)
 - **Git**
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
-   cd iridescent-kepler
+   git clone https://github.com/jcastillotx/milassist.git
+   cd milassist
    ```
 
 2. **Install dependencies**
@@ -77,17 +85,16 @@ MilAssist is a comprehensive virtual assistance and data services platform conne
 
    Edit `.env` with your configuration:
    ```env
-   PORT=3000
+   PORT=5000
    NODE_ENV=development
-   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+   JWT_SECRET=your-super-secret-jwt-key-min-32-characters-change-this
    JWT_EXPIRATION=24h
    ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174
-   FRONTEND_URL=http://localhost:5174
-   APP_URL=http://localhost:3000
-   
-   # Database (SQLite for dev)
-   DB_DIALECT=sqlite
-   DB_STORAGE=./database.sqlite
+   FRONTEND_URL=http://localhost:5173
+   APP_URL=http://localhost:5000
+
+   # Database (PostgreSQL - production-ready)
+   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/milassist_dev
    ```
 
 4. **Start the development servers**
@@ -115,35 +122,49 @@ MilAssist is a comprehensive virtual assistance and data services platform conne
 ## 📁 Project Structure
 
 ```
-iridescent-kepler/
-├── server/                 # Backend (Node.js + Express)
-│   ├── models/            # Sequelize models
-│   ├── routes/            # API endpoints
-│   ├── middleware/        # Auth & validation
-│   ├── services/          # Business logic (OAuth2, payments, etc.)
-│   └── server.js          # Entry point
-├── src/                   # Frontend (React + Vite)
-│   ├── components/        # Reusable UI components
-│   ├── pages/            # Page components
-│   │   ├── admin/        # Admin dashboard pages
-│   │   ├── client/       # Client dashboard pages
-│   │   └── assistant/    # Assistant dashboard pages
-│   ├── layouts/          # Layout components
-│   └── index.css         # Global styles
+milassist/
+├── api/                   # Vercel serverless functions
+│   └── server.cjs        # Express app wrapper (CommonJS)
+├── server/               # Backend (Node.js + Express)
+│   ├── models/          # Sequelize models (32 models)
+│   ├── routes/          # API endpoints (40+ routes)
+│   ├── middleware/      # Auth & validation
+│   ├── services/        # Business logic (OAuth2, payments, etc.)
+│   ├── migrations/      # Database migrations
+│   └── seeders/         # Test data seeders
+├── src/                 # Frontend (React 19 + Vite)
+│   ├── components/      # Reusable UI components
+│   ├── pages/          # Page components
+│   │   ├── admin/      # Admin dashboard pages
+│   │   ├── client/     # Client dashboard pages
+│   │   └── assistant/  # Assistant dashboard pages
+│   ├── layouts/        # Layout components
+│   └── config/         # API configuration
+├── docs/               # Documentation (70+ markdown files)
+├── scripts/            # Automation scripts
+├── vercel.json         # Vercel deployment config
 └── README.md
 ```
 
 ---
 
-## 🔑 Default Users
+## 🔑 Test Accounts
 
-The platform includes demo users for testing:
+The platform includes 9 test accounts for testing all roles:
 
-| Role      | Email                    | Password  |
-|-----------|--------------------------|-----------|
-| Admin     | admin@milassist.com      | admin123  |
-| Client    | client@example.com       | client123 |
-| Assistant | assistant@milassist.com  | assist123 |
+| Role | Email | Password |
+|------|-------|----------|
+| **Admin** | admin@milassist.com | Admin123!Test |
+| **Client 1** | client1@example.com | Client123! |
+| **Client 2** | client2@example.com | Client123! |
+| **Client 3** | client3@example.com | Client123! |
+| **VA Entry** | va1@milassist.com | Assistant123! |
+| **VA Mid** | va2@milassist.com | Assistant123! |
+| **VA Senior** | va3@milassist.com | Assistant123! |
+| **VA Lead** | va4@milassist.com | Assistant123! |
+| **VA Expert** | va5@milassist.com | Assistant123! |
+
+**Complete test account details**: See `docs/TEST_ACCOUNTS.md` for full profiles, skills, and rates.
 
 ---
 
@@ -224,28 +245,38 @@ See `server/.env.example` for all available configuration options.
 
 ## 📦 Deployment
 
-### Option 1: VPS with PM2
-1. Set up production environment variables
-2. Build the frontend: `npm run build`
-3. Use PM2 to run the backend: `pm2 start server/server.js`
-4. Serve frontend with nginx
+### Production Stack (Current)
+- **Platform**: Vercel (serverless frontend + backend)
+- **Database**: Supabase PostgreSQL (32 tables, production-ready)
+- **Storage**: AWS S3 (configured for documents and uploads)
+- **Authentication**: JWT with bcrypt password hashing
+- **Environment**: Fully configured and operational
 
-### Option 2: Cloud Platforms (Recommended)
-- **Full Stack**: Vercel (frontend + serverless backend)
-- **Database**: Supabase PostgreSQL (production-ready managed database)
-- **Storage**: AWS S3 or Vercel Blob for file uploads
+### Deployment Guides
+- **Vercel Deployment**: See `VERCEL_DEPLOYMENT.md`
+- **Database Setup**: See `docs/PRODUCTION_DATABASE_SETUP.md`
+- **Environment Variables**: See `docs/setup/VERCEL_ENV_MAPPING.md`
 
-See `DEPLOYMENT.md` for detailed deployment instructions.
+### Quick Deploy
+```bash
+# One-line deployment
+vercel --prod
+
+# Database migration (one-time)
+./scripts/migrate-production.sh "YOUR_SUPABASE_CONNECTION_STRING"
+```
 
 ---
 
-## 🔐 Security Notes
+## 🔐 Security Features
 
-- **JWT Secret**: Change `JWT_SECRET` in production
-- **CORS**: Configure `ALLOWED_ORIGINS` for your domain
-- **Database**: Use PostgreSQL in production, not SQLite
-- **HTTPS**: Always use HTTPS in production
-- **Environment Variables**: Never commit `.env` files
+- **JWT Authentication**: Bcrypt password hashing with 32+ character secrets
+- **Role-Based Access Control**: 60+ granular permissions across 3 user roles
+- **SOC2 Compliance**: Audit logging with 7-year retention requirement
+- **CORS Protection**: Configured for production domains with Vercel preview support
+- **PostgreSQL**: Production database with SSL/TLS encryption
+- **Environment Variables**: Secure variable management through Vercel
+- **Input Validation**: Express-validator on all protected endpoints
 
 ---
 
@@ -262,6 +293,23 @@ For questions or support, contact your system administrator.
 ---
 
 ## 🎉 Version History
+
+### v2.0.1 (2026-02-01)
+**Production Deployment & Bug Fixes:**
+- ✅ **Deployed to Production**: Vercel + Supabase PostgreSQL
+- 🗄️ **Database**: Migrated 32 tables, seeded 9 test accounts
+- 🐛 **Fixed API Routing**: Removed double /api prefix causing 404 errors
+- 🔧 **Fixed ES Module Error**: Renamed server.js to server.cjs for CommonJS compatibility
+- 🔐 **JWT Configuration**: Added SUPABASE_JWT_SECRET fallback support
+- 🌐 **CORS**: Improved CORS handling for Vercel preview URLs
+- 📝 **Environment Variables**: Added VITE_API_URL to build configuration
+- ⚡ **Error Handling**: Replaced process.exit() with throw Error() for serverless
+- 📊 **Health Endpoint**: Enhanced with JWT and database status checks
+
+**Documentation:**
+- Updated README with production deployment information
+- Added comprehensive test account documentation
+- Created automated migration scripts for Supabase
 
 ### v2.0.0 (2026-01-31)
 **Breaking Changes:**
