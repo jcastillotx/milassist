@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const { User, Skill } = require('../models');
-const { secretKey, jwtExpiration } = require('../middleware/auth');
+const { secretKey, jwtExpiration, authenticateToken } = require('../middleware/auth');
 const AuditLogService = require('../services/auditLog');
 
 // Rate limiter for authentication endpoints
@@ -99,6 +99,23 @@ router.post('/login', authLimiter, async (req, res) => {
         });
 
         res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET CURRENT USER
+router.get('/me', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id, {
+            attributes: { exclude: ['password_hash'] }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json(user);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
