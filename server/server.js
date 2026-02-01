@@ -101,7 +101,8 @@ app.use((req, res) => {
 });
 
 // Sync Database and Start Server
-sequelize.sync().then(() => {
+// Use alter: true to add missing columns to existing tables
+sequelize.sync({ alter: true }).then(() => {
     if (NODE_ENV !== 'production') {
         console.log('Database synced');
     }
