@@ -1,0 +1,7 @@
+[defaults]
+url=https://sentry.io/
+org=milassist
+project=milassist-backend
+
+[auth]
+token=

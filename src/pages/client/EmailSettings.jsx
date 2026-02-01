@@ -16,7 +16,7 @@ const EmailSettings = () => {
     const fetchConnections = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/email/connections', {
+            const res = await fetch(`${API_URL}/email/connections`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

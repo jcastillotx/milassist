@@ -16,7 +16,7 @@ const PageBuilder = () => {
 
     // Load pages on mount
     useEffect(() => {
-        fetch(`${API_URL}/pages')
+        fetch(`${API_URL}/pages`)
             .then(res => res.json())
             .then(data => setPages(data))
             .catch(err => console.error(err));
@@ -62,7 +62,7 @@ const PageBuilder = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/pages', {
+            const res = await fetch(`${API_URL}/pages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

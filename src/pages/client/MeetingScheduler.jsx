@@ -23,7 +23,7 @@ const MeetingScheduler = () => {
     const fetchConnections = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/video/connections', {
+            const res = await fetch(`${API_URL}/video/connections`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -41,7 +41,7 @@ const MeetingScheduler = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/meetings/create', {
+            const res = await fetch(`${API_URL}/meetings/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

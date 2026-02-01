@@ -12,7 +12,7 @@ const Timer = () => {
         const fetchCurrent = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`${API_URL}/time/current', {
+                const res = await fetch(`${API_URL}/time/current`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

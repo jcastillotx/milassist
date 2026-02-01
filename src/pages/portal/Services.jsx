@@ -65,7 +65,7 @@ const Services = () => {
       const stripe = window.Stripe(stripeKey);
 
       // Create checkout session
-      const response = await fetch(`${API_URL}/api/stripe/create-checkout-session', {
+      const response = await fetch(`${API_URL}/api/stripe/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -12,7 +12,7 @@ const PrivacyCenter = () => {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/privacy', {
+            const res = await fetch(`${API_URL}/privacy`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setRequests(await res.json());
@@ -29,7 +29,7 @@ const PrivacyCenter = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/privacy', {
+            const res = await fetch(`${API_URL}/privacy`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

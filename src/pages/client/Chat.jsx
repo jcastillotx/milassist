@@ -13,7 +13,7 @@ const Chat = () => {
     const fetchMessages = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/messages', {
+            const res = await fetch(`${API_URL}/messages`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -56,7 +56,7 @@ const Chat = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await fetch(`${API_URL}/messages', {
+            await fetch(`${API_URL}/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

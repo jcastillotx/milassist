@@ -13,7 +13,7 @@ const NDAEditor = () => {
         const fetchNDA = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`${API_URL}/settings/nda_content', {
+                const res = await fetch(`${API_URL}/settings/nda_content`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -32,7 +32,7 @@ const NDAEditor = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/settings/nda_content', {
+            const res = await fetch(`${API_URL}/settings/nda_content`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -12,7 +12,7 @@ const FormManager = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${API_URL}/forms/templates')
+        fetch(`${API_URL}/forms/templates`)
             .then(res => res.json())
             .then(data => setTemplates(data))
             .catch(err => console.error(err));

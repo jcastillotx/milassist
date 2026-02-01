@@ -18,7 +18,7 @@ const ForgotPassword = () => {
 
     try {
       // In production, this would call the actual API
-      const res = await fetch(`${API_URL}/auth/forgot-password', {
+      const res = await fetch(`${API_URL}/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

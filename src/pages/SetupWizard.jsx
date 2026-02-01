@@ -29,7 +29,7 @@ const SetupWizard = () => {
     useEffect(() => {
         const checkStatus = async () => {
             try {
-                const res = await fetch(`${API_URL}/setup/status');
+                const res = await fetch(`${API_URL}/setup/status`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data.initialized) {
@@ -52,7 +52,7 @@ const SetupWizard = () => {
         }
 
         try {
-            const res = await fetch(`${API_URL}/setup/init', {
+            const res = await fetch(`${API_URL}/setup/init`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ admin: adminData, settings })

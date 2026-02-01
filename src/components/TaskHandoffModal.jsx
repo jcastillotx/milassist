@@ -18,7 +18,7 @@ const TaskHandoffModal = ({ task, onClose, onSuccess }) => {
     const fetchAssistants = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/tasks/assistants/available', {
+            const res = await fetch(`${API_URL}/tasks/assistants/available`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

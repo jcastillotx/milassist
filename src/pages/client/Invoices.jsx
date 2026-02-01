@@ -16,7 +16,7 @@ const ClientInvoices = () => {
         const fetchInvoices = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`${API_URL}/invoices', {
+                const res = await fetch(`${API_URL}/invoices`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

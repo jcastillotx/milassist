@@ -26,7 +26,7 @@ const DocumentReview = () => {
     const handleAnalyze = async (docId) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/ai/analyze-doc', {
+            const res = await fetch(`${API_URL}/ai/analyze-doc`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

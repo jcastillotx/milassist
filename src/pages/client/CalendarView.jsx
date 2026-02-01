@@ -20,7 +20,7 @@ const CalendarView = () => {
             const token = localStorage.getItem('token');
             
             // Fetch calendar events
-            const calRes = await fetch(`${API_URL}/calendar/events', {
+            const calRes = await fetch(`${API_URL}/calendar/events`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (calRes.ok) {
@@ -29,7 +29,7 @@ const CalendarView = () => {
             }
 
             // Fetch meetings
-            const meetRes = await fetch(`${API_URL}/meetings', {
+            const meetRes = await fetch(`${API_URL}/meetings`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (meetRes.ok) {

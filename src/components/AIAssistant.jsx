@@ -31,7 +31,7 @@ const AIAssistant = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/ai/chat', {
+            const res = await fetch(`${API_URL}/ai/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -23,8 +23,8 @@ const CommunicationCenter = () => {
                 const headers = { 'Authorization': `Bearer ${token}` };
 
                 const [logsRes, rulesRes] = await Promise.all([
-                    fetch(`${API_URL}/communication/logs', { headers }),
-                    fetch(`${API_URL}/communication/rules', { headers })
+                    fetch(`${API_URL}/communication/logs`, { headers }),
+                    fetch(`${API_URL}/communication/rules`, { headers })
                 ]);
 
                 if (logsRes.ok) setLogs(await logsRes.json());
@@ -44,7 +44,7 @@ const CommunicationCenter = () => {
     const saveRule = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/communication/rules', {
+            const res = await fetch(`${API_URL}/communication/rules`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

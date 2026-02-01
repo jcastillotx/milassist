@@ -11,7 +11,7 @@ const TimeLogs = () => {
         const fetchLogs = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`${API_URL}/time', {
+                const res = await fetch(`${API_URL}/time`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) setLogs(await res.json());

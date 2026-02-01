@@ -32,7 +32,7 @@ const Onboarding = () => {
         const fetchNDA = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`${API_URL}/settings/nda_content', {
+                const res = await fetch(`${API_URL}/settings/nda_content`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -64,7 +64,7 @@ const Onboarding = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/users/onboarding', {
+            const res = await fetch(`${API_URL}/users/onboarding`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
