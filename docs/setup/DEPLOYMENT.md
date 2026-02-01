@@ -103,35 +103,7 @@ server {
 }
 ```
 
-### Option 2: Docker
-
-Create `Dockerfile` in server/:
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 3000
-CMD ["node", "server.js"]
-```
-
-Create `docker-compose.yml`:
-```yaml
-version: '3.8'
-services:
-  api:
-    build: ./server
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    env_file:
-      - ./server/.env
-    restart: unless-stopped
-```
-
-### Option 3: Cloud Platforms
+### Option 2: Cloud Platforms (Recommended)
 
 #### Vercel (Full Stack)
 ```bash

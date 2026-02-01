@@ -135,16 +135,7 @@ VITE_ENABLE_TRAVEL=false
 
 ## 🚀 Deployment Commands
 
-### Option 1: Docker (Recommended)
-```bash
-# Build
-docker-compose build
-
-# Run
-docker-compose up -d
-```
-
-### Option 2: Traditional
+### Option 1: Traditional (VPS)
 ```bash
 # Backend
 cd server
@@ -156,7 +147,7 @@ npm run build
 # Serve dist/ with nginx or similar
 ```
 
-### Option 3: Vercel (PaaS)
+### Option 2: Vercel (Recommended)
 ```bash
 # Set environment variables in Vercel dashboard
 # Deploy via GitHub integration

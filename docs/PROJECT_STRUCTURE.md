@@ -97,12 +97,8 @@ milassist/
 │   └── utils/                          # Shared utilities
 │
 ├── infrastructure/                     # Infrastructure as code
-│   ├── docker/
-│   │   ├── Dockerfile.frontend
-│   │   ├── Dockerfile.backend
-│   │   └── docker-compose.yml
-│   ├── kubernetes/                     # K8s manifests
-│   └── terraform/                      # Terraform configurations
+│   ├── kubernetes/                     # K8s manifests (optional)
+│   └── terraform/                      # Terraform configurations (optional)
 │
 └── scripts/                           # Development and deployment scripts
     ├── setup.sh                        # Initial setup script
