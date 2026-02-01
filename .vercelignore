@@ -38,16 +38,15 @@ docs/
 *.swo
 *~
 
-# Server directory (if using separate backend)
-server/
+# Server directory - DO NOT IGNORE (needed for serverless functions)
+# server/
 
 # Test files
-**/*.test.js
-**/*.test.ts
-**/*.spec.js
-**/*.spec.ts
-__tests__/
-coverage/
+server/tests/
+server/**/*.test.js
+server/**/*.spec.js
+server/coverage/
+server/jest.config.js
 
 # Misc
 .DS_Store
