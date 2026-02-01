@@ -34,3 +34,4 @@ dist-ssr
 .swarm/
 .vercel
 .env*.local
+payload/payload.db

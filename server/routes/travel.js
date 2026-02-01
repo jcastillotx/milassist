@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const GoogleFlightsService = require('../services/googleFlightsService');
-const authMiddleware = require('../middleware/auth');
+const { authenticateToken: authMiddleware } = require('../middleware/auth');
 
 const googleFlightsService = new GoogleFlightsService();
 
