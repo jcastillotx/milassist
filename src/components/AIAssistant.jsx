@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import API_URL from "../config/api";
 import Button from './Button';
-import API_URL from "../config/api";
 import Card from './Card';
-import API_URL from "../config/api";
 
 const AIAssistant = () => {
     const [isOpen, setIsOpen] = useState(false);
