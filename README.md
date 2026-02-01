@@ -235,10 +235,10 @@ See `server/.env.example` for all available configuration options.
 2. Use `docker-compose` for orchestration
 3. Configure environment variables
 
-### Option 3: Cloud Platforms
-- **Frontend**: Vercel, Netlify, or AWS Amplify
-- **Backend**: Heroku, Railway, or AWS Elastic Beanstalk
-- **Database**: Migrate from SQLite to PostgreSQL for production
+### Option 3: Cloud Platforms (Recommended)
+- **Full Stack**: Vercel (frontend + serverless backend)
+- **Database**: Supabase PostgreSQL (production-ready managed database)
+- **Storage**: AWS S3 or Vercel Blob for file uploads
 
 See `DEPLOYMENT.md` for detailed deployment instructions.
 

@@ -133,15 +133,16 @@ services:
 
 ### Option 3: Cloud Platforms
 
-#### Vercel (Frontend)
+#### Vercel (Full Stack)
 ```bash
 vercel --prod
 ```
 
-#### Railway/Render (Backend)
-- Connect GitHub repository
-- Set environment variables in dashboard
-- Deploy automatically on push
+**Backend Deployment:**
+- Deploy Node.js backend to Vercel as serverless functions
+- Connect Supabase PostgreSQL database
+- Set environment variables in Vercel dashboard
+- Deploy automatically on push to main branch
 
 ## Post-Deployment
 

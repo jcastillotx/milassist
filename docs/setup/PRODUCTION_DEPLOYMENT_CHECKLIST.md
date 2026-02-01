@@ -156,10 +156,12 @@ npm run build
 # Serve dist/ with nginx or similar
 ```
 
-### Option 3: Vercel/Railway (PaaS)
+### Option 3: Vercel (PaaS)
 ```bash
-# Set environment variables in platform dashboard
+# Set environment variables in Vercel dashboard
 # Deploy via GitHub integration
+# Connect Supabase PostgreSQL database
+vercel --prod
 ```
 
 ## 🔍 Testing Checklist

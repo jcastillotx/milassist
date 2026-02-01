@@ -294,8 +294,8 @@ npm run dev
 - ✅ Reason: Better control, lower costs, CDN integration
 
 ### Database
-- ✅ Supabase PostgreSQL (not Railway)
-- ✅ Reason: Better managed service, connection pooling, free tier
+- ✅ Supabase PostgreSQL
+- ✅ Reason: Managed service, connection pooling, free tier, Vercel integration
 
 ---
 

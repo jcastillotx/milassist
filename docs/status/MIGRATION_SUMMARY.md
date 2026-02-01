@@ -42,7 +42,7 @@
 | **Admin Panel** | Custom (to be built) | Built-in (included) |
 | **Page Builder** | Custom (to be built) | GrapesJS (integrated) |
 | **Auth** | Custom JWT | Payload Auth (built-in) |
-| **Deployment** | Manual/Railway | Vercel (serverless) |
+| **Deployment** | Manual | Vercel (serverless) |
 | **Storage** | Local/Manual | Vercel Blob Storage |
 | **Types** | Manual | Auto-generated TypeScript |
 

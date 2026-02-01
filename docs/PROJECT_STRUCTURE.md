@@ -102,8 +102,7 @@ milassist/
 │   │   ├── Dockerfile.backend
 │   │   └── docker-compose.yml
 │   ├── kubernetes/                     # K8s manifests
-│   ├── terraform/                      # Terraform configurations
-│   └── railway/                        # Railway deployment configs
+│   └── terraform/                      # Terraform configurations
 │
 └── scripts/                           # Development and deployment scripts
     ├── setup.sh                        # Initial setup script
