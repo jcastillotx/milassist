@@ -51,6 +51,10 @@ app.use('/meetings', require('./routes/meetings'));
 app.use('/calendar', require('./routes/calendar'));
 app.use('/setup', require('./routes/setup'));
 app.use('/audit-logs', require('./routes/auditLogs'));
+app.use('/rbac', require('./routes/rbac'));
+app.use('/va-profiles', require('./routes/vaProfiles'));
+app.use('/va-matching', require('./routes/vaMatching'));
+app.use('/ai', require('./routes/aiProductivity'));
 
 // Health Check
 app.get('/health', (req, res) => {

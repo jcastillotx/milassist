@@ -24,5 +24,15 @@
     "env": {
       "NODE_OPTIONS": "--no-deprecation"
     }
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret",
+    "STRIPE_SECRET_KEY": "@stripe_secret_key",
+    "S3_BUCKET_NAME": "@s3_bucket_name",
+    "S3_REGION": "@s3_region",
+    "S3_ACCESS_KEY_ID": "@s3_access_key_id",
+    "S3_SECRET_ACCESS_KEY": "@s3_secret_access_key"
   }
 }
