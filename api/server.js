@@ -134,40 +134,66 @@ app.use(async (req, res, next) => {
 });
 
 // Import all routes
-app.use('/auth', require('../server/routes/auth'));
-app.use('/users', require('../server/routes/users'));
-app.use('/invoices', require('../server/routes/invoices'));
-app.use('/pages', require('../server/routes/pages'));
-app.use('/integrations', require('../server/routes/integrations'));
-app.use('/trips', require('../server/routes/trips'));
-app.use('/travel', require('../server/routes/travel'));
-app.use('/twilio', require('../server/routes/twilio'));
-app.use('/documents', require('../server/routes/documents'));
-app.use('/research', require('../server/routes/research'));
-app.use('/ai', require('../server/routes/ai'));
-app.use('/communication', require('../server/routes/communication'));
-app.use('/messages', require('../server/routes/messages'));
-app.use('/tasks', require('../server/routes/tasks'));
-app.use('/forms', require('../server/routes/forms'));
-app.use('/resources', require('../server/routes/resources'));
-app.use('/time', require('../server/routes/time'));
-app.use('/settings', require('../server/routes/settings'));
-app.use('/payments', require('../server/routes/payments'));
-app.use('/email', require('../server/routes/email'));
-app.use('/video', require('../server/routes/video'));
-app.use('/meetings', require('../server/routes/meetings'));
-app.use('/calendar', require('../server/routes/calendar'));
-app.use('/oauth', require('../server/routes/oauth'));
-app.use('/privacy', require('../server/routes/privacy'));
-app.use('/nda', require('../server/routes/nda'));
-app.use('/onboarding', require('../server/routes/onboarding'));
-app.use('/audit-logs', require('../server/routes/auditLogs'));
-app.use('/rbac', require('../server/routes/rbac'));
-app.use('/va-profiles', require('../server/routes/vaProfiles'));
-app.use('/va-matching', require('../server/routes/vaMatching'));
-app.use('/setup', require('../server/routes/setup'));
+// Create a router for all /api prefixed requests
+const apiRouter = express.Router();
+
+// Define all routes on the apiRouter
+apiRouter.use('/auth', require('../server/routes/auth'));
+apiRouter.use('/users', require('../server/routes/users'));
+apiRouter.use('/invoices', require('../server/routes/invoices'));
+apiRouter.use('/pages', require('../server/routes/pages'));
+apiRouter.use('/integrations', require('../server/routes/integrations'));
+apiRouter.use('/trips', require('../server/routes/trips'));
+apiRouter.use('/travel', require('../server/routes/travel'));
+apiRouter.use('/twilio', require('../server/routes/twilio'));
+apiRouter.use('/documents', require('../server/routes/documents'));
+apiRouter.use('/research', require('../server/routes/research'));
+apiRouter.use('/ai', require('../server/routes/ai'));
+apiRouter.use('/communication', require('../server/routes/communication'));
+apiRouter.use('/messages', require('../server/routes/messages'));
+apiRouter.use('/tasks', require('../server/routes/tasks'));
+apiRouter.use('/forms', require('../server/routes/forms'));
+apiRouter.use('/resources', require('../server/routes/resources'));
+apiRouter.use('/time', require('../server/routes/time'));
+apiRouter.use('/settings', require('../server/routes/settings'));
+apiRouter.use('/payments', require('../server/routes/payments'));
+apiRouter.use('/email', require('../server/routes/email'));
+apiRouter.use('/video', require('../server/routes/video'));
+apiRouter.use('/meetings', require('../server/routes/meetings'));
+apiRouter.use('/calendar', require('../server/routes/calendar'));
+// apiRouter.use('/oauth', require('../server/routes/oauth'));
+apiRouter.use('/privacy', require('../server/routes/privacy'));
+// apiRouter.use('/nda', require('../server/routes/nda'));
+// apiRouter.use('/onboarding', require('../server/routes/onboarding'));
+apiRouter.use('/audit-logs', require('../server/routes/auditLogs'));
+apiRouter.use('/rbac', require('../server/routes/rbac'));
+apiRouter.use('/va-profiles', require('../server/routes/vaProfiles'));
+apiRouter.use('/va-matching', require('../server/routes/vaMatching'));
+apiRouter.use('/setup', require('../server/routes/setup'));
 
 // Health check endpoint
+apiRouter.get('/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        environment: process.env.NODE_ENV,
+        database: dbInitialized ? 'connected' : 'not initialized',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Root endpoint for the router (matches /api)
+apiRouter.get('/', (req, res) => {
+    res.json({
+        name: 'MilAssist API',
+        version: '2.0.0',
+        environment: process.env.NODE_ENV
+    });
+});
+
+// Mount the apiRouter at the /api root
+app.use('/api', apiRouter);
+
+// Fallback top-level health check (for legacy tools/scripts)
 app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
@@ -177,13 +203,9 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Root endpoint
-app.get('/api', (req, res) => {
-    res.json({
-        name: 'MilAssist API',
-        version: '2.0.0',
-        environment: process.env.NODE_ENV
-    });
+// Root endpoint legacy
+app.get('/', (req, res) => {
+    res.send('MilAssist API is running');
 });
 
 // Global Error Handler

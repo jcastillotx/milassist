@@ -39,7 +39,7 @@ router.post('/init', setupLock, async (req, res) => {
         const user = await User.create({
             name: admin.name,
             email: admin.email,
-            password: hashedPassword,
+            password_hash: hashedPassword,
             role: 'admin',
             verificationStatus: 'verified'
         }, { transaction: t });
